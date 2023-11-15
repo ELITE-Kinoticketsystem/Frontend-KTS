@@ -12,26 +12,27 @@
     }
 
     // @ts-ignore
-    function passwordValidation(event){
-        /*if(browser){
+    $: passwordValidation = (event) => {
+        if(browser){
             const regexPassword  = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-            // @ts-ignore
-            document.getElementById("submitButton").disabled = !(regexPassword.test(passwordText) && passwordText == repeatPasswordText);
+            const registerButton = document.getElementById("submitButton");
+            if(regexPassword.test(passwordText) && passwordText === repeatPasswordText){
+                //@ts-ignore
+                registerButton.disabled = false;
+            }
         }
-        console.log(event);
-        console.log(passwordText);*/
     }
 </script>
 
 <main>
-    <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm bg-[#2A313A] bg-repeat-round pt-6 pb-6 pl-16 pr-16">
+    <div class="flex min-h-full flex-col sm:mx-auto sm:w-full sm:max-w-2xl justify-center bg-[#2A313A] bg-repeat-round pt-6 pb-6 pl-16 pr-16">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <p class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-textWhite">ELITE KTS</p>
             <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-textWhite">Registration</h2>
         </div>
         <button>Login with Google</button> 
         <button>Login with Apple</button>
-        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700 sm:mx-auto sm:w-full sm:max-w-sm">
+        <hr class="h-px my-2 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm">
     <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
       <form class="space-y-4" action="#" method="POST">
         <div>
@@ -64,7 +65,7 @@
         </div>
   
         <div>
-          <button id="submitButton" type="submit" class="flex w-full justify-center rounded-md bg-buttonBlue px-3 py-1.5 text-sm font-semibold leading-6 text-textWhite shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
+          <button id="submitButton" type="submit" disabled class="flex w-full justify-center rounded-md bg-buttonBlue px-3 py-1.5 text-sm font-semibold leading-6 text-textWhite shadow-lg hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Register</button>
         </div>
       </form>
   

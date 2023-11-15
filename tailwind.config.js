@@ -15,6 +15,7 @@ export default {
         profilepictureBlue: '#6CD3FE',
         buttonBlue: '#1B8DEC',
         inputBlue: '#89a3be',
+        tileBlue: '#2A313A',
         
       }
     },

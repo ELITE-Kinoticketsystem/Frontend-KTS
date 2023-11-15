@@ -16,7 +16,7 @@
         </div>
         <button>Login with Google</button> 
         <button>Login with Apple</button>
-        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700 sm:mx-auto sm:w-full sm:max-w-sm">
+        <hr class="h-px my-8 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm">
     <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
       <form class="space-y-6" action="#" method="POST">
         <div>
