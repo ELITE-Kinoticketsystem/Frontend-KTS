@@ -13,7 +13,7 @@ export default {
         listTileBlue: '#2A313A',
         iconColorBlue: '#89A3BE',
         profilepictureBlue: '#6CD3FE',
-        buttonBlue: '#1B8DEC',
+        buttonBlue: '#89a3be',
         inputBlue: '#89a3be',
         tileBlue: '#2A313A',
         
