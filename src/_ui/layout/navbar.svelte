@@ -1,28 +1,17 @@
 <script>
     import { browser } from '$app/environment';
 
+
     const shortSearchbarText = "Seach for movies, ...";
     const longSearchbarText = "Search for movies, actors or tags";
 
     const shortSearchbarSize = 32;
     const longSearchbarSize = 96;
 
-    let isLoggedIn = false;
+    let isLoggedIn = Math.floor(Math.random() * 10) > 5;
 
     let searchbarText = shortSearchbarText;
     let searchbarSize = shortSearchbarSize;
-
-    if(browser){
-        const sessionStorage = window.sessionStorage;
-
-        const personalSessionKey = sessionStorage.getItem("key");
-
-
-        //TODO rework that code. Need to find a good, "unique" solution. 
-        //Suggestion: Every user gets a unique api-key this key, gets saved in the session storage
-        //this connection will be checked, and if key with username is correct, user is loggedin
-        isLoggedIn = personalSessionKey != null;
-    } 
 
     let showDropdown = false;
   
@@ -41,7 +30,7 @@
     }
 
 </script>
-<nav class="bg-headerBlue w-full z-20 top-0 start-0 border-b">
+<nav class="bg-headerBlue w-full z-20 top-0 start-0">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
@@ -50,7 +39,6 @@
             </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
-            {#if (!isLoggedIn)}
                 <!-- Current: "bg-gray-900 text-textWhite", Default: "text-gray-300 hover:bg-gray-700 hover:text-textWhite" -->
                 <a href="/#" class="bg-gray-900 text-textWhite rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Overview</a>
                 <!--<a href="/#liked" class="text-gray-300 hover:bg-gray-700 hover:text-textWhite rounded-md px-3 py-2 text-sm font-medium">Liked by others</a>-->
@@ -64,12 +52,6 @@
                         <input type="search" id="default-search" on:focus={onFocus} on:blur={onBlur} class="block p-2 ps-10 w-{searchbarSize} text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="{searchbarText}">
                     </div>
                 </form>
-    
-            {:else}
-                <!-- Current: "bg-gray-900 text-textWhite", Default: "text-gray-300 hover:bg-gray-700 hover:text-textWhite" -->
-                <a href="/#" class="bg-gray-900 text-textWhite rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Overview</a>
-                <!--<a href="/#liked" class="text-gray-300 hover:bg-gray-700 hover:text-textWhite rounded-md px-3 py-2 text-sm font-medium">Liked by others</a>-->         
-            {/if}
               </div>
           </div>
         </div>
@@ -92,7 +74,8 @@
                 <button type="button" class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" 
                 id="user-menu-button" 
                 aria-expanded={showDropdown} 
-                aria-haspopup="true" 
+                aria-haspopup="true"
+                on:mouseenter={toggleDropdown} 
                 on:click={toggleDropdown}>
                   <span class="absolute -inset-1.5"></span>
                   <span class="sr-only">Open user menu</span>
@@ -115,19 +98,19 @@
             
             {#if (showDropdown)} 
                 {#if (isLoggedIn)}
-                <div class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                <div class="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                     <a href="/dashboard" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Dashboard</a>
-                    <a href="/dashboard/mytickets" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Tickets</a>
+                    <a href="/dashboard/mytickets" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Tickets</a>
                     </div>
                     <div class="py-1" role="none">
-                    <a href="/dashboard/settings" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Settings</a>
-                    <a href="/logout" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Logout</a>
+                    <a href="/dashboard/settings" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">Settings</a>
+                    <a href="/logout" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Logout</a>
                     </div>
                 </div>
                 {:else}
-                <div class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                <div class="absolute right-0 z-10 mt-1 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                     <a href="/login" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Login</a>
