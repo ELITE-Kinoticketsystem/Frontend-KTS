@@ -27,7 +27,7 @@
   };
 </script>
 
-Endpoint: /search/ Type: GET
+<!--Endpoint: /search/ Type: GET-->
 
 <main>
   <div
