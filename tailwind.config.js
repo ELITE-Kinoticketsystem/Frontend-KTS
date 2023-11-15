@@ -2,21 +2,25 @@
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    extend: {},
-  },
-  plugins: [],
-  colors : {
-    // colors have the same name as in figma color palette(color pilot) + the color name
-
-    backgroundBlue: '#1A1F25',
-    textWhite: '#FAFAFA',
-    darkTextWhite: '#D3D7D9',
-    headerBlue: '#354A5F',
-    listTileBlue: '#2A313A',
-    iconColorBlue: '#89A3BE',
-    profilepictureBlue: '#6CD3FE',
-    buttonBlue: '1B8DEC',
+    extend: {
+      colors : {
+        // colors have the same name as in figma color palette(color pilot) + the color name
     
-  }
+        backgroundBlue: '#1A1F25',
+        textWhite: '#FAFAFA',
+        darkTextWhite: '#D3D7D9',
+        headerBlue: '#354A5F',
+        listTileBlue: '#2A313A',
+        iconColorBlue: '#89A3BE',
+        profilepictureBlue: '#6CD3FE',
+        buttonBlue: '#1B8DEC',
+        inputBlue: '#89a3be',
+        
+      }
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }
 
