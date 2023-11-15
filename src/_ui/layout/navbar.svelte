@@ -41,7 +41,7 @@
     }
 
 </script>
-<nav class="bg-headerBlue fixed w-full z-20 top-0 start-0 border-b">
+<nav class="bg-headerBlue w-full z-20 top-0 start-0 border-b">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
