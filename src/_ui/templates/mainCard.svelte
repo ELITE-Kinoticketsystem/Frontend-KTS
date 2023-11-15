@@ -2,7 +2,9 @@
     import "../../app.css";
 </script>
 
-<main>
 
-    
-</main>
+<div>
+    <div>
+        
+    </div>
+</div>
