@@ -31,5 +31,8 @@
 		"typescript": "^5.0.0",
 		"vite": "^4.4.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@splidejs/svelte-splide": "^0.2.9"
+	}
 }

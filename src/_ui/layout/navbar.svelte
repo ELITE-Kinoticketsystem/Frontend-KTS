@@ -70,7 +70,7 @@
                   on:blur={onBlur}
                   class="block p-2 ps-10 {searchBarOpen
                     ? `w-96`
-                    : 'w-36'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Search for movies, actors or tags"
                 />
               </div>
