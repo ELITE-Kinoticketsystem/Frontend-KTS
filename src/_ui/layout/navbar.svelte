@@ -5,9 +5,6 @@
 
   let isLoggedIn = Math.floor(Math.random() * 10) > 5;
 
-  const shortSize = 32;
-  const longSize = 96;
-
   $: searchBarOpen = false;
 
   let showDropdown = false;
@@ -72,7 +69,7 @@
                   on:focus={onFocus}
                   on:blur={onBlur}
                   class="block p-2 ps-10 {searchBarOpen
-                    ? `w-&{}`
+                    ? `w-96`
                     : 'w-36'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Search for movies, actors or tags"
                 />
