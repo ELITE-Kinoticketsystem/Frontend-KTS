@@ -1,6 +1,6 @@
 export class MovieService {
 
-    public static async getMovieFromId(movieId: number): Promise<any> {
+    public static async getMovieFromId(movieId: string): Promise<any> {
         return {
             src: "https://www.apple.com/tv-pr/shows-and-films/s/stephen-curry-underrated/images/show-home-graphic-header/key-art-01/4x1/Apple_TV_Stephen_Curry_Underrated_key_art_graphic_header_4_1_show_home.jpg.large_2x.jpg",
             movieName: "Stephen Curry: Underrated",

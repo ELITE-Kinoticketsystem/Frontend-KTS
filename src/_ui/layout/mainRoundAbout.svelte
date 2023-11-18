@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { AuthService } from "$lib/authService";
-    import { MovieService } from "$lib/movieService";
+    import { AuthService } from "$lib/_services/authService";
+    import { MovieService } from "$lib/_services/movieService";
     import { onMount } from "svelte";
     import { Splide, SplideSlide, SplideTrack } from "@splidejs/svelte-splide";
     import "@splidejs/svelte-splide/css";
@@ -49,13 +49,13 @@
 
 {#if isLoaded}
     <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
-        <div style="position: relative " class="ml-5 mr-5">
+        <div style="position: relative " class="mx-10">
             <SplideTrack class="rounded-xl">
                 {#each imagesToCycle as image}
                     <SplideSlide>
                         <a href="/movies/{image.movieId}">
                             <img
-                                class="w-full h-72"
+                                class="w-full h-72 object-cover"
                                 src={image.src}
                                 alt={image.movieName}
                             />
