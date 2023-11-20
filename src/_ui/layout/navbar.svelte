@@ -163,6 +163,7 @@
                       href="/dashboard"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-0">Dashboard</a
                     >
@@ -170,6 +171,7 @@
                       href="/dashboard/mytickets"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-1">Tickets</a
                     >
@@ -179,6 +181,7 @@
                       href="/dashboard/settings"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-2">Settings</a
                     >
@@ -186,6 +189,7 @@
                       href="/logout"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-3">Logout</a
                     >
@@ -205,6 +209,7 @@
                       href="/login"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-0">Login</a
                     >
@@ -212,6 +217,7 @@
                       href="/register"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-1">Register</a
                     >
@@ -221,6 +227,7 @@
                       href="/help?q=login"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
+                      on:click={toggleDropdown}
                       tabindex="-1"
                       id="menu-item-2">Help</a
                     >

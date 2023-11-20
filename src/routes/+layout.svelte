@@ -11,5 +11,5 @@
             <slot />
         </div>
     </div>
-    <footer class="w-full flex-end bg-backgroundBlue"><Footer /></footer>
+    <!--<footer class="w-full flex-end bg-backgroundBlue"><Footer /></footer>-->
 </div>
