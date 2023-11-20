@@ -11,6 +11,19 @@ export class MovieService {
         };
     }
 
+    public static async getActorFromId(actorId: string): Promise<any> {
+        return {
+            src: "	https://media.kinoheld.de/gmvnQ8PfeT0zWxOikDp2cuCq…%2Ftransformers-aufstieg-der-bestien-45591.v1.jpg",
+            fullName: "Full Name",
+            awards: [{
+                nrOfWins: 3,
+                awardName: "Oscar",
+            }],
+            about: "This is the description about an actor",
+            movieIds : ["Steph", "is ", "GOAT"],
+        }
+    }
+
     private static generateUUID(): string {
         let d = new Date().getTime();
         const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

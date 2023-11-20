@@ -3,6 +3,7 @@
     import { AuthService } from "$lib/_services/authService";
     import { MovieService } from "$lib/_services/movieService";
     import SlideOver from "../templates/slideOver.svelte";
+    import MovieRow from "../templates/movieRow.svelte";
 
     const authService = new AuthService();
 
@@ -57,13 +58,6 @@
         </div>
     </a>
 </div>
-<div class="flex">
-    {#each movieIdsToDisplay as movieId, index}
-        <div class="mx-10">
-            <MainCard
-                {movieId}
-                isLast={index === movieIdsToDisplay.length - 1}
-            />
-        </div>
-    {/each}
-</div>
+
+<MovieRow {movieIdsToDisplay}/>
+
