@@ -3,7 +3,7 @@
     export let movieIdsToDisplay: string[] = [];
 </script>
 
-<div class="flex">
+<div class="flex overflow-hidden">
     {#each movieIdsToDisplay as movieId, index}
         <div class="mx-10">
             <MainCard
