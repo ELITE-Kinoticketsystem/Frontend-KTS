@@ -186,7 +186,7 @@
                       id="menu-item-2">Settings</a
                     >
                     <a
-                      href="/logout"
+                      href="/auth/logout"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
                       on:click={toggleDropdown}
@@ -206,7 +206,7 @@
                   <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                     <a
-                      href="/login"
+                      href="/auth/login"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
                       on:click={toggleDropdown}
@@ -214,7 +214,7 @@
                       id="menu-item-0">Login</a
                     >
                     <a
-                      href="/register"
+                      href="/auth/register"
                       class="text-gray-700 block px-4 py-2 text-sm"
                       role="menuitem"
                       on:click={toggleDropdown}
