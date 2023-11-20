@@ -60,7 +60,7 @@ export class AuthService {
     //localStorage.removeItem('token');
   }
 
-  public userIsLoggedIn(): boolean {
+  public isUserLoggedIn(): boolean {
     return false;
   }
 

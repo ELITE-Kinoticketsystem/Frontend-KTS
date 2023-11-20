@@ -32,15 +32,18 @@
 </script>
 
 {#if isLoaded}
-    <div class="flex rounded-md w-48 h-72">
+    <div class="relative rounded-md w-48 h-72">
         <a href="/movies/{movie.movieId}">
-            <div class={isLast ? "ownOpacity" : ""}>
-                <img
-                    src={movie.src}
-                    alt={movie.movieName}
-                    class="rounded-md w-48 h-72 object-cover"
-                />
-            </div>
+            <div
+                class={isLast
+                    ? "ownOpacity absolute top-0 left-0 w-full h-full"
+                    : ""}
+            />
+            <img
+                src={movie.src}
+                alt={movie.movieName}
+                class="rounded-md w-48 h-72 object-cover"
+            />
             <p class="font-bold text-textWhite break-words text-center">
                 {movie.movieName}
             </p>
@@ -74,9 +77,9 @@
     .ownOpacity {
         border-radius: 0.375rem;
         background: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 1) 0%,
-            rgba(255, 255, 255, 0) 50%
+            to left,
+            rgba(0, 0, 0, 0.9) 0%,
+            rgba(255, 255, 255, 0) 150%
         ) !important;
     }
 </style>

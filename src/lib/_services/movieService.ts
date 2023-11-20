@@ -21,4 +21,15 @@ export class MovieService {
         return uuid;
     }
 
+    public static async getLikedMovies(): Promise<any> {
+        return [{
+            movieId: this.generateUUID(),
+        }, {
+            movieId: this.generateUUID(),
+        }, {
+            movieId: this.generateUUID(),
+        }, {
+            movieId: this.generateUUID(),
+        },];
+    }
 }

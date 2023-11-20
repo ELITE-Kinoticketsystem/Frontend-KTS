@@ -8,7 +8,7 @@
 <main>
     <MainRoundAbout />
     <br />
-    <div class="mx-72">
+    <div class="mx-16 mt-10">
         <FirstMainSiteElement />
     </div>
 </main>

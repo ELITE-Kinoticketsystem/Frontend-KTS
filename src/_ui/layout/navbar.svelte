@@ -1,10 +1,10 @@
 <script>
-  import { browser } from "$app/environment";
+  import { AuthService } from "$lib/_services/authService";
 
-  const longSearchbarText = "Search for movies, actors or tags";
+  let isLoggedIn = new AuthService().isUserLoggedIn();
 
-  let isLoggedIn = Math.floor(Math.random() * 10) > 5;
-
+  const longSearchBarText = "Search movies, actors or tags";
+  const shortSearchBarText = "Search movie...";
   $: searchBarOpen = false;
 
   let showDropdown = false;
@@ -29,8 +29,8 @@
         <div class="flex-shrink-0">
           <a
             href="/"
-            class="text-textWhite text-xl hover:bg-gray-700 hover:text-textWhite rounded-md px-3 py-2 font-medium"
-            >ELITE KTS</a
+            class="text-iconColorBlue text-xl hover:bg-buttonBlue hover:duration-500 hover:text-textWhite rounded-md px-3 py-2 font-medium"
+            >CINEMIKA</a
           >
         </div>
         <div class="hidden md:block">
@@ -71,7 +71,9 @@
                   class="block p-2 ps-10 {searchBarOpen
                     ? `w-96`
                     : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Search for movies, actors or tags"
+                  placeholder={searchBarOpen
+                    ? longSearchBarText
+                    : shortSearchBarText}
                 />
               </div>
             </form>
