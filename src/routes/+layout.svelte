@@ -4,12 +4,12 @@
     import "../app.css";
 </script>
 
-<div class="w-screen h-screen">
+<div class="w-screen min-h-screen">
     <div class="w-full sticky top-0 z-50"><Navbar /></div>
-    <div class="flex flex-col h-screen">
+    <div class="flex flex-col">
         <div class="bg-backgroundBlue flex-start py-4 flex-auto">
             <slot />
         </div>
     </div>
-    <!--<footer class="w-full flex-end bg-backgroundBlue"><Footer /></footer>-->
+    <footer class="w-full flex-end bg-backgroundBlue"><Footer /></footer>
 </div>
