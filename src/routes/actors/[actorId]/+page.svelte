@@ -1,17 +1,13 @@
 <script lang="ts">
     import MovieRow from "../../../_ui/templates/movieRow.svelte";
-    import { page } from "$app/stores";
-    import { MovieService } from "../../../lib/_services/movieService";
 
-    let actorId = $page.params.actorId;
-    let movieIdsToDisplay = ["","","","",""]
+    let movieIdsToDisplay = ["","","","","",""]
 
     let src = "";
 
     export let data;
-    src = data.src;
-    console.log(data)
-    console.log(src)
+    let localdata = data.data[0];
+    src = localdata.src;
 
 </script>
 
@@ -20,12 +16,12 @@
         <div class="flex-start">
                 <div class="flex flex-row mb-12">
                     <div class="flex-start">
-                        <img class="" {src} alt="Actor." />
+                        <img class="w-80" {src} alt="Actor" />
                     </div>
-                    <div class="flex-end ">
+                    <div class="flex-end">
                         <div class="flex flex-col">
                             <div class="mt-12 mb-8">
-                                <p>{data.about}</p>
+                                <p>{localdata.about}</p>
                             </div>
                         </div>
                     </div>
