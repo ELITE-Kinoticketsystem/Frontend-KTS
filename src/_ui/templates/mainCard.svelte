@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { MovieService } from "$lib/_services/movieService";
+    import SmallMovieImg from "./smallMovieImg.svelte";
 
     let movie: {
         src: string;
@@ -39,11 +40,8 @@
                     ? "ownOpacity absolute top-0 left-0 w-full h-full"
                     : ""}
             />
-            <img
-                src={movie.src}
-                alt={movie.movieName}
-                class="rounded-md w-48 h-72 object-cover"
-            />
+            <SmallMovieImg src={movie.src} alt={movie.movieName} />
+            
             <p class="font-bold text-textWhite break-words text-center">
                 {movie.movieName}
             </p>

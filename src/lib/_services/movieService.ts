@@ -13,14 +13,14 @@ export class MovieService {
 
     public static async getActorFromId(actorId: string): Promise<any> {
         return {
-            src: "	https://media.kinoheld.de/gmvnQ8PfeT0zWxOikDp2cuCq…%2Ftransformers-aufstieg-der-bestien-45591.v1.jpg",
+            src: "https://media.kinoheld.de/gmvnQ8PfeT0zWxOikDp2cuCq…%2Ftransformers-aufstieg-der-bestien-45591.v1.jpg",
             fullName: "Full Name",
             awards: [{
                 nrOfWins: 3,
                 awardName: "Oscar",
             }],
             about: "This is the description about an actor",
-            movieIds : ["Steph", "is ", "GOAT"],
+            movieIds: ["Steph", "is ", "GOAT"],
         }
     }
 
