@@ -3,6 +3,11 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
+      spacing : {
+        "28rem" : "28rem",
+        "36rem" : "36rem",
+        "42rem" : "42rem"
+      },
       colors : {
         // colors have the same name as in figma color palette(color pilot) + the color name
         backgroundBlue: '#1A1F25',
