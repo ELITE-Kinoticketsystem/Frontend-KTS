@@ -19,7 +19,7 @@
                         <img class="w-96 mx-auto" {src} alt="Actor" />
                     </div>
                     <div class="flex-end basis-1/2  my-auto">
-                        <div class=" flex flex-col">
+                        <div class=" flex flex-col ">
                             <div>
                                <h1 class="text-center mb-12 text-4xl text-textWhite font-sns">{actorData.name}</h1> 
                             </div>
@@ -28,7 +28,7 @@
                                     <p class="text-center px-auto">{actorData.name} has won {actorData.awards.at(0)} {actorData.awards.at(1)}</p>
                                 </div>
                             </div>
-                            <div class="mt-12 mb-8 ">
+                            <div class=" ">
                                 <p class="text-textWhite p-8">{actorData.about}</p>
                             </div>
                         </div>
