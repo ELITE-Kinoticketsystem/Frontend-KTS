@@ -5,7 +5,6 @@ export default {
     extend: {
       colors : {
         // colors have the same name as in figma color palette(color pilot) + the color name
-    
         backgroundBlue: '#1A1F25',
         textWhite: '#FAFAFA',
         darkTextWhite: '#D3D7D9',
@@ -16,7 +15,6 @@ export default {
         buttonBlue: '#89a3be',
         inputBlue: '#89a3be',
         tileBlue: '#2A313A',
-        
       }
     },
   },

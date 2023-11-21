@@ -5,7 +5,7 @@
 
 <div class="flex overflow-hidden">
     {#each movieIdsToDisplay as movieId, index}
-        <div class="mx-10">
+        <div class="mx-9">
             <MainCard
                 {movieId}
                 isLast={index === movieIdsToDisplay.length - 1}
