@@ -4,8 +4,8 @@
     import SecondMainSiteElement from "../_ui/layout/_mainpage/secondMainSiteElement.svelte";
 
     export let data;
-    let imagesToCycle = data.data;
-    console.log(data.data)
+    let imagesToCycle = data.first;
+
 </script>
 
 <main>

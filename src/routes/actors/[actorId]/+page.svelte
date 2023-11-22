@@ -9,7 +9,8 @@
     let maxNrOfAwards = 8;
 
     export let data;
-    let actorData = data.data[0];
+    console.log(data.actor)
+    let actorData = {name: "HArrio", awards: [{name: "oscar",count: 2}], about: "dkajcbkjbdcka"};
 </script>
 
 <div class="max-w-6xl mt-3 mx-auto">
@@ -17,7 +18,7 @@
         <div class="flex-start">
             <div class="flex flex-row mb-8 overflow-hidden">
                 <!--<ImageCarousel srcs={actorData.imageSrcs} />-->
-                <div class="flex-start basis-1/2 mx-auto"> <MainRoundAbout imagesToCycle={}/></div>
+                <div class="flex-start basis-1/2 mx-auto"> <MainRoundAbout imagesToCycle={data.actor.imgSrcs} /></div>
                
                 <div class="flex-end basis-1/2 my-auto">
                     <div class=" flex flex-col">
