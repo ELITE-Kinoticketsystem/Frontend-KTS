@@ -15,18 +15,18 @@
         });
     }
 
-    let imagesToCycle: {
+    export let imagesToCycle: {
         src: string;
         movieName: string;
         movieId: string;
         tags: string;
-        description: string;
+        movieDescription: string;
         fsk: string;
     }[] = [];
 
-    let isLoaded = false;
+    //let isLoaded = false;
 
-    onMount(() => {
+    /*onMount(() => {
         getForYouPictures().then((movies: any) => {
             const promises = movies.map((movie: any) => {
                 return MovieService.getMovieFromId(movie).then((movie) => {
@@ -44,10 +44,10 @@
                 isLoaded = true;
             });
         });
-    });
+    });*/
 </script>
 
-{#if isLoaded}
+{#if /*isLoaded*/ true}
     <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
         <div style="position: relative " class="mx-10">
             <SplideTrack class="rounded-xl">
@@ -86,7 +86,7 @@
                                     {/each}
                                 </p>
                                 <p class="text-textWhite text-left p-4 mx-40">
-                                    {image.description}
+                                    {image.movieDescription}
                                 </p>
                             </div>
                         </a>

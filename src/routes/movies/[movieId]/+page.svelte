@@ -4,8 +4,8 @@
     import DropDownMenu from "../../../_ui/templates/dropDownMenu.svelte";
     export let data;
     export let items: string[] = ["ace", "pace", "collin", "aceee"];
-    let selectedItem = "region";
-    console.log(selectedItem);
+    let type = "region";
+
 </script>
 
 
@@ -22,8 +22,7 @@
                 <p>THEATRES</p>
             </div>
             <div class="flex flex-row bg-yellow-600">
-                <DropDownMenu selectedItem={selectedItem}/>
-                <p class="text-7xl">{selectedItem}</p>
+                <DropDownMenu {type}/>
             </div>
         </div>
     </div>
