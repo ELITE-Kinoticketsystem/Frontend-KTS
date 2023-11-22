@@ -16,7 +16,7 @@
 </script>
 
 <TextMainSite
-    href={isUserLoggedIn ? "/upcomingmovies" : "/yoursuggestions"}
-    text={isUserLoggedIn ? "Upcoming movies " : "Your suggestions "}
+    href={isUserLoggedIn ? "/yoursuggestions" : "/upcomingmovies"}
+    text={isUserLoggedIn ? "Your suggestions " : "Upcoming movies "}
 />
 <MovieRow {movieIdsToDisplay} />

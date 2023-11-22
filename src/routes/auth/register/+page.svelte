@@ -24,6 +24,9 @@
   }
 </script>
 
+<svelte:head>
+  <title>Cinemika - Register</title>
+</svelte:head>
 <div
   class="flex flex-col rounded-xl mx-auto w-full max-w-2xl justify-center bg-[#2A313A] bg-repeat-round pt-6 pb-6 pl-16 pr-16"
 >
@@ -43,8 +46,8 @@
   <button>Login with Apple</button>
   <hr class="h-px my-8 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm" />
   <div class="rounded-lg mx-5">
-    {#key { step }}
-      <RegisterBar {step} />
+    {#key step}
+      <RegisterBar />
     {/key}
     {#key step}
       <div

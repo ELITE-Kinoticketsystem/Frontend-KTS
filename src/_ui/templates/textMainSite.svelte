@@ -6,7 +6,7 @@
 <div class="mb-8">
     <a {href} class="font-bold text-textWhite">
         <div class="flex">
-            <p class="flex font-bold text-buttonBlue text-md">Cinemika&nbsp;</p>
+            <p class="gradient flex font-bold text-md">Cinemika&nbsp;</p>
             - {text}
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -22,3 +22,19 @@
         </div>
     </a>
 </div>
+
+<style>
+    .gradient {
+        background: rgb(135, 147, 149);
+        background: linear-gradient(
+            90deg,
+            rgba(135, 147, 149, 1) 0%,
+            rgba(137, 163, 190, 1) 100%
+        );
+        background-size: 100%;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-text-fill-color: transparent;
+    }
+</style>

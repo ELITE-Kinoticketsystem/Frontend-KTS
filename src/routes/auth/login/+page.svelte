@@ -52,6 +52,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Cinemika - Login</title>
+</svelte:head>
+
 <main>
   <div
     class="flex min-h-full flex-col rounded-xl sm:mx-auto sm:w-full sm:max-w-2xl justify-center bg-[#2A313A] bg-repeat-round pt-6 pb-6 pl-16 pr-16"

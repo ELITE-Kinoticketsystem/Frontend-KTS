@@ -35,13 +35,9 @@
 {#if isLoaded}
     <div class="relative rounded-md w-48 h-72">
         <a href="/movies/{movie.movieId}">
-            <div
-                class={isLast
-                    ? "ownOpacity absolute top-0 left-0 w-full h-full"
-                    : ""}
-            />
+            <div class={isLast ? "" : ""} />
             <SmallMovieImg src={movie.src} alt={movie.movieName} />
-            
+
             <p class="font-bold text-textWhite break-words text-center">
                 {movie.movieName}
             </p>

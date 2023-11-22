@@ -1,27 +1,49 @@
 <script lang="ts">
-    export let step: number = 0;
-    let colorForSvg1 = "orange-500";
-    let colorForSvg2 = "headerBlue";
-    let colorForSvg3 = "headerBlue";
-    if (step === 1) {
-        colorForSvg1 = "green-500";
-        colorForSvg2 = "orange-500";
-    }
-    if (step === 2) {
-        colorForSvg1 = "green-500";
-        colorForSvg2 = "green-500";
-        colorForSvg3 = "orange-500";
-    }
-    if (step === 3) {
-        colorForSvg1 = "green-500";
-        colorForSvg2 = "green-500";
-        colorForSvg3 = "green-500";
-    }
+    import { registrationStep } from "$lib/stores";
+    import { onMount } from "svelte";
+
+    let colorForSvg1: string;
+    let colorForSvg2: string;
+    let colorForSvg3: string;
+
+    onMount(async () => {
+        const promise = await new Promise((resolve) => {
+            registrationStep.subscribe((value) => {
+                resolve(value);
+            });
+        });
+        Promise.resolve(promise).then((value) => {
+            if (value === 0) {
+                colorForSvg1 = "yellow-500";
+                colorForSvg2 = "headerBlue";
+                colorForSvg3 = "headerBlue";
+            }
+            if (value === 1) {
+                colorForSvg1 = "green-500";
+                colorForSvg2 = "yellow-500";
+                colorForSvg3 = "headerBlue";
+            }
+            if (value === 2) {
+                colorForSvg1 = "green-500";
+                colorForSvg2 = "green-500";
+                colorForSvg3 = "yellow-500";
+            }
+            if (value === 3) {
+                colorForSvg1 = "green-500";
+                colorForSvg2 = "green-500";
+                colorForSvg3 = "green-500";
+            }
+            console.log(value);
+            console.log(colorForSvg1);
+            console.log(colorForSvg2);
+            console.log(colorForSvg3);
+        });
+    });
 </script>
 
 <ol class="flex items-center w-full mb-4 ml-16 mt-2">
     <li
-        class="flex w-full items-center text-textWhite after:content-[''] after:w-full after:h-1 after:border-b after:border-{colorForSvg1} after:border-4 after:inline-block"
+        class="flex w-full items-center text-{colorForSvg1} after:content-[''] after:w-full after:h-1 after:border-b after:border-{colorForSvg1} after:border-4 after:inline-block"
     >
         <div
             class="flex items-center justify-center w-10 h-10 bg-{colorForSvg1} rounded-full shrink-0"
@@ -40,7 +62,7 @@
         </div>
     </li>
     <li
-        class="flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-{colorForSvg2} after:border-4 after:inline-block"
+        class="flex w-full items-center text-{colorForSvg2} after:content-[''] after:w-full after:h-1 after:border-b after:border-{colorForSvg2} after:border-4 after:inline-block"
     >
         <div
             class="flex items-center justify-center w-10 h-10 bg-{colorForSvg2} rounded-full shrink-0"

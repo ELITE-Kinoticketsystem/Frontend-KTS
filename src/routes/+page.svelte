@@ -1,6 +1,5 @@
 <script>
     import MainRoundAbout from "../_ui/layout/mainRoundAbout.svelte";
-    import { AuthService } from "$lib/_services/authService";
     import FirstMainSiteElement from "../_ui/layout/_mainpage/firstMainSiteElement.svelte";
     import SecondMainSiteElement from "../_ui/layout/_mainpage/secondMainSiteElement.svelte";
 </script>
