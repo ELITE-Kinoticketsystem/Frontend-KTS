@@ -4,8 +4,8 @@
 </script>
 
 <div class="mb-8">
-    <a {href} class="font-bold text-textWhite">
-        <div class="flex">
+    <div class="flex">
+        <a {href} class="font-bold text-textWhite flex">
             <p class="gradient flex font-bold text-md">Cinemika&nbsp;</p>
             - {text}
             <svg
@@ -19,8 +19,8 @@
                     d="m15.5 0.932-4.3 4.38 14.5 14.6-14.5 14.5 4.3 4.4 14.6-14.6 4.4-4.3-4.4-4.4-14.6-14.6z"
                 />
             </svg>
-        </div>
-    </a>
+        </a>
+    </div>
 </div>
 
 <style>

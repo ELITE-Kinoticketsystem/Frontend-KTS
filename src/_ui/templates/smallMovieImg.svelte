@@ -3,4 +3,4 @@
     export let alt = "";
 </script>
 
-<img {src} {alt} class="rounded-md w-38 h-60 object-cover overflow-hidden" />
+<img {src} {alt} class="rounded-md w-38 h-72 object-cover overflow-hidden" />
