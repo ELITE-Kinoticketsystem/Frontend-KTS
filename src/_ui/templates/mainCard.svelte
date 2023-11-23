@@ -3,7 +3,7 @@
     import { MovieService } from "$lib/_services/movieService";
     import SmallMovieImg from "./smallMovieImg.svelte";
 
-    let movie: {
+    export let movie: {
         src: string;
         movieName: string;
         movieId: string;
@@ -12,32 +12,18 @@
         fsk: string;
     };
 
-    let isLoaded = false;
+    let isLoaded = true;
 
-    onMount(() => {
-        MovieService.getMovieFromId(movieId).then((movieFromId) => {
-            isLoaded = true;
-            movie = {
-                src: movieFromId.src,
-                movieName: movieFromId.movieName,
-                movieId: movieFromId.movieId,
-                tags: movieFromId.tags,
-                description: movieFromId.movieDescription,
-                fsk: movieFromId.fsk,
-            };
-        });
-    });
-
-    export let movieId = "";
+   
     export let isLast = false;
 </script>
 
 {#if isLoaded}
-    <div class="relative rounded-md w-48 h-72">
+    <div class=" rounded-md w-48 h-72">
         <a href="/movies/{movie.movieId}">
-            <div class={isLast ? "" : ""} />
-            <SmallMovieImg src={movie.src} alt={movie.movieName} />
-
+            <div class={isLast ? "bg-gradient-to-r from-white to-black" : ""}>
+                <SmallMovieImg src={movie.src} alt={movie.movieName} />
+            </div>
             <p class="font-bold text-textWhite break-words text-center">
                 {movie.movieName}
             </p>
@@ -66,14 +52,3 @@
         </div>
     </div>
 {/if}
-
-<style>
-    .ownOpacity {
-        border-radius: 0.375rem;
-        background: linear-gradient(
-            to left,
-            rgba(0, 0, 0, 0.9) 0%,
-            rgba(255, 255, 255, 0) 150%
-        ) !important;
-    }
-</style>

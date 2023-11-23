@@ -3,6 +3,12 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
+      height : {
+        "2.4rem" : "2.4rem"
+      },
+      padding: {
+        "22rem": "22rem"
+      },
       spacing : {
         "28rem" : "28rem",
         "36rem" : "36rem",

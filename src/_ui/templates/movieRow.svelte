@@ -1,14 +1,14 @@
 <script lang="ts">
     import MainCard from "./mainCard.svelte";
-    export let movieIdsToDisplay: string[] = [];
+    export let moviesToDisplay: any;
 </script>
 
 <div class="flex overflow-hidden">
-    {#each movieIdsToDisplay as movieId, index}
-        <div class="mx-9">
+    {#each moviesToDisplay as movie, index}
+        <div class="mr-16">
             <MainCard
-                {movieId}
-                isLast={index === movieIdsToDisplay.length - 1}
+                {movie}
+                isLast={index === moviesToDisplay.length - 1}
             />
         </div>
     {/each}

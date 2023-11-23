@@ -3,10 +3,17 @@
     import FirstMainSiteElement from "../_ui/layout/_mainpage/firstMainSiteElement.svelte";
     import SecondMainSiteElement from "../_ui/layout/_mainpage/secondMainSiteElement.svelte";
     import ThirdMainSiteElement from "../_ui/layout/_mainpage/thirdMainSiteElement.svelte";
+
+    export let data;
+
+
+
+    let imagesToCycle = data.first;
+
 </script>
 
 <main>
-    <MainRoundAbout />
+    <MainRoundAbout {imagesToCycle}/>
     <br />
     <div class="mx-16 mt-10">
         <FirstMainSiteElement />
