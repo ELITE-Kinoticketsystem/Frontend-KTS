@@ -1,5 +1,7 @@
 <script lang="ts">
     let searchBarIsOpen: Boolean;
+    export let shortSearchBarText: string ="shortsearchbartext";
+    export let longSearchBarText: string ="longsearchbartext";
 </script>
 
 <div>
@@ -32,8 +34,8 @@
             ? `w-96`
             : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
           placeholder={searchBarIsOpen
-            ? "longSearchBarText"
-            : "shortSearchBarText"}
+            ? longSearchBarText
+            : shortSearchBarText}
         />
       </div>
 </div>

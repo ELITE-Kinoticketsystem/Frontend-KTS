@@ -16,7 +16,8 @@ export default {
         "10.33rem": "10.33rem",
         "28rem": "28rem",
         "36rem": "36rem",
-        "42rem": "42rem"
+        "42rem": "42rem",
+        "XXXL": "50rem"
       },
       colors: {
         // colors have the same name as in figma color palette(color pilot) + the color name
