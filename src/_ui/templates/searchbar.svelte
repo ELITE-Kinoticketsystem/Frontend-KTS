@@ -1,7 +1,5 @@
 <script lang="ts">
     let searchBarIsOpen: Boolean;
-    function onFocus(){searchBarIsOpen = true;}
-    function onBlur(){searchBarIsOpen = false;}
 </script>
 
 <div>
@@ -28,8 +26,8 @@
         <input
           type="search"
           id="default-search"
-          on:focus={onFocus}
-          on:blur={onBlur}
+          on:focus={() => searchBarIsOpen = true}
+          on:blur={() => searchBarIsOpen = false}
           class="block p-2 ps-10 {searchBarIsOpen
             ? `w-96`
             : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"

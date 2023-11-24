@@ -3,19 +3,17 @@
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton";
   import DropDownMenu from "../../../_ui/templates/dropDownMenu.svelte";
   import MovieRow from "../../../_ui/templates/movieRow.svelte";
-    import MainCard from "../../../_ui/templates/mainCard.svelte";
-    import Searchbar from "../../../_ui/templates/searchbar.svelte";
+  import MainCard from "../../../_ui/templates/mainCard.svelte";
+  import Searchbar from "../../../_ui/templates/searchbar.svelte";
   export let data;
-  let regions: string[] = [
-    "Rheinlandpfalz",
-    "Baden-Württemberg",
-    "Berlin",
-    "Sachsen",
-  ];
+
+  let regions = ["Rheinlandpfalz","Baden-Württemberg","Berlin","Sachsen"];
   let types: string[] = ["2D", "3D", "4D", "5D"];
 
-  let frstDropDownItemType = "Region";
-  let sndDropDownItemType = "Typ";
+  const frstDropDownItemType = "Region";
+  const sndDropDownItemType = "Typ";
+  const maxNrOfMoviesToDisplay = 10;
+  let searchBarOpen = false;
 
   function onFocus() {
     searchBarOpen = true;
@@ -23,7 +21,7 @@
   function onBlur() {
     searchBarOpen = false;
   }
-  let searchBarOpen = false;
+  
   let isLast = "bg-gradient-to-r from-white to-black";
   let movie = {"src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp2NuVXpmlEjzTKAnqGIaLyy1jIputsFujvg&usqp=CAU",
     "movieName": "Stephen Curry: Underrated",
@@ -85,22 +83,19 @@
         </div>
 
         <div class="flex">
-          <Searchbar></Searchbar>
+          <Searchbar/>
         </div>
       </div>
       <div class="">
         <div class="my-4 mb-40 ">
-          <div class="flex flex-row flex-wrap bg-yellow-400">
-            {#each moviesToDisplay as movie}
-              <div class="flex flex-none mr-11 bg-red-400">
+          <div class="flex flex-row flex-wrap gap-x-1.6rem gap-y-2 bg-yellow-400">
+            {#each moviesToDisplay.slice(0, maxNrOfMoviesToDisplay) as movie}
+              <div class="flex flex-none bg-red-400">
                 <MainCard {movie} />
               </div>
-              
             {/each}
           </div>
-
         </div>
-  
       </div>
     </div>
   </div>

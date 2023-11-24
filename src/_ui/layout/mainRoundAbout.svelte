@@ -23,7 +23,6 @@
         movieDescription: string;
         fsk: string;
     }[] = [];
-    
 
     //let isLoaded = false;
 
@@ -61,34 +60,55 @@
                                 alt={movie.movieName}
                             />
                             <div
-                                class="absolute bottom-0 left-0 w-full h-full bg-black opacity-0 hover:opacity-75 transition-opacity duration-300"
+                                class=" absolute bottom-0 left-0 w-full h-full bg-black opacity-0 hover:opacity-75 transition-opacity duration-300"
                             >
-                                <p
-                                    class="text-textWhite text-center text-lg font-bold p-4"
+                                <div
+                                    class="opacity-70 ml-20 h-full flex flex-col justify-between"
                                 >
-                                    {movie.movieName}
-                                </p>
-                                <hr
-                                    class="w-72 h-1 mx-auto bg-textWhite border-0 rounded"
-                                />
-                                <p class="text-textWhite text-left p-4 ml-40">
-                                    <a href="/movies?age={movie.fsk}"
-                                        >From age <b>{movie.fsk}</b></a
-                                    >
-                                </p>
-                                <p class="text-textWhite text-left p-4 ml-40">
-                                    {#each movie.tags as tag, index}
-                                        <a href="/movies?tags={tag}"
-                                            >#{tag}{index ===
-                                            movie.tags.length - 1
-                                                ? ""
-                                                : ", "}&nbsp;</a
+                                    <div class="mx-auto">
+                                        <p
+                                            class="text-textWhite text-center text-lg font-bold p-4 flex"
                                         >
-                                    {/each}
-                                </p>
-                                <p class="text-textWhite text-left p-4 mx-40">
-                                    {movie.movieDescription}
-                                </p>
+                                            {movie.movieName}
+                                        </p>
+                                        <hr
+                                            class="w-72 h-1 bg-textWhite border-0 rounded flex"
+                                        />
+                                    </div>
+                                    <div class="flex">
+                                        <div class="flex flex-col">
+                                            <div class="mb-5">
+                                                <p
+                                                    class="text-textWhite text-left flex"
+                                                >
+                                                    <a
+                                                        href="/movies?age={movie.fsk}"
+                                                        >From age <b
+                                                            >{movie.fsk}</b
+                                                        ></a
+                                                    >
+                                                </p>
+                                            </div>
+                                            <p
+                                                class="text-textWhite text-left flex"
+                                            >
+                                                {#each movie.tags as tag, index}
+                                                    <a href="/movies?tags={tag}"
+                                                        >#{tag}{index ===
+                                                        movie.tags.length - 1
+                                                            ? ""
+                                                            : ", "}&nbsp;</a
+                                                    >
+                                                {/each}
+                                            </p>
+                                            <p
+                                                class="text-textWhite text-left break-words pb-4 flex"
+                                            >
+                                                {movie.movieDescription}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     </SplideSlide>
