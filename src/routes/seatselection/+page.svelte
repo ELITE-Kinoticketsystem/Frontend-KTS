@@ -1,10 +1,6 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
-    import { onMount } from "svelte";
     import CinemaSeat from "../../_ui/templates/cinemaSeat.svelte";
     import Swal from "sweetalert2";
-
-    let cinemaHallName = "Cinemika X";
 
     export let data;
 
@@ -13,121 +9,11 @@
 
     let arrayOfSelectedSeats: any[] = [];
 
-    const priceAdult = {
-        vip: "15.00",
-        lounge: "12.00",
-        normal: "10.00",
-    };
-    const priceChild = {
-        vip: "12.00",
-        lounge: "10.00",
-        normal: "8.00",
-    };
-    const priceSenior = {
-        vip: "10.00",
-        lounge: "8.00",
-        normal: "5.00",
-    };
-    const priceStudent = {
-        vip: "8.00",
-        lounge: "5.00",
-        normal: "2.50",
-    };
-
     const cinemaHallSize: any = data.cinemaHallSize;
     const seatsPerRow = data.seatsPerRow.sort((a: any, b: any) => b - a)[0];
 
-    $: adultSeats = 0;
-    $: childSeats = 0;
-    $: seniorSeats = 0;
-    $: studentSeats = 0;
-
-    function onTicketChange(event: any, type: string) {
-        const operator = event.srcElement.innerText;
-        if (type === "Adults") {
-            if (operator === "(+)") {
-                adultSeats++;
-            } else {
-                adultSeats--;
-            }
-        } else if (type === "Children") {
-            if (operator === "(+)") {
-                childSeats++;
-            } else {
-                childSeats--;
-            }
-        } else if (type === "Seniors") {
-            if (operator === "(+)") {
-                seniorSeats++;
-            } else {
-                seniorSeats--;
-            }
-        } else if (type === "Students") {
-            if (operator === "(+)") {
-                studentSeats++;
-            } else {
-                studentSeats--;
-            }
-        }
-        calculatePrice();
-    }
-
-    $: totalPrice = "0.00";
-
-    function calculatePrice() {
-        let price = 0;
-        if (seatTypeSelection === "normal") {
-            price += adultSeats * parseFloat(priceAdult.normal);
-            price += childSeats * parseFloat(priceChild.normal);
-            price += seniorSeats * parseFloat(priceSenior.normal);
-            price += studentSeats * parseFloat(priceStudent.normal);
-            totalPrice = price.toFixed(2);
-            return;
-        } else if (seatTypeSelection === "lounge") {
-            price += adultSeats * parseFloat(priceAdult.lounge);
-            price += childSeats * parseFloat(priceChild.lounge);
-            price += seniorSeats * parseFloat(priceSenior.lounge);
-            price += studentSeats * parseFloat(priceStudent.lounge);
-            totalPrice = price.toFixed(2);
-            return;
-        } else if (seatTypeSelection === "vip") {
-            price += adultSeats * parseFloat(priceAdult.vip);
-            price += childSeats * parseFloat(priceChild.vip);
-            price += seniorSeats * parseFloat(priceSenior.vip);
-            price += studentSeats * parseFloat(priceStudent.vip);
-            totalPrice = price.toFixed(2);
-            return;
-        } else {
-            totalPrice = "0.00";
-            return;
-        }
-    }
-
     const originalSeats: any = data.seats;
     const seats: any = JSON.parse(JSON.stringify(originalSeats));
-
-    onMount(() => {
-        calculatePrice();
-    });
-
-    function goToReview() {
-        if (selectedSeats === 0) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                color: "#FAFAFA",
-                timer: 5000,
-                timerProgressBar: true,
-                background: "#354A5F",
-                text: "Please select at least one seat!",
-                footer: '<a href="/help?q=change" class="hover:text-inputBlue duration-300">Dont change the site.</a>',
-            });
-            return;
-        }
-        if (browser) {
-            window.location.href = "/seatselection/review";
-        }
-    }
 
     $: addSeat = (seat: any, i: number, j: number) => {
         if (seat.type === "reserved") {
@@ -138,10 +24,7 @@
 
         if (arrayOfSelectedSeats.length > 1) {
             const size = arrayOfSelectedSeats.length - 1;
-            const lts = arrayOfSelectedSeats[size][1];
-            console.log("LTS:", lts);
             for (let i = 0; i <= size; i++) {
-                console.log("i:", arrayOfSelectedSeats[size][1]);
                 const isLeftSite =
                     arrayOfSelectedSeats[size][1] ===
                     arrayOfSelectedSeats[i][1] - 1;
@@ -172,7 +55,6 @@
         }
         seatTypeSelection = seat.type;
         selectedSeats++;
-        adultSeats++;
 
         seat.type = "selected";
         seats[i][j] = seat;
@@ -182,8 +64,6 @@
 
         seats[i][j] = seat;
         selectedSeats--;
-        //TODO Need to check if seat is realy adult or child or senior or student!!!!!!!!!!!!!!
-        adultSeats--;
     };
 </script>
 
