@@ -4,7 +4,9 @@ export default {
   theme: {
     extend: {
       height : {
-        "2.4rem" : "2.4rem"
+        "2.4rem" : "2.4rem",
+        "21rem" : "21rem",
+
       },
       padding: {
         "22rem": "22rem"

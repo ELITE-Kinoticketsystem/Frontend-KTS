@@ -18,14 +18,16 @@
 </script>
 
 {#if isLoaded}
-    <div class=" rounded-md w-48 h-72">
-        <a href="/movies/{movie.movieId}">
-            <div class={isLast ? "bg-gradient-to-r from-white to-black" : ""}>
+    <div class="grid grid-cols-1 grid-rows-2 bg-green-500 w-48 h-21rem overflow-hidden">
+        <a class="grid bg-green-300" href="/movies/{movie.movieId}">
+            <div class="bg-blue-400">
                 <SmallMovieImg src={movie.src} alt={movie.movieName} />
             </div>
-            <p class="font-bold text-textWhite break-words text-center">
+            <div class="grid bg-red-600">
+            <p class="font-bold text-textWhite break-words  text-center">
                 {movie.movieName}
             </p>
+            </div>
         </a>
     </div>
 {:else}

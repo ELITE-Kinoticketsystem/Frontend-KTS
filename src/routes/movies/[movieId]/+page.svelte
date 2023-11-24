@@ -66,8 +66,8 @@
         <p class="text-textWhite">THEATRES</p>
       </div>
 
-      <div class="flex flex-row w-full h-fit">
-        <div class="flex basis-1/2">
+      <div class="flex flex-row w-full justify-between bg-yellow-200">
+        <div class="flex">
           <div class="flex flex-start flex-row">
             <div class="mr-5">
               <DropDownMenu
@@ -84,52 +84,15 @@
           </div>
         </div>
 
-        <div class="flex basis-1/2">
+        <div class="flex">
           <Searchbar></Searchbar>
-           <!--<div class="ml-auto">
-           
-            <div class="relative">
-              <div
-                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
-              >
-                <svg
-                  class="w-4 h-4 text-textWhite"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="search"
-                id="default-search"
-                on:focus={onFocus}
-                on:blur={onBlur}
-                class="block p-2 ps-10 {searchBarOpen
-                  ? `w-96`
-                  : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                placeholder={searchBarOpen
-                  ? "longSearchBarText"
-                  : "shortSearchBarText"}
-              />
-            </div>
-          </div>
-          -->
         </div>
       </div>
       <div class="">
         <div class="my-4 mb-40 ">
-          <div class="flex flex-row flex-wrap">
+          <div class="flex flex-row flex-wrap bg-yellow-400">
             {#each moviesToDisplay as movie}
-              <div class="flex flex-none mr-11">
+              <div class="flex flex-none mr-11 bg-red-400">
                 <MainCard {movie} />
               </div>
               
