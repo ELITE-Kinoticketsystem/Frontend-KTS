@@ -3,21 +3,22 @@ export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
-      height : {
-        "2.4rem" : "2.4rem",
-        "21rem" : "21rem",
+      height: {
+        "2.4rem": "2.4rem",
+        "21rem": "21rem",
 
       },
       padding: {
         "22rem": "22rem"
       },
-      spacing : {
-        "1.6rem" : "1.600585rem",
-        "28rem" : "28rem",
-        "36rem" : "36rem",
-        "42rem" : "42rem"
+      spacing: {
+        "2rem": "2rem",
+        "10.33rem": "10.33rem",
+        "28rem": "28rem",
+        "36rem": "36rem",
+        "42rem": "42rem"
       },
-      colors : {
+      colors: {
         // colors have the same name as in figma color palette(color pilot) + the color name
         backgroundBlue: '#1A1F25',
         textWhite: '#FAFAFA',

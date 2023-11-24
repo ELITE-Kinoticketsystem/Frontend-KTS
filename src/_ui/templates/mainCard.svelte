@@ -24,7 +24,7 @@
                 <SmallMovieImg src={movie.src} alt={movie.movieName} />
             </div>
             <div class="grid">
-            <p class="font-bold text-textWhite break-words  text-center">
+            <p class="font-bold text-textWhite break-words text-center">
                 {movie.movieName}
             </p>
             </div>

@@ -1,38 +1,37 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton";
   import DropDownMenu from "../../../_ui/templates/dropDownMenu.svelte";
-  import MovieRow from "../../../_ui/templates/movieRow.svelte";
-  import MainCard from "../../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../../_ui/templates/searchbar.svelte";
+  import TheatreCard from "../../../_ui/templates/theatreCard.svelte";
+
   export let data;
 
-  let regions = ["Rheinlandpfalz","Baden-Württemberg","Berlin","Sachsen"];
-  let types: string[] = ["2D", "3D", "4D", "5D"];
+  let movie: any = data.movie;
+  let theatres: any = data.theatres;
+
+  const regions = ["Rheinlandpfalz", "Baden-Württemberg", "Berlin", "Sachsen"];
+  const types: string[] = ["2D", "3D", "4D", "5D"];
 
   const frstDropDownItemType = "Region";
   const sndDropDownItemType = "Typ";
-  const maxNrOfMoviesToDisplay = 10;
-  let searchBarOpen = false;
+  const maxNrOfTheatresToDisplay = 12;
 
-  function onFocus() {
-    searchBarOpen = true;
-  }
-  function onBlur() {
-    searchBarOpen = false;
-  }
-  
-  let isLast = "bg-gradient-to-r from-white to-black";
-  let movie = {"src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp2NuVXpmlEjzTKAnqGIaLyy1jIputsFujvg&usqp=CAU",
-    "movieName": "Stephen Curry: Underrated",
-    "movieId": "238764346238432",
-    "description": "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history. The focus is on his rise from barely mediocre college player to four-time NBA champion.",
-    "tags": "funny,goodlooking,beast","fsk":"1"};
-  let moviesToDisplay = [movie, movie, movie, movie, movie, movie, movie];
+  movie = {
+    src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp2NuVXpmlEjzTKAnqGIaLyy1jIputsFujvg&usqp=CAU",
+    movieName: "Stephen Curry Underrated",
+    movieId: "1",
+    description:
+      "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history. The focus is on his rise from barely mediocre college player to four-time NBA champion.",
+    tags: "funny,goodlooking,beast",
+    fsk: "1",
+  };
+  let theatre = {"name": "Cineplex", 
+  "logo": "https://shop.cineplex.de/media/catalog/product/cache/image/700x560/e9c3970ab036de70892d86c6d221abfe/3/6/3650_1000x700_1.jpg"};
+  theatres=[theatre,theatre,theatre,theatre,theatre,theatre,theatre, theatre] 
 </script>
 
 <div class="">
-  <div class="flex flex-col mx-auto max-w-7xl">
+  <div class="flex flex-col mx-auto max-w-6xl ">
     <div class="mx-auto">
       <iframe
         class="rounded-lg"
@@ -46,25 +45,29 @@
       ></iframe>
     </div>
 
-    <div class="flex flex-row w-full mx-auto">
-      <div class="mx-auto basis-1/2">
-        <p class="text-textWhite">Movie Pic</p>
+    <div class="flex flex-row w-full mx-auto mt-16">
+      <div class="ml-5 basis-1/3">
+        <img class="" src={movie.src} alt="Movie" />
       </div>
-      <div class=" mx-auto basis-1/2">
-        <p class="text-textWhite">Movie description</p>
+      <div class="mx-auto basis-2/3">
+        <div class="mb-6">
+          <h2 class="text-center break-words text-textWhite text-5xl">{movie.movieName}</h2>
+        </div>
+        <p class="text-textWhite text-center">{movie.description}</p>
       </div>
     </div>
     <div class="flex flex-col">
       <div class="">
-        <p class="mx-auto my-6 text-xl text-center text-textWhite">
+        <p class="mx-auto mt-12 mb-10 text-xl text-center text-textWhite">
           Please select a cinema to get the showings of the movie
         </p>
       </div>
-      <div class="">
+
+      <div class="mt-5 mb-2">
         <p class="text-textWhite">THEATRES</p>
       </div>
 
-      <div class="flex flex-row w-full justify-between bg-yellow-200">
+      <div class="flex flex-row w-full justify-between">
         <div class="flex">
           <div class="flex flex-start flex-row">
             <div class="mr-5">
@@ -83,15 +86,15 @@
         </div>
 
         <div class="flex">
-          <Searchbar/>
+          <Searchbar />
         </div>
       </div>
       <div class="">
-        <div class="my-4 mb-40 ">
-          <div class="flex flex-row flex-wrap gap-x-1.6rem gap-y-2 bg-yellow-400">
-            {#each moviesToDisplay.slice(0, maxNrOfMoviesToDisplay) as movie}
-              <div class="flex flex-none bg-red-400">
-                <MainCard {movie} />
+        <div class="my-4 mb-40">
+          <div class="flex flex-row flex-wrap gap-x-2rem gap-y-1 ">
+            {#each theatres.slice(0, maxNrOfTheatresToDisplay) as theatre}
+              <div class="flex flex-none ">
+                <TheatreCard {theatre}/>
               </div>
             {/each}
           </div>
