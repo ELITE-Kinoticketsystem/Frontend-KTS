@@ -35,7 +35,7 @@
     };
 
     const cinemaHallSize: any = data.cinemaHallSize;
-    const seatsPerRow: any = data.seatsPerRow;
+    const seatsPerRow = data.seatsPerRow.sort((a: any, b: any) => b - a)[0];
 
     $: adultSeats = 0;
     $: childSeats = 0;
@@ -111,6 +111,19 @@
     });
 
     function goToReview() {
+        if (selectedSeats === 0) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                color: "#FAFAFA",
+                timer: 5000,
+                timerProgressBar: true,
+                background: "#354A5F",
+                text: "Please select at least one seat!",
+                footer: '<a href="/help?q=change" class="hover:text-inputBlue duration-300">Dont change the site.</a>',
+            });
+            return;
+        }
         if (browser) {
             window.location.href = "/seatselection/review";
         }
@@ -122,13 +135,24 @@
         }
         arrayOfSelectedSeats.push([i, j]);
         let addedNextToEachOther = true;
-        for (let k = 0; k < arrayOfSelectedSeats.length - 1; k++) {
-            const [_, col1] = arrayOfSelectedSeats[k];
-            const [_1, col2] = arrayOfSelectedSeats[k + 1];
 
-            if (Math.abs(col1 - col2) > 1) {
-                addedNextToEachOther = false;
-                break;
+        if (arrayOfSelectedSeats.length > 1) {
+            const size = arrayOfSelectedSeats.length - 1;
+            const lts = arrayOfSelectedSeats[size][1];
+            console.log("LTS:", lts);
+            for (let i = 0; i <= size; i++) {
+                console.log("i:", arrayOfSelectedSeats[size][1]);
+                const isLeftSite =
+                    arrayOfSelectedSeats[size][1] ===
+                    arrayOfSelectedSeats[i][1] - 1;
+                const isRightSite =
+                    arrayOfSelectedSeats[size][1] ===
+                    arrayOfSelectedSeats[i][1] + 1;
+                if (!isLeftSite && !isRightSite) {
+                    addedNextToEachOther = false;
+                } else {
+                    break;
+                }
             }
         }
 
@@ -137,7 +161,8 @@
                 icon: "error",
                 title: "Oops...",
                 color: "#FAFAFA",
-                timer: 2000,
+                timer: 5000,
+                customClass: "rounded-lg",
                 timerProgressBar: true,
                 background: "#354A5F",
                 text: "Please select seat next to each other!",
@@ -165,8 +190,9 @@
 <svelte:head>
     <title>Cinemika - Seat selection</title>
 </svelte:head>
+
 <div class="flex mx-32">
-    <div class="mx-5 w-4/5 h-4/5">
+    <div class="mx-5 w-full h-full">
         <div class="flex">
             <div>
                 <p class="font-bold text-xl text-textWhite">SEATS</p>
@@ -176,271 +202,52 @@
         <div
             class="flex flex-col bg-[#29313a] rounded-lg bg-repeat-round items-center"
         >
-            <div class="relative leinwand" />
-            <p class="relative font-bold text-textWhite text-lg">Leinwand</p>
-            <div class="my-5">
+            <div class="leinwand" />
+            <p class="font-bold text-textWhite text-lg">Leinwand</p>
+            <div class="flex flex-row my-5 justify-center">
                 {#key seats}
-                    {#each { length: cinemaHallSize } as _, i}
-                        <div class="grid grid-flow-col-dense gap-4 mt-4">
-                            {#each { length: seatsPerRow[i] } as _, j}
-                                <button
-                                    disabled={seats[i][j].type === "reserved"}
-                                    class="disabled:cursor-not-allowed"
-                                    on:click={() => {
-                                        if (seats[i][j].type !== "selected") {
-                                            addSeat(seats[i][j], i, j);
-                                        } else {
-                                            removeSeat(seats[i][j], i, j);
-                                        }
-                                    }}
-                                >
-                                    <CinemaSeat
-                                        seat={seats[i][j]}
-                                        isDoubleSeat={seats[i][j].isDoubleSeat}
-                                    />
-                                </button>
+                    <div
+                        class="grid grid-cols-{cinemaHallSize} grid-rows-{seatsPerRow} gap-1"
+                    >
+                        {#each { length: cinemaHallSize } as _, i}
+                            {#each { length: seatsPerRow } as _, j}
+                                {#if seats[i][j].type !== "emptyDoubleSeat"}
+                                    <div
+                                        class="grid {seats[i][j].isDoubleSeat
+                                            ? 'col-span-2'
+                                            : ''} overflow-auto"
+                                    >
+                                        <button
+                                            disabled={seats[i][j].type ===
+                                                "reserved"}
+                                            class="disabled:cursor-not-allowed mx-auto"
+                                            on:click={() => {
+                                                if (
+                                                    seats[i][j].type !==
+                                                    "selected"
+                                                ) {
+                                                    addSeat(seats[i][j], i, j);
+                                                } else {
+                                                    removeSeat(
+                                                        seats[i][j],
+                                                        i,
+                                                        j
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <CinemaSeat
+                                                seat={seats[i][j]}
+                                                isDoubleSeat={seats[i][j]
+                                                    .isDoubleSeat}
+                                            />
+                                        </button>
+                                    </div>
+                                {/if}
                             {/each}
-                        </div>
-                    {/each}
-                {/key}
-            </div>
-        </div>
-    </div>
-    <div class="flex flex-col mt-7">
-        <div class="text-white text-center font-bold text-xl leading-none">
-            {cinemaHallName}
-        </div>
-        <div>
-            <div class="bg-[#29313a] rounded-lg">
-                {#key selectedSeats}
-                    <div class="mt-2">
-                        <p class="text-xl text-textWhite ml-2">
-                            {selectedSeats == 0
-                                ? "Selected seat(s)"
-                                : selectedSeats == 1
-                                ? "Selected seat"
-                                : "Selected seats"}
-                        </p>
-                    </div>
-                    <div class="grid grid-rows-1 grid-flow-col gap-2">
-                        <div
-                            class="text-textWhite ml-5 mr-1 mt-10 text-lg w-max"
-                        >
-                            <div>
-                                <div
-                                    class="grid grid-cols-2 grid-flow-row gap-6"
-                                >
-                                    <div>
-                                        Adults -
-                                        {seatTypeSelection === "vip"
-                                            ? priceAdult.vip
-                                            : seatTypeSelection === "normal"
-                                            ? priceAdult.normal
-                                            : priceAdult.lounge}€
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(event, "Adults");
-                                            }}
-                                            disabled={adultSeats < 1}
-                                            >(-)</button
-                                        >
-                                        {adultSeats} / {selectedSeats -
-                                            childSeats -
-                                            seniorSeats -
-                                            studentSeats}
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(event, "Adults");
-                                            }}
-                                            disabled={adultSeats +
-                                                childSeats +
-                                                seniorSeats +
-                                                studentSeats ===
-                                                selectedSeats}>(+)</button
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div
-                                    class="grid grid-cols-2 grid-flow-row gap-6"
-                                >
-                                    <div>
-                                        Children - {seatTypeSelection === "vip"
-                                            ? priceChild.vip
-                                            : seatTypeSelection === "normal"
-                                            ? priceChild.normal
-                                            : priceChild.lounge}€
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(
-                                                    event,
-                                                    "Children"
-                                                );
-                                            }}
-                                            disabled={childSeats < 1}
-                                            >(-)</button
-                                        >
-                                        {childSeats} / {selectedSeats -
-                                            adultSeats -
-                                            seniorSeats -
-                                            studentSeats}
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(
-                                                    event,
-                                                    "Children"
-                                                );
-                                            }}
-                                            disabled={adultSeats +
-                                                childSeats +
-                                                seniorSeats +
-                                                studentSeats ===
-                                                selectedSeats}>(+)</button
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div
-                                    class="grid grid-cols-2 grid-flow-row gap-6"
-                                >
-                                    <div>
-                                        Seniors - {seatTypeSelection === "vip"
-                                            ? priceSenior.vip
-                                            : seatTypeSelection === "normal"
-                                            ? priceSenior.normal
-                                            : priceSenior.lounge}€
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(
-                                                    event,
-                                                    "Seniors"
-                                                );
-                                            }}
-                                            disabled={seniorSeats < 1}
-                                            >(-)</button
-                                        >
-                                        {seniorSeats} / {selectedSeats -
-                                            adultSeats -
-                                            childSeats -
-                                            studentSeats}
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(
-                                                    event,
-                                                    "Seniors"
-                                                );
-                                            }}
-                                            disabled={adultSeats +
-                                                childSeats +
-                                                seniorSeats +
-                                                studentSeats ===
-                                                selectedSeats}>(+)</button
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <div
-                                    class="grid grid-cols-2 grid-flow-row gap-6"
-                                >
-                                    <div>
-                                        Students - {seatTypeSelection === "vip"
-                                            ? priceStudent.vip
-                                            : seatTypeSelection === "normal"
-                                            ? priceStudent.normal
-                                            : priceStudent.lounge}€
-                                    </div>
-                                    <div>
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(
-                                                    event,
-                                                    "Students"
-                                                );
-                                            }}
-                                            disabled={studentSeats < 1}
-                                            >(-)</button
-                                        >
-                                        {studentSeats} / {selectedSeats -
-                                            adultSeats -
-                                            childSeats -
-                                            seniorSeats}
-                                        <button
-                                            class="disabled:opacity-50 disabled:text-gray-200"
-                                            on:click={(event) => {
-                                                onTicketChange(
-                                                    event,
-                                                    "Students"
-                                                );
-                                            }}
-                                            disabled={adultSeats +
-                                                childSeats +
-                                                seniorSeats +
-                                                studentSeats ===
-                                                selectedSeats}>(+)</button
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="relative text-center object-center">
-                                <p class="my-5">
-                                    Price: {totalPrice}€
-                                </p>
-
-                                <button
-                                    disabled={selectedSeats === 0 ||
-                                        adultSeats +
-                                            childSeats +
-                                            seniorSeats +
-                                            studentSeats !==
-                                            selectedSeats}
-                                    class="bg-buttonBlue text-textWhite rounded-md disabled:hover:bg-red-500 hover:bg-green-500 duration-300 px-3 py-1.5 mb-2"
-                                    on:click={goToReview}
-                                    >Continue
-                                </button>
-                            </div>
-                        </div>
+                        {/each}
                     </div>
                 {/key}
-            </div>
-        </div>
-        <div>
-            <div class="bg-[#29313a] rounded-lg">
-                <div class="mt-2">
-                    <p class="text-xl text-textWhite ml-2">Prices</p>
-                </div>
-                <div class="">
-                    <div class="flex">
-                        <div class="text-textWhite ml-5 mt-10 text-lg">
-                            <p class="my-1">
-                                Purple: {priceStudent.vip}€ - {priceAdult.vip}€
-                            </p>
-                            <p class="my-1">
-                                Orange: {priceStudent.lounge}€ - {priceAdult.lounge}€
-                            </p>
-                            <p class="my-1">
-                                Blue: {priceStudent.normal}€ - {priceAdult.normal}€
-                            </p>
-                            <p class="mt-10">Green: Your selection</p>
-                            <p class="my-1">Red: Blocked</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

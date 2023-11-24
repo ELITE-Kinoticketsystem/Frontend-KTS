@@ -21,7 +21,7 @@
             viewBox="0 0 40 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            class="w-10 h-10"
+            class="h-max w-max"
         >
             <path
                 d="M0 26C0 20.4772 4.47715 16 10 16H30C35.5228 16 40 20.4772 40 26V40H0V26Z"
@@ -41,6 +41,7 @@
             viewBox="0 0 95 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            class="h-max w-max"
         >
             <path
                 d="M0 26C0 20.4772 4.47715 16 10 16H85C90.5228 16 95 20.4772 95 26V40H0V26Z"
