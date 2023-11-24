@@ -4,6 +4,7 @@
   import DropDownMenu from "../../../_ui/templates/dropDownMenu.svelte";
   import MovieRow from "../../../_ui/templates/movieRow.svelte";
     import MainCard from "../../../_ui/templates/mainCard.svelte";
+    import Searchbar from "../../../_ui/templates/searchbar.svelte";
   export let data;
   let regions: string[] = [
     "Rheinlandpfalz",
@@ -84,7 +85,9 @@
         </div>
 
         <div class="flex basis-1/2">
-          <div class="ml-auto">
+          <Searchbar></Searchbar>
+           <!--<div class="ml-auto">
+           
             <div class="relative">
               <div
                 class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
@@ -119,6 +122,7 @@
               />
             </div>
           </div>
+          -->
         </div>
       </div>
       <div class="">
