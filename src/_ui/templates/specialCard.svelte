@@ -3,10 +3,8 @@
     import { onMount } from "svelte";
     import CinemaTile from "./cinemaTile.svelte";
 
-    export let movieId: string = "";
-
     let isLoaded = false;
-    let movie: {
+    export let movie: {
         src: "";
         movieName: "";
         movieId: "";
@@ -14,6 +12,7 @@
         description: "";
         fsk: "";
     };
+    /*
     onMount(async () => {
         const promise = await new Promise((resolve) => {
             MovieService.getMovieFromId(movieId).then((movieFromId) => {
@@ -32,7 +31,7 @@
             };
             isLoaded = true;
         });
-    });
+    });*/
 </script>
 
 {#if isLoaded}

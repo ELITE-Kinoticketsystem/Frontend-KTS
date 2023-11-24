@@ -15,7 +15,7 @@
         });
     }
 
-    export let imagesToCycle: {
+    export let moviesToDisplay: {
         src: string;
         movieName: string;
         movieId: string;
@@ -52,13 +52,13 @@
     <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
         <div style="position: relative " class="mx-10">
             <SplideTrack class="rounded-xl">
-                {#each imagesToCycle as image}
+                {#each moviesToDisplay as movie}
                     <SplideSlide>
-                        <a href="/movies/{image.movieId}">
+                        <a href="/movies/{movie.movieId}">
                             <img
                                 class="w-full h-72 object-cover"
-                                src={image.src}
-                                alt={image.movieName}
+                                src={movie.src}
+                                alt={movie.movieName}
                             />
                             <div
                                 class="absolute bottom-0 left-0 w-full h-full bg-black opacity-0 hover:opacity-75 transition-opacity duration-300"
@@ -66,28 +66,28 @@
                                 <p
                                     class="text-textWhite text-center text-lg font-bold p-4"
                                 >
-                                    {image.movieName}
+                                    {movie.movieName}
                                 </p>
                                 <hr
                                     class="w-72 h-1 mx-auto bg-textWhite border-0 rounded"
                                 />
                                 <p class="text-textWhite text-left p-4 ml-40">
-                                    <a href="/movies?age={image.fsk}"
-                                        >From age <b>{image.fsk}</b></a
+                                    <a href="/movies?age={movie.fsk}"
+                                        >From age <b>{movie.fsk}</b></a
                                     >
                                 </p>
                                 <p class="text-textWhite text-left p-4 ml-40">
-                                    {#each image.tags as tag, index}
+                                    {#each movie.tags as tag, index}
                                         <a href="/movies?tags={tag}"
                                             >#{tag}{index ===
-                                            image.tags.length - 1
+                                            movie.tags.length - 1
                                                 ? ""
                                                 : ", "}&nbsp;</a
                                         >
                                     {/each}
                                 </p>
                                 <p class="text-textWhite text-left p-4 mx-40">
-                                    {image.movieDescription}
+                                    {movie.movieDescription}
                                 </p>
                             </div>
                         </a>

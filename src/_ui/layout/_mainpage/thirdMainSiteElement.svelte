@@ -5,10 +5,8 @@
 
     const isUserLoggedIn = new AuthService().isUserLoggedIn();
 
-    let specialMovies: string[] = [];
+    export let specialMovies: any;
 
-    specialMovies.push("dummy");
-    specialMovies.push("dummy");
 </script>
 
 <TextMainSite
@@ -18,9 +16,9 @@
         : "Evens in nearby cinemas"}
 />
 <div class="flex">
-    {#each specialMovies as specialMoveId}
+    {#each specialMovies as specialMovie}
         <div class="flex ml-8 mr-24">
-            <SpecialCard movieId={specialMoveId} />
+            <SpecialCard movie={specialMovie} />
         </div>
     {/each}
 </div>

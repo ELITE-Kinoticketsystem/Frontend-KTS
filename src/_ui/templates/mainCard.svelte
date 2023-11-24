@@ -14,7 +14,6 @@
 
     let isLoaded = true;
 
-   
     export let isLast = false;
 </script>
 

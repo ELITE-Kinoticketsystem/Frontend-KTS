@@ -6,22 +6,20 @@
 
     export let data;
 
-
-
-    let imagesToCycle = data.first;
+    let moviesToDisplay = data.first;
 
 </script>
 
 <main>
-    <MainRoundAbout {imagesToCycle}/>
+    <MainRoundAbout {moviesToDisplay}/>
     <br />
     <div class="mx-16 mt-10">
-        <FirstMainSiteElement />
+        <FirstMainSiteElement {moviesToDisplay} />
     </div>
     <div class="mx-16 mt-10">
-        <ThirdMainSiteElement />
+        <ThirdMainSiteElement specialMovies={moviesToDisplay} />
     </div>
     <div class="mx-16 mt-10">
-        <SecondMainSiteElement />
+        <SecondMainSiteElement {moviesToDisplay}/>
     </div>
 </main>

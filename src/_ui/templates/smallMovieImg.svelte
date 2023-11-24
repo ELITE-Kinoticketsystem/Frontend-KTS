@@ -3,4 +3,6 @@
     export let alt = "";
 </script>
 
-<img {src} {alt} class="rounded-md w-38 h-72 object-cover overflow-hidden" />
+<div class="w-38 h-72 rounded-md">
+<img {src} {alt} class="min-w-full h-auto aspect-auto overflow-hidden" />
+</div>

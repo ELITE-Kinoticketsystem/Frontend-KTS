@@ -3,6 +3,7 @@
   import { ListBox, ListBoxItem } from "@skeletonlabs/skeleton";
   import DropDownMenu from "../../../_ui/templates/dropDownMenu.svelte";
   import MovieRow from "../../../_ui/templates/movieRow.svelte";
+    import MainCard from "../../../_ui/templates/mainCard.svelte";
   export let data;
   let regions: string[] = [
     "Rheinlandpfalz",
@@ -23,19 +24,16 @@
   }
   let searchBarOpen = false;
   let isLast = "bg-gradient-to-r from-white to-black";
-  let movie = {"src": "https://www.apple.com/tv-pr/shows-and-films/s/stephen-curry-underrated/images/show-home-graphic-header/key-art-01/4x1/Apple_TV_Stephen_Curry_Underrated_key_art_graphic_header_4_1_show_home.jpg.large_2x.jpg",
+  let movie = {"src": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp2NuVXpmlEjzTKAnqGIaLyy1jIputsFujvg&usqp=CAU",
     "movieName": "Stephen Curry: Underrated",
     "movieId": "238764346238432",
-    "movieDescription": "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history. The focus is on his rise from barely mediocre college player to four-time NBA champion.",
-    "tags": [
-      "Documentary",
-      "Sports",
-      "Basketball"]};
-  let moviesToDisplay = [movie, movie, movie, movie, movie];
+    "description": "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history. The focus is on his rise from barely mediocre college player to four-time NBA champion.",
+    "tags": "funny,goodlooking,beast","fsk":"1"};
+  let moviesToDisplay = [movie, movie, movie, movie, movie, movie, movie];
 </script>
 
 <div class="">
-  <div class="flex flex-col mx-auto max-w-6xl">
+  <div class="flex flex-col mx-auto max-w-7xl">
     <div class="mx-auto">
       <iframe
         class="rounded-lg"
@@ -51,26 +49,26 @@
 
     <div class="flex flex-row w-full mx-auto">
       <div class="mx-auto basis-1/2">
-        <p>Movie Pic</p>
+        <p class="text-textWhite">Movie Pic</p>
       </div>
       <div class=" mx-auto basis-1/2">
-        <p>Movie description</p>
+        <p class="text-textWhite">Movie description</p>
       </div>
     </div>
     <div class="flex flex-col">
       <div class="">
-        <p class="mx-auto text-center text-textWhite">
+        <p class="mx-auto my-6 text-xl text-center text-textWhite">
           Please select a cinema to get the showings of the movie
         </p>
       </div>
       <div class="">
-        <p>THEATRES</p>
+        <p class="text-textWhite">THEATRES</p>
       </div>
 
       <div class="flex flex-row w-full h-fit">
         <div class="flex basis-1/2">
           <div class="flex flex-start flex-row">
-            <div class="ml-3 mr-5">
+            <div class="mr-5">
               <DropDownMenu
                 color="bg-white"
                 items={regions}
@@ -86,7 +84,7 @@
         </div>
 
         <div class="flex basis-1/2">
-          <div class="ml-auto mr-3">
+          <div class="ml-auto">
             <div class="relative">
               <div
                 class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
@@ -123,13 +121,19 @@
           </div>
         </div>
       </div>
-      <div class="mx-3">
-        <div class="my-4 mb-60">
-          <MovieRow {moviesToDisplay} />
+      <div class="">
+        <div class="my-4 mb-40 ">
+          <div class="flex flex-row flex-wrap">
+            {#each moviesToDisplay as movie}
+              <div class="flex flex-none mr-11">
+                <MainCard {movie} />
+              </div>
+              
+            {/each}
+          </div>
+
         </div>
-        <div class="my-4">
-          <MovieRow {moviesToDisplay} />
-        </div>
+  
       </div>
     </div>
   </div>

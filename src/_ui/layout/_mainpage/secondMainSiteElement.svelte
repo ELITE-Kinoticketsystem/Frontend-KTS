@@ -6,17 +6,12 @@
     const authService = new AuthService();
     const isUserLoggedIn = authService.isUserLoggedIn();
 
-    let movieIdsToDisplay: string[] = [];
+    export let moviesToDisplay: any;
 
-    movieIdsToDisplay.push("dummy");
-    movieIdsToDisplay.push("dummy");
-    movieIdsToDisplay.push("dummy");
-    movieIdsToDisplay.push("dummy");
-    movieIdsToDisplay.push("dummy");
 </script>
 
 <TextMainSite
     href={isUserLoggedIn ? "/yoursuggestions" : "/upcomingmovies"}
     text={isUserLoggedIn ? "Your suggestions " : "Upcoming movies "}
 />
-<MovieRow {movieIdsToDisplay} />
+<MovieRow {moviesToDisplay} />
