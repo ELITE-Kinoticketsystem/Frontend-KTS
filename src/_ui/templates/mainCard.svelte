@@ -3,28 +3,20 @@
     import { MovieService } from "$lib/_services/movieService";
     import SmallMovieImg from "./smallMovieImg.svelte";
 
-    export let movie: {
-        src: string;
-        movieName: string;
-        movieId: string;
-        tags: string;
-        description: string;
-        fsk: string;
-    };
+    export let movie: any;
 
     let isLoaded = true;
 
-    export let isLast = false;
 </script>
 
 {#if isLoaded}
     <div class="grid grid-cols-1 grid-rows-2 w-48 h-21rem overflow-hidden">
         <a class="grid " href="/movies/{movie.movieId}">
-            <div class="">
+            <div class="grid mb-5">
                 <SmallMovieImg src={movie.src} alt={movie.movieName} />
             </div>
             <div class="grid">
-            <p class="font-bold text-textWhite break-words text-center">
+            <p class="font-bold text-md text-textWhite break-words text-center">
                 {movie.movieName}
             </p>
             </div>

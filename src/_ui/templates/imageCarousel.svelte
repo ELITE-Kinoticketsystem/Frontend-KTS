@@ -1,7 +1,7 @@
 <script lang="ts">
     export let srcs: Array<string> = [];
     let currentImg = 0;
-
+    
     function increaseIndex(){ currentImg = (currentImg + 1) % srcs.length; }
     function decreaseIndex(){ --currentImg; if(currentImg < 0) {currentImg = srcs.length - 1; }
     }

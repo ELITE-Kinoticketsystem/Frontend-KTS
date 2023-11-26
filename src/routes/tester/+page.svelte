@@ -1,9 +1,13 @@
 <script>
-    import Cinemahall from "../../_ui/templates/cinemahall.svelte";
+
+    import RatingLabel from "../../_ui/templates/ratingLabel.svelte";
 
 
 </script>
 
 <div class="w-XXXL h-80 bg-red-500">
-<Cinemahall />
+    <div class="mx-auto ">
+        <RatingLabel/>
+    </div>
+    
 </div>

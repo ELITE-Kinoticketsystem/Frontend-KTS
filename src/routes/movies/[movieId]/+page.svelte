@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import DropDownMenu from "../../../_ui/templates/dropDownMenu.svelte";
+  import RatingLabel from "../../../_ui/templates/ratingLabel.svelte";
   import Searchbar from "../../../_ui/templates/searchbar.svelte";
   import TheatreCard from "../../../_ui/templates/theatreCard.svelte";
 
@@ -17,7 +18,7 @@
   const maxNrOfTheatresToDisplay = 12;
 
   movie = {
-    src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp2NuVXpmlEjzTKAnqGIaLyy1jIputsFujvg&usqp=CAU",
+    src: "https://resizing.flixster.com/P5ZdS6yYcgAsXniyJV6xMfCP1CM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzhmMGUwMzg0LTg4OWYtNDNlNy05OWExLTBhNTMwZTJiMTBmZC5wbmc=",
     movieName: "Stephen Curry Underrated",
     movieId: "1",
     description:
@@ -25,13 +26,24 @@
     tags: "funny,goodlooking,beast",
     fsk: "1",
   };
-  let theatre = {"name": "Cineplex", 
-  "logo": "https://shop.cineplex.de/media/catalog/product/cache/image/700x560/e9c3970ab036de70892d86c6d221abfe/3/6/3650_1000x700_1.jpg"};
-  theatres=[theatre,theatre,theatre,theatre,theatre,theatre,theatre, theatre] 
+  let theatre = {
+    name: "Cineplex",
+    logo: "https://shop.cineplex.de/media/catalog/product/cache/image/700x560/e9c3970ab036de70892d86c6d221abfe/3/6/3650_1000x700_1.jpg",
+  };
+  theatres = [
+    theatre,
+    theatre,
+    theatre,
+    theatre,
+    theatre,
+    theatre,
+    theatre,
+    theatre,
+  ];
 </script>
 
 <div class="">
-  <div class="flex flex-col mx-auto max-w-6xl ">
+  <div class="flex flex-col mx-auto max-w-6xl">
     <div class="mx-auto">
       <iframe
         class="rounded-lg"
@@ -49,16 +61,31 @@
       <div class="ml-5 basis-1/3">
         <img class="" src={movie.src} alt="Movie" />
       </div>
-      <div class="mx-auto basis-2/3">
-        <div class="mb-6">
-          <h2 class="text-center break-words text-textWhite text-5xl">{movie.movieName}</h2>
+      <div class="basis-2/3 flex flex-col justify-between mx-auto pl-24">
+        <div class=" mb-6">
+          <h2 class="text-center break-words text-textWhite text-6xl">
+            {movie.movieName}
+          </h2>
         </div>
-        <p class="text-textWhite text-center">{movie.description}</p>
+        <div class="flex mx-auto">
+          <div class="flex flex-col">
+            <div class="mx-auto ">
+              <RatingLabel rating={movie.rating} />
+            </div>
+            <div class="">
+              <p class="text-textWhite text-center text-xl">
+                {movie.description}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="flex flex-col">
       <div class="">
-        <p class="mx-auto mt-12 mb-10 text-xl text-center text-textWhite">
+        <p
+          class="mx-auto mt-12 mb-10 text-xl text-center text-textWhite dark:text-gra"
+        >
           Please select a cinema to get the showings of the movie
         </p>
       </div>
@@ -91,10 +118,10 @@
       </div>
       <div class="">
         <div class="my-4 mb-40">
-          <div class="flex flex-row flex-wrap gap-x-2rem gap-y-1 ">
+          <div class="flex flex-row flex-wrap gap-x-2rem gap-y-1">
             {#each theatres.slice(0, maxNrOfTheatresToDisplay) as theatre}
-              <div class="flex flex-none ">
-                <TheatreCard {theatre}/>
+              <div class="flex flex-none">
+                <TheatreCard {theatre} />
               </div>
             {/each}
           </div>

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: ['./src/**/*.{html,js,svelte,ts}', './node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'],
   theme: {
     extend: {
       height: {
@@ -31,11 +31,13 @@ export default {
         buttonBlue: '#89a3be',
         inputBlue: '#89a3be',
         tileBlue: '#2A313A',
+        brightTextGray: '#444444'
       }
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('flowbite/plugin')
   ],
 }
 

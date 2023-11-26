@@ -15,14 +15,7 @@
         });
     }
 
-    export let moviesToDisplay: {
-        src: string;
-        movieName: string;
-        movieId: string;
-        tags: string;
-        movieDescription: string;
-        fsk: string;
-    }[] = [];
+    export let moviesToDisplay: any = [];
 
     //let isLoaded = false;
 
