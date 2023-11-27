@@ -9,10 +9,15 @@
     export let moviesToDisplay: any;
 </script>
 
-<TextMainSite
-    href={isUserLoggedIn ? "/yoursuggestions" : "/upcomingmovies"}
-    text={isUserLoggedIn ? "Your suggestions " : "Upcoming movies "}
-/>
-<div class="ml-10">
-    <MovieRow {moviesToDisplay} />
+<div class="flex flex-col">
+    <div class="flex">
+        <TextMainSite
+            href={isUserLoggedIn ? "/yoursuggestions" : "/upcomingmovies"}
+            text={isUserLoggedIn ? "Your suggestions " : "Upcoming movies "}
+        />
+    </div>
+
+    <div class="">
+        <MovieRow {moviesToDisplay} />
+    </div>
 </div>

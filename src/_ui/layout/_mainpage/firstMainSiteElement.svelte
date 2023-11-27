@@ -10,10 +10,15 @@
     export let moviesToDisplay: any;
 </script>
 
-<TextMainSite
-    href={isUserLoggedIn ? "/yourwatchlist" : "/likedbyother"}
-    text={isUserLoggedIn ? "Your watchlist" : "Liked by others"}
-/>
-<div class="ml-10">
-    <MovieRow {moviesToDisplay} />
+<div class="flex flex-col overflow-y-hidden">
+    <div class="flex">
+        <TextMainSite
+            href={isUserLoggedIn ? "/yourwatchlist" : "/likedbyother"}
+            text={isUserLoggedIn ? "Your watchlist" : "Liked by others"}
+        />
+    </div>
+
+    <div class="flex">
+        <MovieRow {moviesToDisplay} />
+    </div>
 </div>

@@ -2,22 +2,22 @@
     import MovieRow from "../../../_ui/templates/movieRow.svelte";
     import MainRoundAbout from "../../../_ui/layout/mainRoundAbout.svelte";
     import ImageCarousel from "../../../_ui/templates/imageCarousel.svelte";
+    import TextMainSite from "../../../_ui/templates/textMainSite.svelte";
 
     const maxNrOfAwards = 8;
 
     export let data;
-    
-    const actorData = data.actorData[0];
 
+    const actorData = data.actorData[0];
+    const hisMovies = data.hisMovies;
 </script>
 
 <div class="max-w-6xl mt-3 mx-auto">
     <div class="flex flex-col overflow-hidden">
         <div class="flex-start">
             <div class="flex flex-row mb-8 overflow-hidden">
-                <!--<div class="flex-start basis-1/2 mx-auto"> <MainRoundAbout moviesToDisplay={hisMovies} /></div>-->
                 <div class="basis-1/3">
-                    <ImageCarousel srcs={actorData.imgSrcs}/>
+                    <ImageCarousel srcs={actorData.imgSrcs} />
                 </div>
                 <div class="flex-end basis-2/3 my-auto">
                     <div class=" flex flex-col">
@@ -38,7 +38,7 @@
                                 <div class="flex flex-col">
                                     {#each actorData.awards.slice(0, maxNrOfAwards) as award}
                                         <p
-                                            class=" text-base text-center text-textWhite mx-auto"
+                                            class="text-base text-center text-textWhite mx-auto"
                                         >
                                             {award.count}x {award.name}
                                         </p>
@@ -53,9 +53,13 @@
                 </div>
             </div>
         </div>
-        <div class="flex-end">
-            <p class="text-textWhite mb-4 text-2xl">Movies with him</p>
-            <MovieRow moviesToDisplay={actorData.hisMovies} />
-        </div>
+        {#if true}
+            <div class="flex-end">
+                <p class="text-textWhite mb-4 text-2xl sm:text-md">
+                    Movies with <strong>{actorData.name}</strong>
+                </p>
+                <MovieRow moviesToDisplay={hisMovies} />
+            </div>
+        {/if}
     </div>
 </div>

@@ -3,7 +3,7 @@
     export let href: string;
 </script>
 
-<div class="mb-8">
+<div class="mb-4">
     <div class="flex">
         <a {href} class="font-bold text-textWhite flex">
             <p class="gradient flex font-bold text-md">Cinemika&nbsp;</p>

@@ -7,6 +7,8 @@
     export let items = ["Item 1", "Item 2"];
     export let color = "bg-white";
     export let hoverColor = "hover:bg-slate-300";
+    export let func: any;
+    export let paramForFunc: any;//Workaround currently only one param is allowed, works for now.
 </script>
 
 <div class="flex-col min-w-fit">
@@ -14,6 +16,7 @@
         class="flex-start relative rounded-t-md w-56 h-2.4rem {color} {hoverColor} ring-1 ring-inset ring-slate-300"
         on:click={() => {
             isOpen = !isOpen;
+            func(paramForFunc);
         }}
     >
         <div class="flex flex-row mx-2">
@@ -66,6 +69,7 @@
                     on:click={() => {
                         selectedItem = item;
                         isOpen = !isOpen;
+                        func(paramForFunc);
                     }}
                 >
                     <div class="mx-1">
