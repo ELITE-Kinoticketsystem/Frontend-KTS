@@ -10,7 +10,7 @@
 
 <div class="relative">
     <div class="overflow-hidden w-96 h-36rem">
-        <img src={srcs[currentImg]} alt="Imajge" class="w-full h-full object-cover mx-auto" />
+        <img src={srcs[currentImg]} alt="carousel" class="w-full h-full object-cover mx-auto" />
     </div>
     <button class="absolute  left-0 top-1/2 -translate-y-1/2 rounded-full p-2 ml-1
                    opacity-60 bg-white text-center hover:bg-slate-300" 

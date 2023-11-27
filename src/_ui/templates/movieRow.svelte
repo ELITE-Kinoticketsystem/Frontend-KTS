@@ -6,10 +6,7 @@
 <div class="flex overflow-hidden">
     {#each moviesToDisplay as movie, index}
         <div class="mr-16">
-            <MainCard
-                {movie}
-                isLast={index === moviesToDisplay.length - 1}
-            />
+            <MainCard {movie} />
         </div>
     {/each}
 </div>

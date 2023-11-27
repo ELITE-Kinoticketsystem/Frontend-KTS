@@ -1,22 +1,25 @@
 <script lang="ts">
     import MovieRow from "../../../_ui/templates/movieRow.svelte";
     import MainRoundAbout from "../../../_ui/layout/mainRoundAbout.svelte";
+    import ImageCarousel from "../../../_ui/templates/imageCarousel.svelte";
 
     const maxNrOfAwards = 8;
 
     export let data;
-    console.log(data.actorData)
     
     const actorData = data.actorData[0];
-    const hisMovies = data.hisMovies;
+
 </script>
 
 <div class="max-w-6xl mt-3 mx-auto">
     <div class="flex flex-col overflow-hidden">
         <div class="flex-start">
             <div class="flex flex-row mb-8 overflow-hidden">
-                <div class="flex-start basis-1/2 mx-auto"> <MainRoundAbout moviesToDisplay={hisMovies} /></div>
-                <div class="flex-end basis-1/2 my-auto">
+                <!--<div class="flex-start basis-1/2 mx-auto"> <MainRoundAbout moviesToDisplay={hisMovies} /></div>-->
+                <div class="basis-1/3">
+                    <ImageCarousel srcs={actorData.imgSrcs}/>
+                </div>
+                <div class="flex-end basis-2/3 my-auto">
                     <div class=" flex flex-col">
                         <div>
                             <h1
@@ -52,8 +55,7 @@
         </div>
         <div class="flex-end">
             <p class="text-textWhite mb-4 text-2xl">Movies with him</p>
-
-            <MovieRow moviesToDisplay={hisMovies} />
+            <MovieRow moviesToDisplay={actorData.hisMovies} />
         </div>
     </div>
 </div>

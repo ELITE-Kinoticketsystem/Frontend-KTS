@@ -33,10 +33,7 @@
                 colorForSvg2 = "green-500";
                 colorForSvg3 = "green-500";
             }
-            console.log(value);
-            console.log(colorForSvg1);
-            console.log(colorForSvg2);
-            console.log(colorForSvg3);
+
         });
     });
 </script>
