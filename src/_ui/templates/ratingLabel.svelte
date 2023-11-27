@@ -1,8 +1,7 @@
 <script lang="ts">
     export let rating = 0.0; //out of 5 rating
     export const bgColor = "backgroundBlue";
-    import { Rating } from "/Users/I573040/Frontend-KTS/node_modules/flowbite-svelte";
-
+    import { Rating } from "flowbite-svelte";
 </script>
 
 <div class="bg-{bgColor} w-fit h-fit pr-3 flex flex-row">
@@ -14,7 +13,7 @@
     </div>
     <div class="flex">
         <p
-            class="mx-auto my-auto  text-sm font-medium text-textWhite dark:text-brightTextGray"
+            class="mx-auto my-auto text-sm font-medium text-textWhite dark:text-brightTextGray"
         >
             {rating} out of 5
         </p>
