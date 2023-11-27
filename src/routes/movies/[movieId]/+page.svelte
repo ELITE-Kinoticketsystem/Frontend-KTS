@@ -22,9 +22,14 @@
     movieName: "Stephen Curry Underrated",
     movieId: "1",
     description:
-      "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history. The focus is on his rise from barely mediocre college player to four-time NBA champion.",
+      "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history.\
+       The focus is on his rise from barely mediocre college player to four-time NBA champion. \
+       Today he is widely considered to be the greatest shooter to ever play the game of basketball \
+       and this documentary shows what it took to get to that point. He is also the father to three children \
+       and husband to his wife Ayesha Curry who likes to cook food for a living.",
     tags: "funny,goodlooking,beast",
     fsk: "1",
+    rating: 4.9,
   };
   let theatre = {
     name: "Cineplex",
@@ -46,9 +51,7 @@
   <div class="flex flex-col mx-auto max-w-6xl">
     <div class="mx-auto">
       <iframe
-        class="rounded-lg"
-        width="560"
-        height="315"
+        class="rounded-lg w-65rem h-26rem"
         src="https://www.youtube.com/embed/NHhTMh0nURA?si=bxOxwt_o6PWZ-5Nb"
         title="YouTube video player"
         frameborder="0"
@@ -59,23 +62,32 @@
 
     <div class="flex flex-row w-full mx-auto mt-16">
       <div class="ml-5 basis-1/3">
-        <img class="" src={movie.src} alt="Movie" />
+        <img
+          class="min-w-full h-auto aspect-auto overflow-hidden"
+          src={movie.src}
+          alt="Movie"
+        />
       </div>
-      <div class="basis-2/3 flex flex-col justify-between mx-auto pl-24">
+      <div class="basis-2/3 flex flex-col justify-evenly mx-auto pl-24">
         <div class=" mb-6">
-          <h2 class="text-center break-words text-textWhite text-6xl">
+          <h2 class="text-center break-words mb-4 text-textWhite text-6xl">
             {movie.movieName}
           </h2>
         </div>
         <div class="flex mx-auto">
           <div class="flex flex-col">
-            <div class="mx-auto ">
-              <RatingLabel rating={movie.rating} />
-            </div>
-            <div class="">
-              <p class="text-textWhite text-center text-xl">
+            <div class="flex flex-col">
+              <p
+                class="text-left break-words text-xl font-bold mb-4 text-textWhite"
+              >
+                Description:
+              </p>
+              <p class="flex text-textWhite text-center text-xl">
                 {movie.description}
               </p>
+            </div>
+            <div class="mx-auto mt-5">
+              <RatingLabel rating={movie.rating} />
             </div>
           </div>
         </div>
@@ -84,7 +96,7 @@
     <div class="flex flex-col">
       <div class="">
         <p
-          class="mx-auto mt-12 mb-10 text-xl text-center text-textWhite dark:text-gra"
+          class="mx-auto mt-16 mb-10 text-2xl text-center text-textWhite dark:text-gra"
         >
           Please select a cinema to get the showings of the movie
         </p>
@@ -99,14 +111,18 @@
           <div class="flex flex-start flex-row">
             <div class="mr-5">
               <DropDownMenu
-                color="bg-white"
+                color="bg-buttonBlue"
                 items={regions}
                 type={frstDropDownItemType}
               />
             </div>
             <div class="">
               <div class="flex">
-                <DropDownMenu items={types} type={sndDropDownItemType} />
+                <DropDownMenu
+                  color="bg-buttonBlue"
+                  items={types}
+                  type={sndDropDownItemType}
+                />
               </div>
             </div>
           </div>

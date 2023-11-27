@@ -5,7 +5,7 @@
 
 </script>
 
-<div class="w-XXXL h-80 bg-red-500">
+<div class="w-50rem h-80 bg-red-500">
     <div class="mx-auto ">
         <RatingLabel/>
     </div>
