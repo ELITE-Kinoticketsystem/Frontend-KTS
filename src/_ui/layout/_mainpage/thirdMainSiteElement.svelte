@@ -6,7 +6,6 @@
     const isUserLoggedIn = new AuthService().isUserLoggedIn();
 
     export let specialMovies: any;
-
 </script>
 
 <TextMainSite
@@ -17,7 +16,7 @@
 />
 <div class="flex">
     {#each specialMovies as specialMovie}
-        <div class="flex ml-8 mr-24">
+        <div class="flex">
             <SpecialCard movie={specialMovie} />
         </div>
     {/each}

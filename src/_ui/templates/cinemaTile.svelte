@@ -6,7 +6,7 @@
 </script>
 
 <div
-    class="flex min-h-full flex-col rounded-xl mx-auto w-full max-w-2xl justify-center bg-[#2A313A]"
+    class="flex min-h-full flex-col rounded-xl mx-auto w-full max-w-2xl justify-center bg-[#2A313A] opacity-80"
 >
     <div class="mx-10">
         <img

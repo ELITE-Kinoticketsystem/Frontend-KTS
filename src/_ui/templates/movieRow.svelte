@@ -3,7 +3,7 @@
     export let moviesToDisplay: any;
 </script>
 
-<div class="flex overflow-hidden">
+<div class="flex overflow-y-scroll">
     {#each moviesToDisplay as movie, index}
         <div class="mr-16">
             <MainCard {movie} />

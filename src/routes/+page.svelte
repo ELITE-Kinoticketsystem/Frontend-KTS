@@ -7,19 +7,18 @@
     export let data;
 
     let moviesToDisplay = data.first;
-
 </script>
 
 <main>
-    <MainRoundAbout {moviesToDisplay}/>
+    <MainRoundAbout {moviesToDisplay} />
     <br />
-    <div class="mx-16 mt-10">
+    <div class="mx-16 mt-3">
         <FirstMainSiteElement {moviesToDisplay} />
     </div>
     <div class="mx-16 mt-10">
         <ThirdMainSiteElement specialMovies={moviesToDisplay} />
     </div>
     <div class="mx-16 mt-10">
-        <SecondMainSiteElement {moviesToDisplay}/>
+        <SecondMainSiteElement {moviesToDisplay} />
     </div>
 </main>

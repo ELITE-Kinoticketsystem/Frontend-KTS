@@ -8,11 +8,12 @@
     const isUserLoggedIn = authService.isUserLoggedIn();
 
     export let moviesToDisplay: any;
-
 </script>
 
 <TextMainSite
     href={isUserLoggedIn ? "/yourwatchlist" : "/likedbyother"}
     text={isUserLoggedIn ? "Your watchlist" : "Liked by others"}
 />
-<MovieRow {moviesToDisplay} />
+<div class="ml-10">
+    <MovieRow {moviesToDisplay} />
+</div>

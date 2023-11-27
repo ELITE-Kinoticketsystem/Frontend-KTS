@@ -1,0 +1,43 @@
+{
+    "consoleLog": {
+        "scope": "",
+        "prefix": "l",
+        "body": [
+            "console.log('$1');"
+        ],
+        "description": "Log output to console"
+    },
+    "div": {
+        "scope": "",
+        "prefix": "d",
+        "body": [
+            "<div class=\"$1\">\n$2\n</div>"
+        ],
+        "description": "div with class"
+    },
+    "svelteSetup": {
+        "scope": "",
+        "prefix": "sd",
+        "body": [
+            "<script lang=\"ts\">\n\t$1\n</script>\n\n\n<div class=\"\">\n\n</div>",
+            "$2"
+        ],
+        "description": "script and div tag"
+    },
+    "export let": {
+        "scope": "",
+        "prefix": "el",
+        "body": [
+            "export let $1"
+        ],
+        "description": ""
+    },
+    "export const": {
+        "scope": "",
+        "prefix": "ec",
+        "body": [
+            "export const $1"
+        ],
+        "description": ""
+    }
+}
