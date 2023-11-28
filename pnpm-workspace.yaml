@@ -1,4 +1,4 @@
 packages:
   # include src and static directories
-  - 'src/**'
-  - 'static/**'
+  - "src/**"
+  - "static/**"

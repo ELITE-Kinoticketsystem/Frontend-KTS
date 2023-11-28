@@ -22,11 +22,7 @@
         <SplideTrack class="rounded-lg">
           {#each srcs as src}
             <SplideSlide>
-              <img
-                class="w-full h-full object-cover "
-                {src}
-                alt="Actor"
-              />
+              <img class="w-full h-full object-cover" {src} alt="Actor" />
             </SplideSlide>
           {/each}
         </SplideTrack>

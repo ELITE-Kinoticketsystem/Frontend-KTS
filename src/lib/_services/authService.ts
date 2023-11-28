@@ -6,7 +6,7 @@ export class AuthService {
   constructor() {
     // Check if user is already logged in
     if (browser) {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token) {
         this.isLoggedIn = true;
       }
@@ -18,15 +18,21 @@ export class AuthService {
     // ...
     // Set isLoggedIn to true if login was successful
     if (browser) {
-      localStorage.setItem('token', 'your_token_here');
+      localStorage.setItem("token", "your_token_here");
     } else this.isLoggedIn = false;
     this.isLoggedIn = true;
     return true; //TODO return if login was successful
   }
 
-  public register(username: string, email: string, profilPicture?: string, password?: string, repeatPassword?: string): boolean {
+  public register(
+    username: string,
+    email: string,
+    profilPicture?: string,
+    password?: string,
+    repeatPassword?: string
+  ): boolean {
     // Perform register logic here
-    // ... 
+    // ...
     // Set isLoggedIn to true if register was successful
     this.isLoggedIn = true;
     return true; //Todo return if register was successful

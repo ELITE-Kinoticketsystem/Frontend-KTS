@@ -1,5 +1,1 @@
-export class SeatService {
-
-
-
-}
+export class SeatService {}

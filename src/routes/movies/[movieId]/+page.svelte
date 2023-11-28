@@ -10,24 +10,33 @@
   let movie: any = data.movie;
   let theatres: any = data.theatres;
 
-  const regions: string[] = ["Rheinlandpfalz", "Baden-Württemberg", "Berlin", "Sachsen"];
+  const regions: string[] = [
+    "Rheinlandpfalz",
+    "Baden-Württemberg",
+    "Berlin",
+    "Sachsen",
+  ];
   const types: string[] = ["2D", "3D", "4D", "5D"];
 
   const frstDropDownItemType = "Region";
   const sndDropDownItemType = "Typ";
   const maxNrOfTheatresToDisplay = 12;
 
-  function filterRegion(regionToFilterFor: string){
+  function filterRegion(regionToFilterFor: string) {
     let filteredTheatres = [];
-    for(let i = 0; i < theatres.length; ++i){
-      if(theatres[i].region === regionToFilterFor){ filteredTheatres.push(theatres[i]); }
+    for (let i = 0; i < theatres.length; ++i) {
+      if (theatres[i].region === regionToFilterFor) {
+        filteredTheatres.push(theatres[i]);
+      }
     }
     theatres = filteredTheatres;
   }
-  function filterType(typeToFilterFor: string){
+  function filterType(typeToFilterFor: string) {
     let filteredTheatres = [];
-    for(let i = 0; i < theatres.length; ++i){
-      if(theatres[i].supportedTypes.includes(typeToFilterFor)){ filteredTheatres.push(theatres[i]); }
+    for (let i = 0; i < theatres.length; ++i) {
+      if (theatres[i].supportedTypes.includes(typeToFilterFor)) {
+        filteredTheatres.push(theatres[i]);
+      }
     }
     theatres = filteredTheatres;
   }
@@ -50,7 +59,7 @@
     name: "Cineplex",
     logo: "https://shop.cineplex.de/media/catalog/product/cache/image/700x560/e9c3970ab036de70892d86c6d221abfe/3/6/3650_1000x700_1.jpg",
     region: "Rheinlandpfalz",
-    supportedTypes: ["2D", "3D"]
+    supportedTypes: ["2D", "3D"],
   };
   theatres = [
     theatre,
