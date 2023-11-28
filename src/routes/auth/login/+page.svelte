@@ -31,7 +31,7 @@
     const userIsLoggedIn = await authService.login(email, password);
     if (userIsLoggedIn) {
       if (browser) {
-        window.location.href = "/?login=true";
+        window.location.href = "/?ls=1";
       }
     } else {
       const errorMsg = document.getElementById("erroMsg")!;

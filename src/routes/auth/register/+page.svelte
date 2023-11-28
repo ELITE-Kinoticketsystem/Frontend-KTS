@@ -6,7 +6,7 @@
   const authService = new AuthService();
 
   if (browser && authService.isUserLoggedIn()) {
-    window.location.href = "/?s=1";
+    window.location.href = "/?rs=0";
   }
 
   $: firstname = "";
@@ -23,16 +23,20 @@
     const submitButton = document.getElementById("submitButton")!;
     submitButton.disabled = !(
       email.length > 0 &&
+      firstname.length > 0 &&
+      lastname.length > 0 &&
+      username.length > 0 &&
       email.match(
         /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
       ) &&
-      password.length > 0
+      password.length > 0 &&
+      password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
     );
   };
 
   function register() {
     if (AuthService.register(firstname, lastname, username, email, password)) {
-      window.location.href = "/?s=2";
+      window.location.href = "/?rs=1";
     } else {
       Swal.fire({
         title: "Error",
