@@ -6,7 +6,7 @@
   const authService = new AuthService();
 
   if (browser && authService.isUserLoggedIn()) {
-    window.location.href = "/?rs=0";
+    window.location.href = "/?registerStatus=alreadyLoggedIn";
   }
 
   $: firstname = "";
@@ -36,7 +36,7 @@
 
   function register() {
     if (AuthService.register(firstname, lastname, username, email, password)) {
-      window.location.href = "/?rs=1";
+      window.location.href = "/?registerStatus=accountCreated";
     } else {
       Swal.fire({
         title: "Error",

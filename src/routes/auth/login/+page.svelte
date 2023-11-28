@@ -6,7 +6,7 @@
   const isUserLoggedIn = authService.isUserLoggedIn();
 
   if (isUserLoggedIn) {
-    window.location.href = "/?alreadyLoggedIn=true";
+    window.location.href = "/?loginStatus=alreadyLoggedIn";
   }
 
   $: email = "";
@@ -31,7 +31,7 @@
     const userIsLoggedIn = await authService.login(email, password);
     if (userIsLoggedIn) {
       if (browser) {
-        window.location.href = "/?ls=1";
+        window.location.href = "/?loginStatus=successfullLogin";
       }
     } else {
       const errorMsg = document.getElementById("erroMsg")!;

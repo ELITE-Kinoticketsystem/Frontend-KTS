@@ -1,5 +1,6 @@
 <script>
     import { page } from "$app/stores";
+    import { browser } from "$app/environment";
     import MainRoundAbout from "../_ui/layout/mainRoundAbout.svelte";
     import FirstMainSiteElement from "../_ui/layout/_mainpage/firstMainSiteElement.svelte";
     import SecondMainSiteElement from "../_ui/layout/_mainpage/secondMainSiteElement.svelte";
@@ -12,10 +13,13 @@
 
     const url = $page.url;
 
-    const registerStatus = url.searchParams.get("rs");
-    const loginStatus = url.searchParams.get("ls");
+    const registerStatus = url.searchParams.get("registerStatus");
+    const loginStatus = url.searchParams.get("loginStatus");
 
-    if (registerStatus === "0" || loginStatus === "0") {
+    if (
+        registerStatus === "alreadyLoggedIn" ||
+        loginStatus === "alreadyLoggedIn"
+    ) {
         Swal.fire({
             position: "top-end",
             icon: "info",
@@ -23,7 +27,7 @@
             showConfirmButton: false,
             timer: 1500,
         });
-    } else if (registerStatus === "1") {
+    } else if (registerStatus === "accountCreated") {
         Swal.fire({
             position: "top-end",
             icon: "success",
@@ -33,7 +37,7 @@
         });
     }
 
-    if (loginStatus == "1") {
+    if (loginStatus == "successfullLogin") {
         Swal.fire({
             position: "top-end",
             icon: "success",
@@ -44,20 +48,18 @@
     }
 </script>
 
-<main>
-    <div class="flex flex-col">
-        <div class="flex mb-12">
-            <MainRoundAbout {moviesToDisplay} />
-        </div>
+<svelte:head>
+    <title>Cinemika - Home</title>
+</svelte:head>
 
-        <div class="flex mx-16 mt-3 bg-blue-600">
-            <FirstMainSiteElement {moviesToDisplay} />
-        </div>
-        <div class="flex mx-16 mt-10">
-            <ThirdMainSiteElement specialMovies={moviesToDisplay} />
-        </div>
-        <div class="flex mx-16 mt-10">
-            <SecondMainSiteElement {moviesToDisplay} />
-        </div>
-    </div>
-</main>
+<MainRoundAbout {moviesToDisplay} />
+<br />
+<div class="mx-16 mt-3">
+    <FirstMainSiteElement {moviesToDisplay} />
+</div>
+<div class="mx-16 mt-10">
+    <ThirdMainSiteElement specialMovies={moviesToDisplay} />
+</div>
+<div class="mx-16 mt-10">
+    <SecondMainSiteElement {moviesToDisplay} />
+</div>
