@@ -5,5 +5,5 @@ export enum LoginStatus {
 }
 export enum RegisterStatus {
     ALREADY_LOGGED_IN,
-    ACCOUNTCREATED
+    REGISTERED
 }

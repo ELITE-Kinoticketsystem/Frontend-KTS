@@ -17,7 +17,7 @@
   $: email = "";
   $: password = "";
 
-  $: validateButton = () => {
+  function validateButton() {
     const erroMsg = document.getElementById("erroMsg")!;
     erroMsg.innerHTML = "";
     erroMsg.hidden = true;
@@ -34,12 +34,12 @@
       password.length > 0 &&
       password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
     );
-  };
+  }
 
   function register() {
     if (AuthService.register(firstname, lastname, username, email, password)) {
       window.location.href =
-        "/?registerStatus=" + RegisterStatus.ACCOUNTCREATED.toString();
+        "/?registerStatus=" + RegisterStatus.REGISTERED.toString();
     } else {
       Swal.fire({
         title: "Error",

@@ -27,7 +27,7 @@
       showConfirmButton: false,
       timer: 1500,
     });
-  } else if (registerStatus === RegisterStatus.ACCOUNTCREATED.toString()) {
+  } else if (registerStatus === RegisterStatus.REGISTERED.toString()) {
     Swal.fire({
       position: "top-end",
       icon: "success",
