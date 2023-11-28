@@ -24,14 +24,6 @@ export class AuthService {
     return true; //TODO return if login was successful
   }
 
-  public register(username: string, email: string, profilPicture?: string, password?: string, repeatPassword?: string): boolean {
-    // Perform register logic here
-    // ... 
-    // Set isLoggedIn to true if register was successful
-    this.isLoggedIn = true;
-    return true; //Todo return if register was successful
-  }
-
   public changePassword(oldPassword: string, newPassword: string): boolean {
     // Perform change password logic here
     return true; //Todo return if change password was successful
@@ -73,5 +65,11 @@ export class AuthService {
   public async getForYouMovies() {
     // get movies from backend
     return ["movie1", "movie2", "movie3"];
+  }
+
+  public static register(username: string, email: string, profilPicture?: string, password?: string, repeatPassword?: string): boolean {
+    // Perform register logic here
+    // ... 
+    return true; //Todo return if register was successful
   }
 }

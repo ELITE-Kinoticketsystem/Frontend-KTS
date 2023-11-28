@@ -1,6 +1,6 @@
 <script>
   import { AuthService } from "$lib/_services/authService";
-    import Searchbar from "../templates/searchbar.svelte";
+  import Searchbar from "../templates/searchbar.svelte";
 
   let isLoggedIn = new AuthService().isUserLoggedIn();
 
@@ -44,7 +44,8 @@
             >
             <!--<a href="/#liked" class="text-gray-300 hover:bg-gray-700 hover:text-textWhite rounded-md px-3 py-2 text-sm font-medium">Liked by others</a>-->
             <form>
-              <Searchbar /> <!--
+              <Searchbar {longSearchBarText} {shortSearchBarText} />
+              <!--
               <div class="relative">
                 <div
                   class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"

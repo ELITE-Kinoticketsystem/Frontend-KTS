@@ -51,7 +51,7 @@
                     <SplideSlide>
                         <a href="/movies/{movie.movieId}">
                             <img
-                                class="w-full 2xl:h-[32rem] xl:h-96 object-cover"
+                                class="w-full 2xl:h-[32rem] xl:h-96 md:h-60 sm:h-36 h-60 object-cover"
                                 src={movie.src}
                                 alt={movie.movieName}
                             />
