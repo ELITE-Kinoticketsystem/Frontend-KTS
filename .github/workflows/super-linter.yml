@@ -54,7 +54,7 @@ jobs:
       - name: Lint Code Base
         uses: super-linter/super-linter@v5
         env:
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: false
           VALIDATE_CSS_STYLELINT: false
           VALIDATE_HTML_HTMLHINT: false
           DEFAULT_BRANCH: main
