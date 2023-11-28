@@ -8,16 +8,21 @@
     export let specialMovies: any;
 </script>
 
-<TextMainSite
-    href={isUserLoggedIn ? "/events" : "/events"}
-    text={isUserLoggedIn
-        ? "Events in your favorite cinemas "
-        : "Evens in nearby cinemas"}
-/>
-<div class="flex">
-    {#each specialMovies as specialMovie}
-        <div class="flex">
-            <SpecialCard movie={specialMovie} />
-        </div>
-    {/each}
+<div class="flex flex-col">
+    <div class="flex">
+        <TextMainSite
+            href={isUserLoggedIn ? "/events" : "/events"}
+            text={isUserLoggedIn
+                ? "Events in your favorite cinemas "
+                : "Events in nearby cinemas"}
+        />
+    </div>
+
+    <div class="flex">
+        {#each specialMovies as specialMovie}
+            <div class="flex">
+                <SpecialCard movie={specialMovie} />
+            </div>
+        {/each}
+    </div>
 </div>

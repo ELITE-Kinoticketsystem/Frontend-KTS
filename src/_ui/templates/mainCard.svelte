@@ -1,5 +1,4 @@
 <script lang="ts">
-    import SmallMovieImg from "./smallMovieImg.svelte";
     export let movie: any;
 </script>
 

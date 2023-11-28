@@ -3,10 +3,10 @@
     export let moviesToDisplay: any;
 </script>
 
-<div class="flex overflow-y-scroll">
-    {#each moviesToDisplay as movie, index}
-        <div class="mr-16">
-            <MainCard {movie} />
+<div class="relative flex overflow-y-scroll bg-yellow-500">
+    {#each moviesToDisplay as movie}
+        <div class="mr-16 hover:absolute hover:inset-0 bg-orange-600">
+            <MainCard {movie}/>
         </div>
     {/each}
 </div>

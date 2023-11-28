@@ -1,32 +1,36 @@
 <script lang="ts">
-    export let srcs: Array<string> = [];
-    let currentImg = 0;
-    
-    function increaseIndex(){ currentImg = (currentImg + 1) % srcs.length; }
-    function decreaseIndex(){ --currentImg; if(currentImg < 0) {currentImg = srcs.length - 1; }
+  import { Splide, SplideSlide, SplideTrack } from "@splidejs/svelte-splide";
+
+  export let srcs: Array<string> = [];
+  let currentImg = 0;
+
+  function increaseIndex() {
+    currentImg = (currentImg + 1) % srcs.length;
+  }
+  function decreaseIndex() {
+    --currentImg;
+    if (currentImg < 0) {
+      currentImg = srcs.length - 1;
     }
-    
+  }
 </script>
 
-<div class="relative">
-    <div class="overflow-hidden w-96 h-36rem">
-        <img src={srcs[currentImg]} alt="carousel" class="w-full h-full object-cover mx-auto" />
-    </div>
-    <button class="absolute  left-0 top-1/2 -translate-y-1/2 rounded-full p-2 ml-1
-                   opacity-60 bg-white text-center hover:bg-slate-300" 
-                   on:click={decreaseIndex}>
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                    <path d="M14 18l-6-6 6-6" />
-                  </svg>
-    </button>
-    <button class="absolute right-0 top-1/2 -translate-y-1/2 rounded-full p-2 mr-1
-                   opacity-60 bg-white text-center hover:bg-slate-300"
-                   on:click={increaseIndex}>
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" >
-                    <path d="M10 18l6-6-6-6" />
-                  </svg>
-    </button>
-
+<div class="">
+  <div class="">
+    <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
+      <div class="relative mr-10 ml-3">
+        <SplideTrack class="rounded-lg">
+          {#each srcs as src}
+            <SplideSlide>
+              <img
+                class="w-full h-full object-cover "
+                {src}
+                alt="Actor"
+              />
+            </SplideSlide>
+          {/each}
+        </SplideTrack>
+      </div>
+    </Splide>
   </div>
-
-
+</div>

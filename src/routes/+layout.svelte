@@ -4,12 +4,14 @@
     import "../app.css";
 </script>
 
-<div class="w-screen min-h-screen">
+<div
+    class="w-screen min-h-screen"
+>
     <div class="w-full sticky top-0 z-50"><Navbar /></div>
     <div class="flex flex-col">
-        <div class="bg-backgroundBlue flex-start py-4 flex-auto">
+        <div class=" flex-start py-4 flex-auto bg-gradient-to-r from-slate-700 from-1% via-backgroundBlue via-50% to bg-slate-700 to-100%">
             <slot />
         </div>
     </div>
-    <footer class="w-full flex-end bg-backgroundBlue"><Footer /></footer>
+    <footer class="w-full flex-end"><Footer /></footer>
 </div>
