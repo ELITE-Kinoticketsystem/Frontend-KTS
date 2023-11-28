@@ -2,11 +2,13 @@
   import { AuthService } from "$lib/_services/authService";
   import { browser } from "$app/environment";
   import Swal from "sweetalert2";
+  import { RegisterStatus } from "$lib/statusEnums";
 
   const authService = new AuthService();
 
   if (browser && authService.isUserLoggedIn()) {
-    window.location.href = "/?registerStatus=alreadyLoggedIn";
+    window.location.href =
+      "/?registerStatus=" + RegisterStatus.ALREADY_LOGGED_IN.toString();
   }
 
   $: firstname = "";
@@ -27,7 +29,7 @@
       lastname.length > 0 &&
       username.length > 0 &&
       email.match(
-        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
       ) &&
       password.length > 0 &&
       password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
@@ -36,7 +38,8 @@
 
   function register() {
     if (AuthService.register(firstname, lastname, username, email, password)) {
-      window.location.href = "/?registerStatus=accountCreated";
+      window.location.href =
+        "/?registerStatus=" + RegisterStatus.ACCOUNTCREATED.toString();
     } else {
       Swal.fire({
         title: "Error",

@@ -1,12 +1,15 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
   import { browser } from "$app/environment";
+  import { LoginStatus } from "$lib/statusEnums";
 
   const authService = new AuthService();
   const isUserLoggedIn = authService.isUserLoggedIn();
 
   if (isUserLoggedIn) {
-    window.location.href = "/?loginStatus=alreadyLoggedIn";
+    if (browser)
+      window.location.href =
+        "/?loginStatus=" + LoginStatus.ALREADY_LOGGED_IN.toString();
   }
 
   $: email = "";
@@ -21,7 +24,7 @@
     submitButton.disabled = !(
       email.length > 0 &&
       email.match(
-        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
       ) &&
       password.length > 0
     );
@@ -31,7 +34,8 @@
     const userIsLoggedIn = await authService.login(email, password);
     if (userIsLoggedIn) {
       if (browser) {
-        window.location.href = "/?loginStatus=successfullLogin";
+        window.location.href =
+          "/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGIN.toString();
       }
     } else {
       const errorMsg = document.getElementById("erroMsg")!;
