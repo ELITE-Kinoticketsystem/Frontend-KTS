@@ -4,24 +4,24 @@ export default {
   theme: {
     extend: {
       height: {
-        "2.4rem": "2.4rem",
-        "21rem": "21rem",
+        '2.4rem': '2.4rem',
+        '21rem': '21rem'
 
       },
       padding: {
-        "22rem": "22rem"
+        '22rem': '22rem'
       },
       spacing: {
-        "2rem": "2rem",
-        "10.33rem": "10.33rem",
-        "26rem": "26rem",
-        "28rem": "28rem",
-        "35rem": "35rem",
-        "36rem": "36rem",
-        "42rem": "42rem",
-        "50rem": "50rem",
-        "60rem": "60rem",
-        "65rem": "65rem",
+        '2rem': '2rem',
+        '10.33rem': '10.33rem',
+        '26rem': '26rem',
+        '28rem': '28rem',
+        '35rem': '35rem',
+        '36rem': '36rem',
+        '42rem': '42rem',
+        '50rem': '50rem',
+        '60rem': '60rem',
+        '65rem': '65rem'
       },
       colors: {
         // colors have the same name as in figma color palette(color pilot) + the color name
@@ -37,11 +37,10 @@ export default {
         tileBlue: '#2A313A',
         brightTextGray: '#444444'
       }
-    },
+    }
   },
   plugins: [
     require('@tailwindcss/forms'),
     require('flowbite/plugin')
-  ],
+  ]
 }
-
