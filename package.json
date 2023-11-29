@@ -39,7 +39,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@popperjs/core": "^2.11.8",
 		"@splidejs/svelte-splide": "^0.2.9",
-		"sweetalert2": "^11.10.1"
+		"sweetalert2": "^11.10.1",
+		"tailwind-merge": "^2.0.0"
 	}
 }
