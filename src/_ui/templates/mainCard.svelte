@@ -2,14 +2,20 @@
     export let movie: any;
 </script>
 
-<div class="w-full h-full group bg-red-700">
-    <a class="flex flex-col group-hover:scale-105" href="/movies/{movie.movieId}">
-        <div class="flex mb-5 opacity-100 duration-300 bg-red-500">
-            <img src={movie.src} alt={movie.name}>
+<div class="grid grid-cols-1 grid-rows-2 w-48 h-21rem overflow-hidden group">
+    <a class="grid" href="/movies/{movie.movieId}">
+        <div class="grid mb-5 group-hover:scale-105 duration-300">
+            <div class="w-48 h-72">
+                <img
+                    src={movie.src}
+                    alt={movie.movieName}
+                    class="rounded-md min-w-full h-auto aspect-auto overflow-hidden hover:ring-white"
+                />
+            </div>
         </div>
-        <div class="flex bg-green-300">
+        <div class="grid">
             <p
-                class="font-bold text-sm text-textWhite break-words text-center duration-300"
+                class="font-bold text-[15px] text-textWhite break-words text-center group-hover:scale-105 duration-300"
             >
                 {movie.movieName}
             </p>

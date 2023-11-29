@@ -1,26 +1,16 @@
-<script>
+<script lang="ts">
   import { AuthService } from "$lib/_services/authService";
-    import Searchbar from "../templates/searchbar.svelte";
+  import Searchbar from "../templates/searchbar.svelte";
 
   let isLoggedIn = new AuthService().isUserLoggedIn();
 
   const longSearchBarText = "Search movies, actors or tags";
   const shortSearchBarText = "Search movie...";
-  $: searchBarOpen = false;
-
   let showDropdown = false;
 
   function toggleDropdown() {
     showDropdown = !showDropdown;
   }
-
-  $: onFocus = () => {
-    searchBarOpen = true;
-  };
-
-  $: onBlur = () => {
-    searchBarOpen = false;
-  };
 </script>
 
 <nav class="bg-headerBlue w-full z-20 top-0 start-0">
@@ -42,43 +32,8 @@
               class="bg-gray-900 text-textWhite rounded-md px-3 py-2 text-sm font-medium"
               aria-current="page">Overview</a
             >
-            <!--<a href="/#liked" class="text-gray-300 hover:bg-gray-700 hover:text-textWhite rounded-md px-3 py-2 text-sm font-medium">Liked by others</a>-->
             <form>
-              <Searchbar /> <!--
-              <div class="relative">
-                <div
-                  class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
-                >
-                  <svg
-                    class="w-4 h-4 text-textWhite"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="search"
-                  id="default-search"
-                  on:focus={onFocus}
-                  on:blur={onBlur}
-                  class="block p-2 ps-10 {searchBarOpen
-                    ? `w-96`
-                    : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={searchBarOpen
-                    ? longSearchBarText
-                    : shortSearchBarText}
-                />
-              </div>
-              -->
+              <Searchbar {longSearchBarText} {shortSearchBarText} />
             </form>
           </div>
         </div>

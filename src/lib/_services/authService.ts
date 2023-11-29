@@ -3,33 +3,12 @@ import { browser } from "$app/environment";
 export class AuthService {
   private isLoggedIn: boolean = false;
 
-  constructor() {
-    // Check if user is already logged in
-    if (browser) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        this.isLoggedIn = true;
-      }
-    } else this.isLoggedIn = false;
-  }
-
   public login(username: string, password: string): boolean {
     // Perform login logic here
     // ...
     // Set isLoggedIn to true if login was successful
-    if (browser) {
-      localStorage.setItem('token', 'your_token_here');
-    } else this.isLoggedIn = false;
     this.isLoggedIn = true;
     return true; //TODO return if login was successful
-  }
-
-  public register(username: string, email: string, profilPicture?: string, password?: string, repeatPassword?: string): boolean {
-    // Perform register logic here
-    // ... 
-    // Set isLoggedIn to true if register was successful
-    this.isLoggedIn = true;
-    return true; //Todo return if register was successful
   }
 
   public changePassword(oldPassword: string, newPassword: string): boolean {
@@ -61,7 +40,7 @@ export class AuthService {
   }
 
   public isUserLoggedIn(): boolean {
-    return false;
+    return this.isLoggedIn;
   }
 
   public getUser(): string {
@@ -73,5 +52,12 @@ export class AuthService {
   public async getForYouMovies() {
     // get movies from backend
     return ["movie1", "movie2", "movie3"];
+  }
+
+  public static register(username: string, email: string, profilPicture?: string, password?: string, repeatPassword?: string): boolean {
+    // Perform register logic here
+    // ... 
+    
+    return true; //Todo return if register was successful
   }
 }
