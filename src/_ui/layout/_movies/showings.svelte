@@ -86,10 +86,25 @@
     });
   }
 
-  let showTooltip = false;
-
   function getDate(datetime: string): string {
-    return new Date(datetime).toLocaleDateString();
+    const weekday = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    let currentDate = new Date();
+    let showingDate = new Date(datetime);
+    if (new Date(datetime) < currentDate)
+      return "Today, " + showingDate.toLocaleDateString();
+    else {
+      return (
+        weekday[showingDate.getDay()] + ", " + showingDate.toLocaleDateString()
+      );
+    }
   }
 </script>
 
@@ -111,7 +126,7 @@
       {#each showings as showing}
         <div class="flex flex-col bg-tileBlue text-textWhite rounded-md py-2">
           <div
-            class="flex flex-row text-lg font-semibold underline underline-offset-2 mx-3 items-center justify-between"
+            class="flex flex-row text-lg font-semibold mx-3 items-center justify-between"
           >
             {getDate(showing.day)}
             <svg

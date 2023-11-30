@@ -1,7 +1,6 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
   import { Rating } from "flowbite-svelte";
-  import { FSK } from "$lib/fsks";
   import Swal from "sweetalert2";
   import { fly } from "svelte/transition";
   import { browser } from "$app/environment";
@@ -36,9 +35,11 @@
        Today he is widely considered to be the greatest shooter to ever play the game of basketball \
        and this documentary shows what it took to get to that point. He is also the father to three children \
        and husband to his wife Ayesha Curry who likes to cook food for a living.",
-    tags: "funny,goodlooking,beast",
-    fsk: "1",
+    genre: ["Documentary", "Sport", "Biography", "Family"],
+    fsk: "0",
     rating: 4.2,
+    duration: 120,
+    releaseDate: "2023-11-30T00:00:00.000Z",
   };
 
   let cinema = "";
@@ -49,7 +50,6 @@
   let direction = 1;
 
   $: textAreaValue = "";
-  $: disabledLength = true;
   function validateButton() {
     if (textAreaValue.length > 0) {
       disabledLength = false;
@@ -76,6 +76,11 @@
         });
       }
     }
+  }
+
+  function getYear(dateTime: string): string {
+    const date = new Date(dateTime);
+    return date.getFullYear().toString();
   }
 </script>
 
@@ -105,24 +110,8 @@
             alt={movie.movieName}
             class="min-w-full h-auto aspect-auto overflow-hidden rounded-md"
           />
-          <button
-            class="absolute bottom-0 h-1/5"
-            on:click={() => {
-              Swal.fire({
-                title: "FSK information",
-                background: "#2A313A",
-                color: "#FFFFFF",
-                text: "The German FSK system is a voluntary self-regulatory body that evaluates and rates films and other media in Germany based on their suitability for different age groups. The ratings, which range from FSK 0 (suitable for all ages) to FSK 18 (only for adults), serve as a guideline for parents, educators, and consumers.",
-                icon: "info",
-                footer:
-                  '<a href="https://www.fsk.de/?seitid=2&tid=2" target="base" class="hover:text-green-500 duration-300">Learn more about the FSK system </a>',
-              });
-            }}
-          >
-            <img src={FSK.FSK12} alt={movie.fsk} class="h-full opacity-80" />
-          </button>
         </div>
-        <div class="flex flex-col flex-grow">
+        <div class="flex flex-col flex-grow px-5">
           <div
             class="flex text-textWhite mx-auto sm:text-md md:text-xl xl:text-2xl 2xl:text-4xl font-bold"
           >
@@ -133,13 +122,91 @@
             </a>
           </div>
           <div
-            class="text-center text-textWhite mt-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl"
+            class="flex flex-row text-textWhite mt-5 mx-5 gap-x-5 justify-center"
+          >
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3"
+                />
+              </svg>
+
+              <span class="ml-1">
+                {#each movie.genre as genre, index}
+                  {genre}{#if index != movie.genre.length - 1},{/if}
+                {/each}</span
+              >
+            </p>
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                />
+              </svg>
+              <span class="ml-1">FSK {movie.fsk}</span>
+            </p>
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span class="ml-1">{movie.duration}min</span>
+            </p>
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64"
+                />
+              </svg>
+
+              <span class="ml-1">{getYear(movie.releaseDate)}</span>
+            </p>
+          </div>
+          <div
+            class=" text-textWhite my-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl text-justify"
           >
             {movie.description}
           </div>
         </div>
       </div>
-      <section id="cinemas" class="py-8 antialiased mt-5">
+      <section id="cinemas" class="py-8 antialiased mt-2">
         {#key cinema}
           <div
             in:fly={{ x: 100 * direction, duration: 400, delay: 401 }}
