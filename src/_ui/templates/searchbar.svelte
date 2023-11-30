@@ -1,7 +1,11 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
   let searchBarIsOpen: Boolean;
   export let shortSearchBarText: string = "shortsearchbartext";
   export let longSearchBarText: string = "longsearchbartext";
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <div>
@@ -28,6 +32,8 @@
     <input
       type="search"
       id="default-search"
+      autocomplete="off"
+      on:input={(event) => dispatch("inputChange", event.target.value)}
       on:focus={() => (searchBarIsOpen = true)}
       on:blur={() => (searchBarIsOpen = false)}
       class="block p-2 ps-10 {searchBarIsOpen
