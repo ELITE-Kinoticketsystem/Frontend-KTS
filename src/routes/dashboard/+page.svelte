@@ -131,10 +131,10 @@
 </head:svelte>
 
 <div class="flex w-screen h-max">
-  <div class="w-1/6 flex-shrink-0" />
-  <div class="flex flex-grow flex-col">
+  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="flex flex-col max-w-full">
     <div class="text-textWhite my-4 text-xl">{getGreetings()}, {username}</div>
-    <div class="grid grid-cols-3 gap-x-5 gap-y-2 h-48">
+    <div class="grid grid-cols-3 gap-x-5 gap-y-2 h-48 min-w-min">
       <div class="grid bg-tileBlue rounded-md">
         <div class="flex relative">
           <div class="absolute text-textWhite text-xl ml-2 mt-1">
@@ -451,5 +451,5 @@
     {/await}
   </div>
 
-  <div class="w-1/6 flex-shrink-0" />
+  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
