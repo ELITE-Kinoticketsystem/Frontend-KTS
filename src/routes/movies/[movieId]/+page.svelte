@@ -7,6 +7,7 @@
   import Showings from "../../../_ui/layout/_movies/showings.svelte";
   import Cinemas from "../../../_ui/layout/_movies/cinemas.svelte";
   import YouTubePlayer from "youtube-player";
+  import { onMount } from "svelte";
 
   const authService = new AuthService();
 
@@ -83,24 +84,26 @@
     const date = new Date(dateTime);
     return date.getFullYear().toString();
   }
-  var player1: any;
-  if (browser)
-    player1 = YouTubePlayer("player-1", {
-      videoId: "NHhTMh0nURA",
-      playerVars: {
-        autoplay: 0,
-        controls: 1,
-        disablekb: 1,
-        fs: 0,
-        iv_load_policy: 3,
-        loop: 1,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-      },
-    });
+  var ytPlayer: any;
+  onMount(() => {
+    if (browser)
+      ytPlayer = YouTubePlayer("player-1", {
+        videoId: "NHhTMh0nURA",
+        playerVars: {
+          autoplay: 0,
+          controls: 1,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          loop: 1,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+        },
+      });
+  });
   function startVideo() {
-    player1.playVideo();
+    ytPlayer.playVideo();
   }
 </script>
 
