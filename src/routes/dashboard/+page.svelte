@@ -10,7 +10,7 @@
 
   const invoicetemplate = new InvoiceTemplate();
   const authService = new AuthService();
-  const isLoggedIn = !authService.isUserLoggedIn();
+  const isLoggedIn = authService.isUserLoggedIn();
 
   export let data;
   let ticketHistory = data.tickets || [];
