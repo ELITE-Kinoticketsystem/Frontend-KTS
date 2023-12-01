@@ -1,7 +1,7 @@
 import { browser } from "$app/environment";
 
 export class AuthService {
-  private isLoggedIn: boolean = false;
+  private isLoggedIn: boolean = true;
 
   public login(username: string, password: string): boolean {
     // Perform login logic here
