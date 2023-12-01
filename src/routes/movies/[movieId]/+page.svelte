@@ -6,6 +6,7 @@
   import { browser } from "$app/environment";
   import Showings from "../../../_ui/layout/_movies/showings.svelte";
   import Cinemas from "../../../_ui/layout/_movies/cinemas.svelte";
+  import YouTubePlayer from "youtube-player";
 
   const authService = new AuthService();
 
@@ -82,6 +83,25 @@
     const date = new Date(dateTime);
     return date.getFullYear().toString();
   }
+  var player1: any;
+  if (browser)
+    player1 = YouTubePlayer("player-1", {
+      videoId: "NHhTMh0nURA",
+      playerVars: {
+        autoplay: 0,
+        controls: 1,
+        disablekb: 1,
+        fs: 0,
+        iv_load_policy: 3,
+        loop: 1,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+      },
+    });
+  function startVideo() {
+    player1.playVideo();
+  }
 </script>
 
 <head:svelte>
@@ -89,11 +109,21 @@
 </head:svelte>
 
 <div class="flex w-screen h-max">
-  <div class="w-1/6 flex-shrink-0" />
-  <div class="flex-grow">
+  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="">
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="flex flex-col">
-      <iframe
+      <button
+        on:mouseenter={() => {
+          startVideo();
+        }}
+      >
+        <div
+          id="player-1"
+          class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
+        />
+      </button>
+      <!--<iframe
         class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
         src="https://www.youtube.com/embed/NHhTMh0nURA?si=bxOxwt_o6PWZ-5Nb"
         title="YouTube video player"
@@ -102,7 +132,7 @@
         on:mouseleave={() => {}}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowfullscreen
-      />
+      />-->
       <div class="flex flex-row mt-14">
         <div class="relative basis-1/3 flex-shrink-0 h-max">
           <img
@@ -113,16 +143,16 @@
         </div>
         <div class="flex flex-col flex-grow px-5">
           <div
-            class="flex text-textWhite mx-auto sm:text-md md:text-xl xl:text-2xl 2xl:text-4xl font-bold"
+            class="flex flex-col sm:flex-row md:flex-row text-textWhite mx-auto sm:text-md md:text-xl xl:text-2xl 2xl:text-4xl font-bold"
           >
             <p class="break-words">{movie.movieName}</p>
 
-            <a class="ml-5 mt-1" href="#review">
+            <a class="mx-auto xl:ml-5 xl:mt-1" href="#review">
               <Rating id="ratingLab" total={5} rating={movie.rating} />
             </a>
           </div>
           <div
-            class="flex flex-row text-textWhite mt-5 mx-5 gap-x-5 justify-center"
+            class="flex flex-col sm:flex-row md:flex-row gap-2 text-textWhite mt-5 mx-5 gap-x-5 justify-center"
           >
             <p class="flex text-sm">
               <svg
@@ -200,9 +230,9 @@
             </p>
           </div>
           <div
-            class=" text-textWhite my-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl text-justify"
+            class=" text-textWhite my-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl break-words text-justify"
           >
-            {movie.description}
+            <span class="break-words">{movie.description}</span>
           </div>
         </div>
       </div>
@@ -397,5 +427,5 @@
       </section>
     </div>
   </div>
-  <div class="w-1/6 flex-shrink-0" />
+  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
