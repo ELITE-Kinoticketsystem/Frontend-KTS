@@ -7,8 +7,7 @@
   const authService = new AuthService();
 
   if (browser && authService.isUserLoggedIn()) {
-    window.location.href =
-      "/?registerStatus=" + RegisterStatus.ALREADY_LOGGED_IN.toString();
+    window.location.href = "/dashboard";
   }
 
   $: firstname = "";

@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
+  import { browser, dev } from "$app/environment";
   import { AuthService } from "$lib/_services/authService";
   import { SessionStatus } from "$lib/statusEnums";
   import "chart.js/auto";
-  import { onMount, tick } from "svelte";
+  import { onMount } from "svelte";
   import Swal from "sweetalert2";
-  import { jsPDF } from "jspdf";
   import { InvoiceTemplate } from "$lib/invoice";
 
   const invoicetemplate = new InvoiceTemplate();
@@ -27,6 +26,7 @@
     }
   }
   const username = "John Doe";
+  const email = "john.doe@cinemika.com";
 
   function getGreetings() {
     const time = new Date();
@@ -51,7 +51,9 @@
     let startTimestamp: number | null = null;
     const step = (timestamp: number | null) => {
       if (!startTimestamp) startTimestamp = timestamp;
+      //@ts-ignore
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      //@ts-ignore
       obj.innerHTML =
         obj?.id === "totalAmountSpend"
           ? (Math.floor(progress * (end - start) + start) / 100).toFixed(2)
@@ -124,6 +126,13 @@
     });
     return amount >= 2;
   }
+
+  let currentUsername: string = "";
+  let currentEmail: string = "";
+  let currentPassword: string = "";
+  let nextUsername: string = "";
+  let nextEmail: string = "";
+  let nextPassword: string = "";
 </script>
 
 <head:svelte>
@@ -131,7 +140,7 @@
 </head:svelte>
 
 <div class="flex w-screen h-max">
-  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="flex flex-col max-w-full">
     <div class="text-textWhite my-4 text-xl">{getGreetings()}, {username}</div>
     <div class="grid grid-cols-3 gap-x-5 gap-y-2 h-48 min-w-min">
@@ -140,10 +149,14 @@
           <div class="absolute text-textWhite text-xl ml-2 mt-1">
             Total visits:
           </div>
-          <p class="text-textWhite text-2xl mx-auto my-auto">
-            <span id="visitedMovies" class="text-5xl"
-              >{visitedMovies}
-            </span>visits
+          <p
+            class="flex-col sm:flex-col text-textWhite text-md sm:text-md md:text-lg xl:text-2xl mx-auto my-auto"
+          >
+            <span
+              id="visitedMovies"
+              class="text-xl sm:text-xl md:text-2xl xl:text-5xl"
+              >{visitedMovies}</span
+            >visits
           </p>
         </div>
       </div>
@@ -152,8 +165,14 @@
           <div class="absolute text-textWhite text-xl mt-1 ml-2">
             Amount spent:
           </div>
-          <p class="text-textWhite text-2xl mx-auto my-auto">
-            <span id="totalAmountSpend" class="text-5xl">{totalSpend}</span>€
+          <p
+            class="flex-col sm:flex-col text-textWhite text-md sm:text-md md:text-lg xl:text-2xl mx-auto my-auto"
+          >
+            <span
+              id="totalAmountSpend"
+              class="text-xl sm:text-xl md:text-2xl xl:text-5xl"
+              >{totalSpend}</span
+            >€
           </p>
         </div>
       </div>
@@ -162,8 +181,10 @@
           <div class="absolute text-textWhite text-xl ml-2 mt-1">
             Upcoming favorite:
           </div>
-          <p class="text-textWhite text-2xl mx-auto my-auto text-center">
-            <span id="visitedMovies" class="text-xl">{upcomingFavorite}</span>
+          <p
+            class="flex-col sm:flex-col text-textWhite text-md sm:text-md md:text-lg xl:text-2xl text-center my-auto"
+          >
+            {upcomingFavorite}
           </p>
         </div>
       </div>
@@ -177,17 +198,23 @@
           <form class="flex flex-col mx-auto mt-10 space-y-5">
             <input
               type="text"
+              bind:value={currentUsername}
               class="bg-inputBlue text-textWhite rounded-lg placeholder:text-darkTextWhite w-full"
               placeholder="Current username"
             />
             <input
               type="text"
+              id="nUsername"
+              bind:value={nextUsername}
               class="flex bg-inputBlue text-textWhite rounded-lg placeholder:text-darkTextWhite w-full"
               placeholder="New username"
             />
             <button
               type="button"
-              class="flex text-textWhite bg-buttonBlue px-4 py-2 rounded-md mx-auto hover:bg-green-500 duration-300"
+              disabled={currentUsername !== username ||
+                currentUsername.length === 0 ||
+                nextUsername.length === 0}
+              class="flex text-textWhite bg-buttonBlue px-4 py-2 rounded-md mx-auto hover:bg-green-500 duration-300 hover:disabled:bg-red-500"
               >Change</button
             >
           </form>
@@ -199,17 +226,22 @@
           <form class="flex flex-col mx-auto mt-10 space-y-5 mb-1">
             <input
               type="email"
+              bind:value={currentEmail}
               class="bg-inputBlue text-textWhite rounded-lg placeholder:text-darkTextWhite w-full"
               placeholder="Current email"
             />
             <input
               type="email"
+              bind:value={nextEmail}
               class="flex bg-inputBlue text-textWhite rounded-lg placeholder:text-darkTextWhite w-full"
               placeholder="New email"
             />
             <button
               type="button"
-              class="flex text-textWhite bg-buttonBlue px-4 py-2 rounded-md mx-auto hover:bg-green-500 duration-300"
+              disabled={currentEmail !== email ||
+                currentEmail.length === 0 ||
+                nextEmail.length === 0}
+              class="flex text-textWhite bg-buttonBlue px-4 py-2 rounded-md mx-auto hover:bg-green-500 duration-300 hover:disabled:bg-red-500"
               >Change</button
             >
           </form>
@@ -221,17 +253,21 @@
           <form class="flex flex-col mx-auto mt-10 space-y-5 mb-1">
             <input
               type="password"
+              bind:value={currentPassword}
               class="bg-inputBlue text-textWhite rounded-lg placeholder:text-darkTextWhite w-full"
               placeholder="Current password"
             />
             <input
               type="password"
+              bind:value={nextPassword}
               class="flex bg-inputBlue text-textWhite rounded-lg placeholder:text-darkTextWhite w-full"
               placeholder="New password"
             />
             <button
               type="button"
-              class="flex text-textWhite bg-buttonBlue px-4 py-2 rounded-md mx-auto hover:bg-green-500 duration-300"
+              disabled={currentPassword.length === 0 ||
+                nextPassword.length === 0}
+              class="flex text-textWhite bg-buttonBlue px-4 py-2 rounded-md mx-auto hover:bg-green-500 duration-300 hover:disabled:bg-red-500"
               >Change</button
             >
           </form>
@@ -451,5 +487,5 @@
     {/await}
   </div>
 
-  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>

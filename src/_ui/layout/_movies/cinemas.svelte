@@ -111,7 +111,9 @@
   </div>
   <div class="">
     <div class="my-4 mb-2">
-      <div class="grid grid-cols-6 gap-x-4 gap-y-10">
+      <div
+        class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10"
+      >
         {#each displayedTheatres.slice(0, maxNrOfTheatresToDisplay) as theatre}
           <button
             on:click={() => {

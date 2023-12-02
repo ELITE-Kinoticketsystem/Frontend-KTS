@@ -17,8 +17,12 @@
         });
     });
   }
-
   export let moviesToDisplay: any = [];
+
+  let randomBegin = Math.floor(Math.random() * moviesToDisplay.length) + 1;
+  if (randomBegin + 5 > moviesToDisplay.length) {
+    randomBegin = moviesToDisplay.length - 5;
+  }
 </script>
 
 {#await getPictures()}
@@ -47,7 +51,7 @@
   <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
     <div class="relative">
       <SplideTrack class="rounded-xl">
-        {#each moviesToDisplay as movie}
+        {#each moviesToDisplay.slice(randomBegin, randomBegin + 5) as movie}
           <SplideSlide>
             <a href="/movies/{movie.movieId}">
               <img

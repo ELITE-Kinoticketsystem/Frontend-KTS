@@ -7,9 +7,7 @@
   const isUserLoggedIn = authService.isUserLoggedIn();
 
   if (isUserLoggedIn) {
-    if (browser)
-      window.location.href =
-        "/?loginStatus=" + LoginStatus.ALREADY_LOGGED_IN.toString();
+    if (browser) window.location.href = "/dashboard";
   }
 
   $: email = "";
