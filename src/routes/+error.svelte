@@ -5,22 +5,22 @@
   <title>Cinemika - 404 Not Found</title>
 </svelte:head>
 
-<div class="text-center">
-  <p class="text-base font-semibold text-textWhite">404</p>
-  <h1 class="mt-4 text-3xl font-bold tracking-tight text-textWhite sm:text-5xl">
-    Page not found
-  </h1>
-  <p class="mt-6 text-base leading-7 text-textWhite">
-    Sorry, we couldn’t find the page you’re looking for.
-  </p>
-  <div class="mt-10 flex items-center justify-center gap-x-6">
+<div class="bg-transparent text-white font-sans">
+  <div
+    class="container mx-auto px-4 flex flex-col items-center justify-center h-screen"
+  >
+    <h1 class="text-6xl font-bold mb-4 text-buttonBlue">404</h1>
+    <h2 class="text-4xl font-semibold mb-4 text-white">
+      Oops... Page not found
+    </h2>
+    <p class="text-lg mb-8 text-justify">
+      We're sorry, but the page you were looking for doesn't exist. You might
+      have mistyped the address or the page may have moved.
+    </p>
     <a
       href="/"
-      class="rounded-md bg-tileBlue px-3.5 py-2.5 text-sm font-semibold text-textWhite"
-      >Main page</a
-    >
-    <a href="/help" class="text-sm font-semibold text-gray-900"
-      >Need help? <span aria-hidden="true">&rarr;</span></a
+      class="px-6 py-3 rounded bg-buttonBlue hover:bg-blue-900 transition duration-300 ease-in-out text-white"
+      >Back to Home</a
     >
   </div>
 </div>
