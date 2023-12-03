@@ -7,6 +7,9 @@
 
   export let specialMovies: any;
   let randomEvents = Math.floor(Math.random() * specialMovies.length) + 1;
+  if (randomEvents + 2 > specialMovies.length) {
+    randomEvents = specialMovies.length - 2;
+  }
 </script>
 
 <div class="flex flex-col">
@@ -19,7 +22,7 @@
     />
   </div>
 
-  <div class="flex bg-green-500">
+  <div class="flex">
     {#each specialMovies.slice(randomEvents, randomEvents + 2) as specialMovie}
       <SpecialCard movie={specialMovie} />
     {/each}

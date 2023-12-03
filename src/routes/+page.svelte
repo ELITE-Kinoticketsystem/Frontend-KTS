@@ -62,12 +62,12 @@
 
 <MainRoundAbout {moviesToDisplay} />
 <br />
-<div class="mx-16 mt-3">
+<div class="mx-2 sm:mx-2 md:xm-3 lg:mx-16 mt-3">
   <FirstMainSiteElement {moviesToDisplay} />
 </div>
-<div class="mx-16 mt-10">
+<div class="mx-2 sm:mx-2 md:xm-3 lg:mx-16 mt-10">
   <ThirdMainSiteElement specialMovies={moviesToDisplay} />
 </div>
-<div class="mx-16 mt-10">
+<div class="mx-2 sm:mx-2 md:xm-3 lg:mx-16 mt-10">
   <SecondMainSiteElement {moviesToDisplay} />
 </div>
