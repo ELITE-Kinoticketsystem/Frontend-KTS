@@ -60,7 +60,6 @@
             .trim()
             .includes(key.toLowerCase().trim())
         ) {
-          console.log(key);
           return movie;
         }
       }
