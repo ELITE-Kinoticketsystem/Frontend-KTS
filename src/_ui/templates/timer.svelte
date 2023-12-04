@@ -25,8 +25,8 @@
     }
 
     if (currentTime === 0) {
-      dispatch("timerFinished");
       currentTime = startTime;
+      dispatch("timerFinished");
       return;
     }
 

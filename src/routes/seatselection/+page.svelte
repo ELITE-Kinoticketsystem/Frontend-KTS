@@ -6,9 +6,10 @@
 
   let seats: any[] = [];
   let selectedSeats: any[] = [];
-  let signal = 0;
+  $: selectedSeats = selectedSeats; 
+  $: seats = seats;
+  $: signal = selectedSeats.length > 0 ? 1 : 0;
 
-  $: nrOfSelectedSeats = selectedSeats.length;
   let seat = { type: "regular", available: true, x: 0, y: 0 };
   let doubleSeat = { type: "double", available: true, x: 0, y: 0 };
   let emptySeat = { type: "empty", available: false, x: 0, y: 0 };
@@ -48,59 +49,62 @@
   }
 
   function timerFinished() {
-    for(let i = 0; i < selectedSeats.length; ++i){
-      seats.at(selectedSeats.at(i).y).at(selectedSeats.at(i).x).available = true;
+    for (let i = 0; i < selectedSeats.length; ++i) {
+      seats.at(selectedSeats.at(i).y).at(selectedSeats.at(i).x).available =
+        true;
     }
+    seats = seats;
     selectedSeats = [];
-    nrOfSelectedSeats = 0;
+    signal = signal;
     Swal.fire({
-      icon: "error",
+      icon: "warning",
       title: "Timer ran out!",
       color: "#FAFAFA",
       timer: 5000,
       customClass: "rounded-lg w-[70%] sm:w-1/3",
       timerProgressBar: true,
       background: "#354A5F",
-      text: "Please select seats next to each other!",
+      text: "Be quicker!",
     });
   }
 </script>
 
-<div class="flex">
-  <div class="mx-10 h-full">
-    <div class="relative flex flex-col items-center sm:flex-row">
-      <div class="w-1/5 absolute top-0 right-0 translate-y-1 z-50">
-        <Timer startTime={100} {signal} on:timerFinished={timerFinished} />
-      </div>
-      <div class="flex w-full h-fit mx-5 mb-20 bg-red-100">
-        <svg
-          id="itself"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 100 3"
-          preserveAspectRatio="xMidYMid meet"
-          class="w-full h-auto"
-          fill="#ffffff"
-        >
-          <rect width="100" height="3" rx="1" ry="1" fill="#ffffff" />
-        </svg>
-      </div>
+<div class="flex mx-10 sm:mx-40 h-auto">
+  <div class="relative flex flex-col items-center">
+    <div class="w-1/5 absolute top-0 right-0 translate-y-1 z-10">
 
-      <div class=" flex basis-3/4">
+      <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
+
+    </div>
+    <div class="flex w-full h-fit mx-5 mb-20 bg-red-100">
+      <svg
+        id="itself"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 3"
+        preserveAspectRatio="xMidYMid meet"
+        class="w-full h-auto"
+        fill="#ffffff"
+      >
+        <rect width="100" height="3" rx="1" ry="1" fill="#ffffff" />
+      </svg>
+    </div>
+
+      <div class="flex basis-3/4">
         <Cinemahall
-          {nrOfSelectedSeats}
           {seats}
+          {selectedSeats}
           on:seatWasSelected={(e) => {
             selectedSeats = e.detail.selectedSeats;
-            console.log(selectedSeats.length);
-            signal = selectedSeats.length > 0 ? 1 : 0;
+            seats = seats;
+            signal = signal;
           }}
         />
       </div>
+
+      {#key selectedSeats}
       <div class="flex basis-1/5">
-        {#key nrOfSelectedSeats}
-          <SelSeatOverview {selectedSeats} />
-        {/key}
+        <SelSeatOverview {selectedSeats} />
       </div>
-    </div>
+      {/key}
   </div>
 </div>
