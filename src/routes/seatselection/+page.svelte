@@ -1,144 +1,106 @@
 <script lang="ts">
-    import CinemaSeat from "../../_ui/templates/cinemaSeat.svelte";
-    import Swal from "sweetalert2";
+  import Swal from "sweetalert2";
+  import Cinemahall from "../../_ui/templates/cinemahall.svelte";
+  import SelSeatOverview from "../../_ui/templates/selSeatOverview.svelte";
+  import Timer from "../../_ui/templates/timer.svelte";
 
-    export let data;
+  let seats: any[] = [];
+  let selectedSeats: any[] = [];
+  let signal = 0;
 
-    $: selectedSeats = 0;
-    $: seatTypeSelection = "normal";
+  $: nrOfSelectedSeats = selectedSeats.length;
+  let seat = { type: "regular", available: true, x: 0, y: 0 };
+  let doubleSeat = { type: "double", available: true, x: 0, y: 0 };
+  let emptySeat = { type: "empty", available: false, x: 0, y: 0 };
+  let emptyDoubleSeat = { type: "emptyDouble", available: false, x: 0, y: 0 };
 
-    let arrayOfSelectedSeats: any[] = [];
+  let seatrow: any[] = [];
+  function getSeat(type: string, x: number, y: number) {
+    return { type, x, y, available: true };
+  }
+  function getRandomInt(max: number) {
+    return Math.floor(Math.random() * max);
+  }
+  export const nrOfRows = 6;
+  export const nrOfCols = 10;
 
-    const cinemaHallSize: any = data.cinemaHallSize;
-    const seatsPerRow = data.seatsPerRow.sort((a: any, b: any) => b - a)[0];
-
-    const originalSeats: any = data.seats;
-    const seats: any = JSON.parse(JSON.stringify(originalSeats));
-
-    $: addSeat = (seat: any, i: number, j: number) => {
-        if (seat.type === "reserved") {
-            return;
+  for (let y = 0; y < nrOfRows; ++y) {
+    for (let x = 0; x < nrOfCols; ++x) {
+      let choice = getRandomInt(100);
+      if (choice < 20) {
+        if (x < nrOfCols - 1) {
+          doubleSeat.x = x;
+          doubleSeat.y = y;
+          seatrow.push(getSeat("double", x, y));
+          seatrow.push(getSeat("emptyDouble", x + 1, y));
+          ++x;
+        } else {
+          seatrow.push(getSeat("regular", x, y));
         }
-        arrayOfSelectedSeats.push([i, j]);
-        let addedNextToEachOther = true;
+      } else if (choice >= 20 && choice <= 80) {
+        seatrow.push(getSeat("regular", x, y));
+      } else {
+        seatrow.push(getSeat("empty", x, y));
+      }
+    }
+    seats.push(seatrow);
+    seatrow = [];
+  }
 
-        if (arrayOfSelectedSeats.length > 1) {
-            const size = arrayOfSelectedSeats.length - 1;
-            for (let i = 0; i <= size; i++) {
-                const isLeftSite =
-                    arrayOfSelectedSeats[size][1] ===
-                    arrayOfSelectedSeats[i][1] - 1;
-                const isRightSite =
-                    arrayOfSelectedSeats[size][1] ===
-                    arrayOfSelectedSeats[i][1] + 1;
-                if (!isLeftSite && !isRightSite) {
-                    addedNextToEachOther = false;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        if (!addedNextToEachOther) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                color: "#FAFAFA",
-                timer: 5000,
-                customClass: "rounded-lg",
-                timerProgressBar: true,
-                background: "#354A5F",
-                text: "Please select seat next to each other!",
-                footer: '<a href="#" class="hover:text-inputBlue duration-300">Why do I have this issue?</a>',
-            });
-            return;
-        }
-        seatTypeSelection = seat.type;
-        selectedSeats++;
-
-        seat.type = "selected";
-        seats[i][j] = seat;
-    };
-    $: removeSeat = (seat: any, i: number, j: number) => {
-        seat.type = originalSeats[i][j].type;
-
-        seats[i][j] = seat;
-        selectedSeats--;
-    };
+  function timerFinished() {
+    for(let i = 0; i < selectedSeats.length; ++i){
+      seats.at(selectedSeats.at(i).y).at(selectedSeats.at(i).x).available = true;
+    }
+    selectedSeats = [];
+    nrOfSelectedSeats = 0;
+    Swal.fire({
+      icon: "error",
+      title: "Timer ran out!",
+      color: "#FAFAFA",
+      timer: 5000,
+      customClass: "rounded-lg w-[70%] sm:w-1/3",
+      timerProgressBar: true,
+      background: "#354A5F",
+      text: "Please select seats next to each other!",
+    });
+  }
 </script>
 
-<svelte:head>
-    <title>Cinemika - Seat selection</title>
-</svelte:head>
-
-<div class="flex mx-32">
-    <div class="mx-5 w-full h-full">
-        <div class="flex">
-            <div>
-                <p class="font-bold text-xl text-textWhite">SEATS</p>
-                <p class="text-lg text-textWhite">Select a seat</p>
-            </div>
-        </div>
-        <div
-            class="flex flex-col bg-[#29313a] rounded-lg bg-repeat-round items-center"
+<div class="flex">
+  <div class="mx-10 h-full">
+    <div class="relative flex flex-col items-center sm:flex-row">
+      <div class="w-1/5 absolute top-0 right-0 translate-y-1 z-50">
+        <Timer startTime={100} {signal} on:timerFinished={timerFinished} />
+      </div>
+      <div class="flex w-full h-fit mx-5 mb-20 bg-red-100">
+        <svg
+          id="itself"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 3"
+          preserveAspectRatio="xMidYMid meet"
+          class="w-full h-auto"
+          fill="#ffffff"
         >
-            <div class="leinwand" />
-            <p class="font-bold text-textWhite text-lg">Leinwand</p>
-            <div class="flex flex-row my-5 justify-center">
-                {#key seats}
-                    <div
-                        class="grid grid-cols-{cinemaHallSize} grid-rows-{seatsPerRow} gap-1"
-                    >
-                        {#each { length: cinemaHallSize } as _, i}
-                            {#each { length: seatsPerRow } as _, j}
-                                {#if seats[i][j].type !== "emptyDoubleSeat"}
-                                    <div
-                                        class="grid {seats[i][j].isDoubleSeat
-                                            ? 'col-span-2'
-                                            : ''} overflow-auto"
-                                    >
-                                        <button
-                                            disabled={seats[i][j].type ===
-                                                "reserved"}
-                                            class="disabled:cursor-not-allowed mx-auto"
-                                            on:click={() => {
-                                                if (
-                                                    seats[i][j].type !==
-                                                    "selected"
-                                                ) {
-                                                    addSeat(seats[i][j], i, j);
-                                                } else {
-                                                    removeSeat(
-                                                        seats[i][j],
-                                                        i,
-                                                        j
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            <CinemaSeat
-                                                seat={seats[i][j]}
-                                                isDoubleSeat={seats[i][j]
-                                                    .isDoubleSeat}
-                                            />
-                                        </button>
-                                    </div>
-                                {/if}
-                            {/each}
-                        {/each}
-                    </div>
-                {/key}
-            </div>
-        </div>
-    </div>
-</div>
+          <rect width="100" height="3" rx="1" ry="1" fill="#ffffff" />
+        </svg>
+      </div>
 
-<style>
-    .leinwand {
-        width: 80%;
-        border: 5px solid white;
-        height: 20px;
-        border-color: white transparent transparent transparent;
-        border-radius: 75%/20px 20px 0 0;
-    }
-</style>
+      <div class=" flex basis-3/4">
+        <Cinemahall
+          {nrOfSelectedSeats}
+          {seats}
+          on:seatWasSelected={(e) => {
+            selectedSeats = e.detail.selectedSeats;
+            console.log(selectedSeats.length);
+            signal = selectedSeats.length > 0 ? 1 : 0;
+          }}
+        />
+      </div>
+      <div class="flex basis-1/5">
+        {#key nrOfSelectedSeats}
+          <SelSeatOverview {selectedSeats} />
+        {/key}
+      </div>
+    </div>
+  </div>
+</div>

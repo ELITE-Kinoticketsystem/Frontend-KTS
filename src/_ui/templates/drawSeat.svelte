@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
   export let color = "#cccccc";
   export let type = "regular";
 </script>
 
 {#if type === "regular"}
   <svg
+    id="itself"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
     preserveAspectRatio="xMidYMid meet"

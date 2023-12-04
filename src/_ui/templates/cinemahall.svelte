@@ -3,120 +3,19 @@
   import DrawSeat from "./drawSeat.svelte";
   import Swal from "sweetalert2";
 
-  function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-  }
-  export const nrOfRows = 6;
-  export const nrOfCols = 10;
-  const selectedSeatColor = "#ccffee";
+  import { createEventDispatcher } from "svelte";
 
-  let seat = { type: "regular", available: true };
-  let doubleSeat = { type: "double", available: true };
-  let emptySeat = { type: "empty", available: false };
-  let emptyDoubleSeat = { type: "emptyDouble", available: false };
+  export let nrOfSelectedSeats = 0;
+  $: nrOfSelectedSeats = 0;
 
-  let seatrow: any[] = [];
-  let seats: any[] = [];
-  for (let y = 0; y < nrOfRows; ++y) {
-    for (let x = 0; x < nrOfCols; ++x) {
-      let choice = getRandomInt(100);
-      if (choice < 20) {
-        if (x < nrOfCols - 1) {
-          seatrow.push(doubleSeat);
-          seatrow.push(emptyDoubleSeat);
-          ++x;
-        } else {
-          seatrow.push(seat);
-        }
-      } else if (choice >= 20 && choice <= 80) {
-        seatrow.push(seat);
-      } else {
-        seatrow.push(emptySeat);
-      }
-    }
-    seats.push(seatrow);
-    seatrow = [];
-  }
+  const dispatch = createEventDispatcher();
+  
+  const selectedSeatColor = "#ff0055";
+  const unselectedSeatColor = "#00ff80";
 
-  seats = [
-    [
-      { available: false, type: "empty" },
-      { available: true, type: "regular" },
-      { available: true, type: "double" },
-      { available: true, type: "emptyDouble" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "double" },
-      { available: true, type: "emptyDouble" },
-      { available: true, type: "regular" },
-      { available: false, type: "empty" },
-    ],
+  export let seats: any[] = [];
+  
 
-    [
-      { available: false, type: "empty" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: false, type: "empty" },
-    ],
-
-    [
-      { available: false, type: "empty" },
-      { available: true, type: "double" },
-      { available: false, type: "emptyDouble" },
-      { available: false, type: "empty" },
-      { available: true, type: "double" },
-      { available: false, type: "emptyDouble" },
-      { available: false, type: "empty" },
-      { available: true, type: "double" },
-      { available: false, type: "emptyDouble" },
-      { available: false, type: "empty" },
-    ],
-
-    [
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-      { available: false, type: "empty" },
-    ],
-
-    [
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-    ],
-
-    [
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-      { available: true, type: "regular" },
-    ],
-  ];
   let selectedSeats: any[] = []; //used as an ordered list
   $: nrOfSelectedSeats = selectedSeats.length;
 
@@ -143,7 +42,7 @@
       return true;
     }
     //go to the right until you encounter a nonempty seat
-    while (x + rightOffset < nrOfCols) {
+    while (x + rightOffset < seats.at(0).length) {
       if (
         seats.at(y).at(x + rightOffset).type === "empty" ||
         seats.at(y).at(x + rightOffset).type === "emptyDouble"
@@ -160,94 +59,88 @@
     return false;
   }
 
-  function clearAllSelectedSeats() {
-    selectedSeats = [];
-    nrOfSelectedSeats = 0;
-  }
-
-  function seatWasSelected(seat: any, x: number, y: number) {
+  function seatWasSelected(seat: {
+    type: string;
+    x: number;
+    y: number;
+    available: boolean;
+  }) {
     //case: no selected seats yet
     if (selectedSeats.length === 0) {
-      if (seat.type === "emptyDouble") {
-        selectedSeats.push({ x: x - 1, y });
-      } else {
-        selectedSeats.push({ x, y });
-      }
+      selectedSeats.push({
+        type: seat.type,
+        x: seat.type === "emptyDouble" ? seat.x - 1 : seat.x,
+        y: seat.y,
+      });
 
-      console.log(selectedSeats);
-      seats.at(y).at(x).available = false;
+      seats.at(seat.y).at(seat.x).available = false;
       ++nrOfSelectedSeats;
+
       return;
     }
     //case: already selected seat was clicked
     if (!seat.available) {
-      if (selectedSeats.at(Math.floor(selectedSeats.length / 2)).x > x) {
-        seats.at(selectedSeats.at(0).y).at(selectedSeats.at(0).x).available =
-          true;
+      const index =
+        selectedSeats.at(Math.floor(selectedSeats.length / 2)).x > seat.x
+          ? 0
+          : selectedSeats.length - 1;
+      seats
+        .at(selectedSeats.at(index).y)
+        .at(selectedSeats.at(index).x).available = true;
+      if (index === 0) {
         selectedSeats = selectedSeats.slice(1, selectedSeats.length);
       } else {
-        seats
-          .at(selectedSeats.at(selectedSeats.length - 1).y)
-          .at(selectedSeats.at(selectedSeats.length - 1).x).available = true;
         selectedSeats.pop();
       }
       nrOfSelectedSeats = selectedSeats.length;
       return;
     }
     //case: not-selected seat was clicked
-    if (isNeighborSeat(x, y)) {
-      if (selectedSeats.at(selectedSeats.length - 1).x < x) {
-        if (seat.type === "emptyDouble") {
-          selectedSeats.push({ x: x - 1, y });
-        } else {
-          selectedSeats.push({ x, y });
-        }
-      } else {
-        if (seat.type === "emptyDouble") {
-          selectedSeats.unshift({ x: x - 1, y });
-        } else {
-          selectedSeats.unshift({ x, y });
-        }
-      }
-      seats.at(y).at(x).available = false;
-      ++nrOfSelectedSeats; //necessary(?) to trigger update of svg..
-    } else {
+    if (!isNeighborSeat(seat.x, seat.y)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         color: "#FAFAFA",
         timer: 5000,
-        customClass: "rounded-lg w-[70%] sm:w-1/2 md:1/3",
+        customClass: "rounded-lg w-[70%] sm:w-1/3",
         timerProgressBar: true,
         background: "#354A5F",
         text: "Please select seats next to each other!",
       });
+      return;
     }
-    console.log(selectedSeats);
+
+    let xCor = seat.type === "emptyDouble" ? seat.x - 1 : seat.x;
+    if (selectedSeats.at(selectedSeats.length - 1).x < seat.x) {
+      selectedSeats.push({ type: seat.type, x: xCor, y: seat.y });
+    } else {
+      selectedSeats.unshift({ type: seat.type, x: xCor, y: seat.y });
+    }
+    seats.at(seat.y).at(seat.x).available = false;
+    ++nrOfSelectedSeats; //necessary(?) to trigger update of svg..
   }
 </script>
 
 <div class="min-w-fit overflow-hidden ring-1 ring-inset-0 ring-white">
   <div class="">
     <div class="grid grid-rows-6 grid-cols-10">
-      {#each seats as seatrow, y}
-        {#each seatrow as seat, x}
+      {#each seats as seatrow}
+        {#each seatrow as seat}
           {#if seat.type === "regular" || seat.type === "double"}
-            <div
-              class="grid {seat.type === 'double'
-                ? 'col-span-2'
-                : ''} bg-white hover:bg-slate-300 ring-black ring-1 ring-inset"
-            >
+            <div class="grid {seat.type === 'double' ? 'col-span-2' : ''}">
               <button
                 on:click={() => {
-                  seatWasSelected(seat, x, y);
+                  seatWasSelected(seat);
+                  dispatch("seatWasSelected", { selectedSeats });
                 }}
               >
                 <div class="relative">
                   {#key nrOfSelectedSeats}
                     <DrawSeat
                       type={seat.type}
-                      color={seat.available ? "#cccccc" : selectedSeatColor}
+                      color={seat.available
+                        ? unselectedSeatColor
+                        : selectedSeatColor}
                     />
                   {/key}
                   <!-- <p class="absolute inset-0 text-3xl text-center">{x} {y}</p> -->
