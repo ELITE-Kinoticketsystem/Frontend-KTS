@@ -54,7 +54,7 @@
       </a>
     </div>
     <div
-      class="flex w-full mt-1 content-center justify-between md:w-1/2 md:justify-end"
+      class="flex w-full mt-1 content-center justify-between md:w-1/2 md:justify-end overflow-y-auto sm:overflow-y-auto md:overflow-y-clip"
     >
       <ul class="flex justify-between flex-1 md:flex-none items-center text-lg">
         <li class="mr-3">
@@ -67,7 +67,7 @@
         </li>
         <li class="mr-3">
           <a
-            class="inline-block {url === '/movies'
+            class="inline-block {String(url).includes('/movies')
               ? 'text-textWhite'
               : 'text-gray-600 hover:text-buttonBlue duration-300'}  no-underline py-2 px-4 duration-300"
             href="/movies">Movies</a
@@ -75,7 +75,7 @@
         </li>
         <li class="mr-3">
           <a
-            class="inline-block {url === '/specialevents'
+            class="inline-block {String(url).includes('/specialevents')
               ? 'text-textWhite'
               : 'text-gray-600 hover:text-buttonBlue duration-300'}  no-underline py-2 px-4 duration-300"
             href="/specialevents">Events</a
@@ -83,10 +83,10 @@
         </li>
         <li class="mr-3">
           <a
-            class="inline-block {url === '/contact'
+            class="inline-block {String(url).includes('/actors')
               ? 'text-textWhite'
               : 'text-gray-600 hover:text-buttonBlue duration-300'} no-underline py-2 px-4 duration-300"
-            href="/contact">Contact</a
+            href="/actors">Actors</a
           >
         </li>
         <li class="mr-3">
