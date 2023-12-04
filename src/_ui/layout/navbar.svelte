@@ -83,10 +83,10 @@
         </li>
         <li class="mr-3">
           <a
-            class="inline-block {String(url).includes('/actors')
+            class="inline-block {String(url).includes('/search')
               ? 'text-textWhite'
               : 'text-gray-600 hover:text-buttonBlue duration-300'} no-underline py-2 px-4 duration-300"
-            href="/actors">Actors</a
+            href="/search">Search</a
           >
         </li>
         <li class="mr-3">

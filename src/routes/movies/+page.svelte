@@ -1,15 +1,19 @@
 <script lang="ts">
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
+  import { load } from "./+page";
 
-  let movieInput: string = "";
-  let displayedMovieInput: string = "";
+  let key: string = "";
+  let displayedKey: string = "";
 
   let filteredMovies: any[] = [];
+  let filterActors: any[] = [];
 
   export let data;
 
   let allMovies: any[] = data.movies;
+
+  let allActors: any[] = data.actors;
 
   allMovies.push({
     movieName: "The Matrix",
@@ -23,12 +27,22 @@
   });
 
   function loadFilterMovies() {
-    if (movieInput === "" || movieInput === undefined) {
+    if (key === "" || key === undefined) {
       filteredMovies = [];
       return;
     }
     filteredMovies = allMovies.filter((movie: any) => {
-      return movie.movieName.toLowerCase().includes(movieInput);
+      return movie.movieName.toLowerCase().includes(key);
+    });
+  }
+
+  function loadFilterActors() {
+    if (key === "" || key === undefined) {
+      filterActors = [];
+      return;
+    }
+    filterActors = allActors.filter((actor: any) => {
+      return actor.name.toLowerCase().includes(key);
     });
   }
 </script>
@@ -38,52 +52,54 @@
 </svelte:head>
 
 <div class="flex w-screen h-max">
-  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="flex flex-col flex-grow w-max">
-    <p class="text-textWhite text-xl font-semibold mb-3">Enter a movie</p>
-    <div class="mx-auto w-full">
-      <Searchbar
-        longSearchBarSize="w-full"
-        shortSearchBarSize="w-full"
-        shortSearchBarText="Search for a movie"
-        longSearchBarText="Search for a movie"
-        on:inputChange={(event) => {
-          movieInput = event.detail.toLowerCase().trim();
-          displayedMovieInput = event.detail.trim();
-          loadFilterMovies();
-        }}
-      />
-    </div>
-    <hr
-      class="h-px my-2 bg-textWhite border-0"
-      class:hidden={movieInput === "" || movieInput === undefined}
+    <Searchbar
+      longSearchBarSize="w-full"
+      shortSearchBarSize="w-full"
+      shortSearchBarText="Search for a movie"
+      longSearchBarText="Search for a movie"
+      on:inputChange={(event) => {
+        key = event.detail.toLowerCase().trim();
+        displayedKey = event.detail.trim();
+        loadFilterMovies();
+        loadFilterActors();
+      }}
     />
-    {#key movieInput}
-      <p
-        class="my-3 text-textWhite text-xl"
-        class:hidden={movieInput === "" ||
-          movieInput === undefined ||
-          filteredMovies.length === 0}
-      >
-        Results for <span class="underline-offset-2 underline"
-          >{displayedMovieInput}</span
-        >
-      </p>
-      <p
-        class="my-3 text-textWhite text-xl"
-        class:hidden={filteredMovies.length > 0 || movieInput === ""}
-      >
-        No results for <span class="underline-offset-2 underline"
-          >{displayedMovieInput}</span
-        >
-      </p>
-
-      <div class="grid grid-cols-5 mx-auto gap-5">
-        {#each filteredMovies as movie}
-          <MainCard {movie} />
-        {/each}
+    {#key key}
+      <div class="movies">
+        <p class="text-textWhite text-xl mt-4">
+          <span class="font-bold">Movies</span> ({Math.min(
+            filteredMovies.length,
+            5
+          )})
+        </p>
+        <hr class="h-px bg-textWhite border-0 w-full -my-1" />
+        <div class="flex mx-auto mt-5">
+          <div class="grid grid-cols-5 mx-auto gap-5">
+            {#each filteredMovies.splice(0, 5) as movie}
+              <MainCard {movie} />
+            {/each}
+          </div>
+        </div>
+      </div>
+      <div class="actors">
+        <p class="text-textWhite text-xl mt-4">
+          <span class="font-bold">Actors</span> ({Math.min(
+            filterActors.length,
+            5
+          )})
+        </p>
+        <hr class="h-px bg-textWhite border-0 w-full -my-1" />
+        <div class="flex mx-auto mt-5">
+          <div class="grid grid-cols-5 mx-auto gap-5">
+            {#each filterActors.splice(0, 5) as actor}
+              <MainCard movie={actor} isActor={true} />
+            {/each}
+          </div>
+        </div>
       </div>
     {/key}
   </div>
-  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
