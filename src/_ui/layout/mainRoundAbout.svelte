@@ -49,7 +49,7 @@
   </div>
 {:then}
   <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
-    <div class="relative">
+    <div class="relative mx-0 sm:mx-0 md:mx-1 lg:mx-2 xl:mx-4 2xl:mx-8">
       <SplideTrack class="rounded-xl">
         {#each moviesToDisplay.slice(randomBegin, randomBegin + 5) as movie}
           <SplideSlide>
