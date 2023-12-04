@@ -96,9 +96,9 @@
       "Friday",
       "Saturday",
     ];
-    let currentDate = new Date();
+    let currentDate = new Date(Date.now());
     let showingDate = new Date(datetime);
-    if (new Date(datetime) < currentDate)
+    if (new Date(datetime).getDate() === currentDate.getDate())
       return "Today, " + showingDate.toLocaleDateString();
     else {
       return (

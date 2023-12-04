@@ -4,6 +4,8 @@
   let searchBarIsOpen: Boolean;
   export let shortSearchBarText: string = "shortsearchbartext";
   export let longSearchBarText: string = "longsearchbartext";
+  export let shortSearchBarSize: string = "w-40";
+  export let longSearchBarSize: string = "w-96";
 
   const dispatch = createEventDispatcher();
 </script>
@@ -37,8 +39,8 @@
       on:focus={() => (searchBarIsOpen = true)}
       on:blur={() => (searchBarIsOpen = false)}
       class="block p-2 ps-10 {searchBarIsOpen
-        ? `w-96`
-        : 'w-40'} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
+        ? longSearchBarSize
+        : shortSearchBarSize} duration-300 text-sm text-textWhite border border-gray-300 rounded-lg bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
       placeholder={searchBarIsOpen ? longSearchBarText : shortSearchBarText}
     />
   </div>

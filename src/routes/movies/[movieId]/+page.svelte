@@ -89,17 +89,6 @@
     if (browser)
       ytPlayer = YouTubePlayer("player-1", {
         videoId: "NHhTMh0nURA",
-        playerVars: {
-          autoplay: 0,
-          controls: 1,
-          disablekb: 1,
-          fs: 0,
-          iv_load_policy: 3,
-          loop: 1,
-          modestbranding: 1,
-          rel: 0,
-          showinfo: 0,
-        },
       });
   });
   function startVideo() {
@@ -126,16 +115,6 @@
           class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
         />
       </button>
-      <!--<iframe
-        class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
-        src="https://www.youtube.com/embed/NHhTMh0nURA?si=bxOxwt_o6PWZ-5Nb"
-        title="YouTube video player"
-        frameborder="0"
-        on:mouseenter={() => {}}
-        on:mouseleave={() => {}}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      />-->
       <div class="flex flex-row mt-14">
         <div class="relative basis-1/3 flex-shrink-0 h-max">
           <img
