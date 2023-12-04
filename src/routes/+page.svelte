@@ -1,15 +1,16 @@
 <script>
   import { page } from "$app/stores";
   import MainRoundAbout from "../_ui/layout/mainRoundAbout.svelte";
-  import FirstMainSiteElement from "../_ui/layout/_mainpage/firstMainSiteElement.svelte";
-  import SecondMainSiteElement from "../_ui/layout/_mainpage/secondMainSiteElement.svelte";
-  import ThirdMainSiteElement from "../_ui/layout/_mainpage/thirdMainSiteElement.svelte";
+  import SpecialEventTile from "../_ui/layout/_mainpage/specialEventTile.svelte";
   import Swal from "sweetalert2";
   import { LoginStatus, RegisterStatus } from "$lib/statusEnums";
+  import MainPageMovieRow from "../_ui/layout/_mainpage/mainPageMovieRow.svelte";
+  
 
   export let data;
 
   let moviesToDisplay = data.first;
+
 
   const url = $page.url;
 
@@ -60,14 +61,20 @@
   <title>Cinemika - Home</title>
 </svelte:head>
 
-<MainRoundAbout {moviesToDisplay} />
-<br />
-<div class="mx-2 sm:mx-2 md:xm-3 lg:mx-16 mt-3">
-  <FirstMainSiteElement {moviesToDisplay} />
-</div>
-<div class="mx-2 sm:mx-2 md:xm-3 lg:mx-16 mt-10">
-  <ThirdMainSiteElement specialMovies={moviesToDisplay} />
-</div>
-<div class="mx-2 sm:mx-2 md:xm-3 lg:mx-16 mt-10">
-  <SecondMainSiteElement {moviesToDisplay} />
+<div class="flex flex-col gap-y-12 sm:gap-y-16 w-full">
+  <div class="flex mx-1 mb-4">
+    <MainRoundAbout {moviesToDisplay} />
+  </div>
+
+  <div class="flex mx-8 lg:mx-16">
+    <MainPageMovieRow {moviesToDisplay} textData={{refs: ["/yourwatchlist", "/likedbyother"], txt: ["Your watchlist", "Liked by others"]}}/>
+  </div>
+
+  <div class="flex mx-8 h-[20vh] sm:h-[33vh] lg:mx-16">
+    <SpecialEventTile specialMovies={moviesToDisplay} />
+  </div>
+
+  <div class="flex mb-4 mx-8 lg:mx-16">
+    <MainPageMovieRow {moviesToDisplay} textData={{refs: ["/yoursuggestions", "/upcomingmovies"], txt: ["Your suggestions ", "Upcoming movies"]}}/>
+  </div>
 </div>

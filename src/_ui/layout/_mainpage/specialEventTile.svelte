@@ -12,7 +12,7 @@
   }
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col w-full h-full">
   <div class="flex">
     <TextMainSite
       href={isUserLoggedIn ? "/events" : "/events"}
@@ -22,9 +22,12 @@
     />
   </div>
 
-  <div class="flex">
-    {#each specialMovies.slice(randomEvents, randomEvents + 2) as specialMovie}
-      <SpecialCard movie={specialMovie} />
-    {/each}
+  <div class="w-full h-full flex flex-row gap-x-3 overflow-hidden">
+      <div class="flex w-full">
+        <SpecialCard movie={specialMovies[0]} />
+      </div>
+      <div class="hidden sm:flex w-full">
+        <SpecialCard movie={specialMovies[1]} />
+      </div>
   </div>
 </div>

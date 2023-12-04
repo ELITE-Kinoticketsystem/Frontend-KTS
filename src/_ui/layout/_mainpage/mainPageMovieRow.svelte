@@ -7,14 +7,16 @@
 
   const isUserLoggedIn = authService.isUserLoggedIn();
 
+  export let textData: any;
+
   export let moviesToDisplay: any;
 </script>
 
 <div class="flex flex-col w-full h-auto">
   <div class="flex">
     <TextMainSite
-      href={isUserLoggedIn ? "/yourwatchlist" : "/likedbyother"}
-      text={isUserLoggedIn ? "Your watchlist" : "Liked by others"}
+      href={isUserLoggedIn ? textData.refs[0] : textData.refs[1]}
+      text={isUserLoggedIn ? textData.txt[0] : textData.txt[1]}
     />
   </div>
 
@@ -22,3 +24,4 @@
     <MovieRow {moviesToDisplay} />
   </div>
 </div>
+

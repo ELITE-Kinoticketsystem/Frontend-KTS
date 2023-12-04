@@ -1,22 +1,7 @@
 <script lang="ts">
-  import { AuthService } from "$lib/_services/authService";
   import { Splide, SplideSlide, SplideTrack } from "@splidejs/svelte-splide";
   import "@splidejs/svelte-splide/css";
 
-  const authService = new AuthService();
-
-  async function getPictures() {
-    return await new Promise((resolve, reject) => {
-      authService
-        .getForYouMovies()
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((error) => {
-          //USER IS NOT LOGGED IN display random movies
-        });
-    });
-  }
   export let moviesToDisplay: any = [];
 
   let randomBegin = Math.floor(Math.random() * moviesToDisplay.length) + 1;
@@ -25,8 +10,8 @@
   }
 </script>
 
-{#await getPictures()}
-  <div class="flex justify-center h-screen">
+{#if false}
+  <div class="flex justify-center h-auto">
     <div role="status">
       <svg
         aria-hidden="true"
@@ -47,65 +32,63 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-{:then}
-  <Splide options={{ autoplay: true, rewind: true }} hasTrack={false}>
-    <div class="relative mx-0 sm:mx-0 md:mx-1 lg:mx-2 xl:mx-4 2xl:mx-8">
-      <SplideTrack class="rounded-xl">
-        {#each moviesToDisplay.slice(randomBegin, randomBegin + 5) as movie}
-          <SplideSlide>
-            <a href="/movies/{movie.movieId}">
-              <img
-                class="w-full 2xl:h-[32rem] xl:h-96 md:h-60 sm:h-36 h-60 object-cover"
-                src={movie.src}
-                alt={movie.movieName}
-              />
+{:else}
+  <Splide
+    options={{ autoplay: true, rewind: true }}
+    hasTrack={false}
+    class="relative w-full"
+  >
+    <SplideTrack class="rounded-xl">
+      {#each moviesToDisplay.slice(randomBegin, randomBegin + 5) as movie}
+        <SplideSlide>
+          <a href="/movies/{movie.movieId}">
+            <img
+              class="w-full sm:h-36 md:h-60 xl:h-96 2xl:h-[32rem] object-cover"
+              src={movie.src}
+              alt={movie.movieName}
+            />
+            <div
+              class=" absolute bottom-0 left-0 w-full h-full bg-black opacity-0 hover:opacity-75 transition-opacity duration-300"
+            >
               <div
-                class=" absolute bottom-0 left-0 w-full h-full bg-black opacity-0 hover:opacity-75 transition-opacity duration-300"
+                class="opacity-70 ml-20 h-full flex flex-col justify-between"
               >
-                <div
-                  class="opacity-70 ml-20 h-full flex flex-col justify-between"
-                >
-                  <div class="mx-auto">
-                    <p
-                      class="text-textWhite text-center text-lg font-bold p-4 flex"
-                    >
-                      {movie.movieName}
-                    </p>
-                    <hr class="w-72 h-1 bg-textWhite border-0 rounded flex" />
-                  </div>
-                  <div class="flex">
-                    <div class="flex flex-col">
-                      <div class="mb-5">
-                        <p class="text-textWhite text-left flex">
-                          <a href="/movies?age={movie.fsk}"
-                            >From age <b>{movie.fsk}</b></a
-                          >
-                        </p>
-                      </div>
+                <div class="mx-auto">
+                  <p
+                    class="text-textWhite text-center text-lg font-bold p-4 flex"
+                  >
+                    {movie.movieName}
+                  </p>
+                  <hr class="w-72 h-1 bg-textWhite border-0 rounded flex" />
+                </div>
+                <div class="flex">
+                  <div class="flex flex-col">
+                    <div class="mb-5">
                       <p class="text-textWhite text-left flex">
-                        {#each movie.tags as tag, index}
-                          <a href="/movies?tags={tag}"
-                            >#{tag}{index === movie.tags.length - 1
-                              ? ""
-                              : ", "}&nbsp;</a
-                          >
-                        {/each}
-                      </p>
-                      <p class="text-textWhite text-left break-words pb-4 flex">
-                        {movie.movieDescription}
+                        <a href="/movies?age={movie.fsk}"
+                          >From age <b>{movie.fsk}</b></a
+                        >
                       </p>
                     </div>
+                    <p class="text-textWhite text-left flex">
+                      {#each movie.genre as gen, index}
+                        <a href="/movies?tags={gen}"
+                          >#{gen}{index === movie.genre.length - 1
+                            ? ""
+                            : ", "}&nbsp;</a
+                        >
+                      {/each}
+                    </p>
+                    <p class="text-textWhite text-left break-words pb-4 flex">
+                      {movie.movieDescription}
+                    </p>
                   </div>
                 </div>
               </div>
-            </a>
-          </SplideSlide>
-        {/each}
-      </SplideTrack>
-    </div>
-
-    <!--<div class="splide__progress mx-10">
-            <div class="splide__progress__bar" />
-        </div>-->
+            </div>
+          </a>
+        </SplideSlide>
+      {/each}
+    </SplideTrack>
   </Splide>
-{/await}
+{/if}
