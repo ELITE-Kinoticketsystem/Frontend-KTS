@@ -7,3 +7,7 @@ export enum RegisterStatus {
     ALREADY_LOGGED_IN,
     REGISTERED
 }
+export enum SessionStatus {
+    EXPIRED,
+    NOT_LOGGED_IN
+}
