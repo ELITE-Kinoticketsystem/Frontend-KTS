@@ -1,26 +1,30 @@
 <script lang="ts">
-    import CinemaTile from "$lib/assets/cinemaTile.png";
+  import CinemaTile from "$lib/assets/cinemaTile.png";
 
-    export let cinemaLocation: string = "";
-    export let cinemaCompany: string = "";
+  export let cinemaLocation: string = "";
+  export let cinemaCompany: string = "";
+  console.log(cinemaCompany);
 </script>
 
 <div
-    class="flex min-h-full flex-col rounded-xl mx-auto w-full max-w-2xl justify-center bg-[#2A313A] opacity-80"
+  class="flex flex-col rounded-md sm:rounded-xl items-center w-full h-full mx-auto justify-between bg-[#2A313A] opacity-80"
 >
-    <div class="mx-10">
-        <img
-            src={CinemaTile}
-            alt="{cinemaCompany} & {cinemaLocation}"
-            class=""
-        />
+  <img
+    src={CinemaTile}
+    alt="{cinemaCompany} & {cinemaLocation}"
+    class="flex m-6 aspect-auto w-[80%] sm:w-[70%]"
+  />
+
+  <div class="flex flex-col items-center mb-1">
+    <div class="flex">
+      <p class="font-bold text-xs sm:text-lg text-textWhite text-center">
+        {cinemaCompany}
+      </p>
     </div>
-    <div class="mt-24">
-        <p class="font-bold text-2xl text-textWhite text-center">
-            {cinemaCompany}
-        </p>
-        <p class="font-bold text-sm text-darkTextWhite text-center">
-            {cinemaLocation}
-        </p>
+    <div class="flex">
+      <p class="font-bold text-xs sm:text-lg text-darkTextWhite text-center">
+        {cinemaLocation}
+      </p>
     </div>
+  </div>
 </div>
