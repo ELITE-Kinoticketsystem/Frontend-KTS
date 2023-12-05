@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { afterNavigate, beforeNavigate } from "$app/navigation";
   import { page } from "$app/stores";
   import { AuthService } from "$lib/_services/authService";
