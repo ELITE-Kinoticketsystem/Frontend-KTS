@@ -17,12 +17,12 @@
 
   <div class="flex flex-col items-center mb-1">
     <div class="flex">
-      <p class="font-bold text-xs sm:text-md text-textWhite text-center">
+      <p class="font-bold text-xs sm:text-lg text-textWhite text-center">
         {cinemaCompany}
       </p>
     </div>
     <div class="flex">
-      <p class="font-bold text-xs sm:text-md text-darkTextWhite text-center">
+      <p class="font-bold text-xs sm:text-lg text-darkTextWhite text-center">
         {cinemaLocation}
       </p>
     </div>

@@ -22,11 +22,11 @@
     />
   </div>
 
-  <div class="w-full h-full flex flex-row gap-x-3 overflow-hidden">
-      <div class="flex w-full">
+  <div class="w-full h-full flex flex-row gap-x-3">
+      <div class="flex w-full hover:scale-105 duration-300">
         <SpecialCard movie={specialMovies[0]} />
       </div>
-      <div class="hidden sm:flex w-full">
+      <div class="hidden sm:flex w-full hover:scale-105 duration-300">
         <SpecialCard movie={specialMovies[1]} />
       </div>
   </div>
