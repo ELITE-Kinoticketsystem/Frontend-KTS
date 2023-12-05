@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
 
@@ -65,20 +66,29 @@
       }
     });
   }
+
+  /*{displayedKey}
+            <span class="opacity-50">{filteredMovies[0].movieName}</span>*/
+
+  $: valueAuto = "";
 </script>
 
 <svelte:head>
-  <title>Search movies</title>
+  <title>Search help</title>
 </svelte:head>
 
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="flex flex-col flex-grow w-max">
+    <p class="text-textWhite font-semibold">
+      Here you can search for an actor(s), for movie(s) or genre(s)
+    </p>
     <Searchbar
       longSearchBarSize="w-full"
       shortSearchBarSize="w-full"
-      shortSearchBarText="Search for a movie"
-      longSearchBarText="Search for a movie"
+      shortSearchBarText="Search for a movies, actors or genres"
+      longSearchBarText="Search for a movies, actors or genres"
+      input={displayedKey}
       on:inputChange={(event) => {
         key = event.detail.toLowerCase().trim();
         displayedKey = event.detail.trim();
@@ -94,7 +104,8 @@
             <span class="font-bold">Movies</span> ({Math.min(
               filteredMovies.length,
               5
-            )}) - {displayedKey}
+            )}) -
+            {displayedKey}
           </p>
           <hr class="h-px bg-textWhite border-0 w-full" />
           <div class="flex mx-auto mt-5">

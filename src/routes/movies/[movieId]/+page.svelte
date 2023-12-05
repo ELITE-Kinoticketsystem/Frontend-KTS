@@ -46,7 +46,7 @@
 
   let cinema = "";
   if (browser) {
-    cinema = window.localStorage.getItem("cinema") || "none";
+    cinema = window.localStorage.getItem("cinema") || "Not selected";
   }
 
   let direction = 1;
@@ -224,7 +224,7 @@
             in:fly={{ x: 100 * direction, duration: 400, delay: 401 }}
             out:fly={{ x: -100 * direction, duration: 400 }}
           >
-            {#if cinema == "none"}
+            {#if cinema == "Not selected"}
               <Cinemas
                 {data}
                 on:dataLoaded={(e) => {
@@ -237,7 +237,7 @@
                 {cinema}
                 {movie}
                 on:changeCinema={(e) => {
-                  cinema = "none";
+                  cinema = "Not selected";
                   direction = -1;
                 }}
               />

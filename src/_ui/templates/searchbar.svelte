@@ -6,7 +6,7 @@
   export let longSearchBarText: string = "longsearchbartext";
   export let shortSearchBarSize: string = "w-40";
   export let longSearchBarSize: string = "w-96";
-
+  export let input = "";
   const dispatch = createEventDispatcher();
 </script>
 
@@ -35,7 +35,10 @@
       type="search"
       id="default-search"
       autocomplete="off"
-      on:input={(event) => dispatch("inputChange", event.target.value)}
+      bind:value={input}
+      on:input={(event) => {
+        dispatch("inputChange", event.target.value);
+      }}
       on:focus={() => (searchBarIsOpen = true)}
       on:blur={() => (searchBarIsOpen = false)}
       class="block p-2 ps-10 {searchBarIsOpen

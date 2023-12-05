@@ -5,7 +5,6 @@
   import Swal from "sweetalert2";
   import { LoginStatus, RegisterStatus } from "$lib/statusEnums";
   import MainPageMovieRow from "../_ui/layout/_mainpage/mainPageMovieRow.svelte";
-  
 
   export let data;
 
@@ -13,48 +12,6 @@
 
 
   const url = $page.url;
-
-  const registerStatus = url.searchParams.get("registerStatus");
-  const loginStatus = url.searchParams.get("loginStatus");
-
-  if (
-    registerStatus === RegisterStatus.ALREADY_LOGGED_IN.toString() ||
-    loginStatus === LoginStatus.ALREADY_LOGGED_IN.toString()
-  ) {
-    Swal.fire({
-      position: "top-end",
-      icon: "info",
-      title: "You are already logged in!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  } else if (registerStatus === RegisterStatus.REGISTERED.toString()) {
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Your account has been created!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
-
-  if (loginStatus == LoginStatus.SUCCESSFUL_LOGIN.toString()) {
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "You have been logged in!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  } else if (loginStatus == LoginStatus.SUCCESSFUL_LOGOUT.toString()) {
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "You have been logged out!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
 </script>
 
 <svelte:head>
