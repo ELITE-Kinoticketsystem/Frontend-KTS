@@ -77,9 +77,9 @@
   <title>Search help</title>
 </svelte:head>
 
-<div class="flex w-screen h-max">
+<div class="flex w-screen h-full">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
-  <div class="flex flex-col flex-grow w-max">
+  <div class="flex flex-col flex-grow w-full h-max">
     <p class="text-textWhite font-semibold">
       Here you can search for an actor(s), for movie(s) or genre(s)
     </p>
