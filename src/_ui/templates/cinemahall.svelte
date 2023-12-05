@@ -5,26 +5,23 @@
 
   import { createEventDispatcher } from "svelte";
 
-  export let nrOfSelectedSeats = 0;
-  $: nrOfSelectedSeats = 0;
-
   const dispatch = createEventDispatcher();
-  
+
   const selectedSeatColor = "#ff0055";
   const unselectedSeatColor = "#00ff80";
 
   export let seats: any[] = [];
-  
 
-  let selectedSeats: any[] = []; //used as an ordered list
-  $: nrOfSelectedSeats = selectedSeats.length;
+  export let selectedSeats = seats.filter((seat) => seat.available); //used as an ordered list
+
+  $: seats = seats;
+  $: selectedSeats = selectedSeats;
 
   function isNeighborSeat(x: number, y: number) {
     //all selected seats share y coordinate
     if (selectedSeats.at(0).y != y) {
       return false;
     }
-
     let leftOffset = 1;
     let rightOffset = 1;
     //go to the left until you encounter a nonempty seat
@@ -66,16 +63,16 @@
     available: boolean;
   }) {
     //case: no selected seats yet
+
     if (selectedSeats.length === 0) {
-      selectedSeats.push({
-        type: seat.type,
-        x: seat.type === "emptyDouble" ? seat.x - 1 : seat.x,
-        y: seat.y,
-      });
-
       seats.at(seat.y).at(seat.x).available = false;
-      ++nrOfSelectedSeats;
-
+      selectedSeats = [
+        {
+          type: seat.type,
+          x: seat.type === "emptyDouble" ? seat.x - 1 : seat.x,
+          y: seat.y,
+        },
+      ];
       return;
     }
     //case: already selected seat was clicked
@@ -90,9 +87,8 @@
       if (index === 0) {
         selectedSeats = selectedSeats.slice(1, selectedSeats.length);
       } else {
-        selectedSeats.pop();
+        selectedSeats = selectedSeats.slice(0, selectedSeats.length - 1);
       }
-      nrOfSelectedSeats = selectedSeats.length;
       return;
     }
     //case: not-selected seat was clicked
@@ -112,12 +108,17 @@
 
     let xCor = seat.type === "emptyDouble" ? seat.x - 1 : seat.x;
     if (selectedSeats.at(selectedSeats.length - 1).x < seat.x) {
-      selectedSeats.push({ type: seat.type, x: xCor, y: seat.y });
+      selectedSeats = [
+        ...selectedSeats,
+        { type: seat.type, x: xCor, y: seat.y },
+      ];
     } else {
-      selectedSeats.unshift({ type: seat.type, x: xCor, y: seat.y });
+      selectedSeats = [
+        { type: seat.type, x: xCor, y: seat.y },
+        ...selectedSeats,
+      ];
     }
     seats.at(seat.y).at(seat.x).available = false;
-    ++nrOfSelectedSeats; //necessary(?) to trigger update of svg..
   }
 </script>
 
@@ -135,7 +136,7 @@
                 }}
               >
                 <div class="relative">
-                  {#key nrOfSelectedSeats}
+                  {#key selectedSeats}
                     <DrawSeat
                       type={seat.type}
                       color={seat.available
@@ -143,14 +144,11 @@
                         : selectedSeatColor}
                     />
                   {/key}
-                  <!-- <p class="absolute inset-0 text-3xl text-center">{x} {y}</p> -->
                 </div>
               </button>
             </div>
           {:else if seat.type === "empty"}
-            <div class="grid">
-              <!-- <p class="text-textWhite text-xl text-center">{x} {y}</p> -->
-            </div>
+            <div class="grid"></div>
           {/if}
         {/each}
       {/each}
