@@ -3,7 +3,6 @@
 
   export let cinemaLocation: string = "";
   export let cinemaCompany: string = "";
-  console.log(cinemaCompany);
 </script>
 
 <div
