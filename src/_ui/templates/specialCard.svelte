@@ -20,7 +20,8 @@
   href="/specialevents/{movieCopy.specialEventId}"
 >
   <div
-    class="absolute inset-y-0 left-0 h-auto w-1/3 sm:w-1/4 aspect-auto rounded-lg object-cover"
+    class="absolute inset-y-0 left-0 h-auto w-1/3 sm:w-1/4
+    aspect-auto rounded-lg object-cover"
   >
     <CinemaTile cinemaCompany="Cineplex" cinemaLocation="Mannheim" />
   </div>
