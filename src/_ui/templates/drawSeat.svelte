@@ -1,33 +1,80 @@
 <script lang="ts">
   export let color = "#cccccc";
   export let type = "regular";
+  export let bookedByOther = false;
+
+  const bookedColor = "#dddddd";
 </script>
 
 {#if type === "regular"}
   <svg
-    id="itself"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
     preserveAspectRatio="xMidYMid meet"
-    class="w-full h-auto"
-    fill={color}
+    class="w-full h-full"
   >
-    <rect x="10" y="50" width="80" height="30" rx="5" ry="5" fill={color} />
-    <path d="M20,50 A15,15 0 0,1 80,50" fill={color} />
+    <rect
+      rx="20"
+      height="50"
+      width="90"
+      y="45"
+      x="5"
+      stroke-width="0"
+      fill={bookedByOther ? bookedColor : color}
+    />
+    <rect
+      height="30"
+      width="90"
+      y="65"
+      x="5"
+      stroke-width="0"
+      fill={bookedByOther ? bookedColor : color}
+    />
+    <rect
+      rx="20"
+      height="70"
+      width="68"
+      y="19"
+      x="16"
+      stroke-width="0"
+      fill={bookedByOther ? bookedColor : color}
+    />
   </svg>
 {:else if type === "double"}
   <svg
-    viewBox="-10 -10 115 60"
     xmlns="http://www.w3.org/2000/svg"
-    class="w-full h-auto"
+    viewBox="0 0 200 100"
+    preserveAspectRatio="xMidYMid meet"
+    class="w-full h-full"
   >
-    <path
-      d="M0 26C0 20.4772 4.47715 16 10 16H85C90.5228 16 95 20.4772 95 26V40H0V26Z"
-      fill={color}
+    <rect
+      stroke="#000"
+      rx="20"
+      height="50"
+      width="190"
+      y="45"
+      x="5"
+      stroke-width="0"
+      fill={bookedByOther ? bookedColor : color}
     />
-    <path
-      d="M6 10C6 4.47715 10.4772 0 16 0H79C84.5229 0 89 4.47715 89 10V40H6V10Z"
-      fill={color}
+    <rect
+      stroke="#000"
+      height="30"
+      width="190"
+      y="65"
+      x="5"
+      stroke-width="0"
+      fill={bookedByOther ? bookedColor : color}
+    />
+    <rect
+      rx="20"
+      height="70"
+      width="156"
+      y="19"
+      x="22"
+      stroke-width="0"
+      stroke="#000"
+      fill={bookedByOther ? bookedColor : color}
     />
   </svg>
 {/if}
