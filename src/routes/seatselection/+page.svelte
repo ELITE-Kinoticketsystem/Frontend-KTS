@@ -3,7 +3,6 @@
   import Cinemahall from "../../_ui/templates/cinemahall.svelte";
   import SelSeatOverview from "../../_ui/templates/selSeatOverview.svelte";
   import Timer from "../../_ui/templates/timer.svelte";
-  import CinemaSeat from "../../_ui/templates/cinemaSeat.svelte";
 
   let seats: any[] = [];
   let selectedSeats: any[] = [];
