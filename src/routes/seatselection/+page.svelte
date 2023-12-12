@@ -25,8 +25,8 @@
   function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
   }
-  export let nrOfRows = 24;
-  export let nrOfCols = 18;
+  export let nrOfRows = 36;
+  export let nrOfCols = 38;
 
   for (let y = 0; y < nrOfRows; ++y) {
     for (let x = 0; x < nrOfCols; ++x) {
@@ -82,87 +82,16 @@
   }
 
   let aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
-  console.log(aspectRatio);
+
 </script>
 
 <div
-  class="flex flex-col items-center w-[80%] sm:w-[50%] mx-auto sm:mx-auto sm:mt-4"
+  class="flex flex-row  justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4 "
 >
-  <div class="relative flex w-full mb-4">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 700 150"
-      preserveAspectRatio="xMidYMid meet"
-      width="100%"
-      height="100%"
-      class="bg-backgroundBlue"
-    >
-      <path
-        d="m-34.35531,454.77409l0.56913,0l0.17587,-0.54067l0.17587,0.54067l0.56913,0l-0.46044,0.33415l0.17588,0.54067l-0.46044,-0.33416l-0.46044,0.33416l0.17588,-0.54067l-0.46044,-0.33415z"
-        stroke-width="5"
-        stroke="#000"
-        fill="none"
-      />
-      <path
-        d="m-48.67183,249.33199l0.56913,0l0.17587,-0.54067l0.17587,0.54067l0.56913,0l-0.46044,0.33415l0.17588,0.54067l-0.46044,-0.33416l-0.46044,0.33416l0.17588,-0.54067l-0.46044,-0.33415z"
-        stroke-width="5"
-        stroke="#000"
-        fill="none"
-      />
-
-      <rect
-        stroke="#000"
-        stroke-width="5"
-        height="146.61333"
-        width="697.14151"
-        y="1.26105"
-        x="1.68279"
-        fill="none"
-      />
-      <ellipse
-        stroke="#000"
-        stroke-width="5"
-        ry="127.66335"
-        rx="86.68803"
-        cy="2.75692"
-        cx="699.43101"
-        fill="none"
-      />
-      <ellipse
-        stroke="#000"
-        stroke-width="5"
-        ry="127.66335"
-        rx="86.68803"
-        cy="2.75693"
-        cx="2.28852"
-        fill="none"
-      />
-      <ellipse
-        stroke="#000"
-        ry="30.33304"
-        rx="259.76095"
-        cy="-1.06992"
-        cx="350.25356"
-        stroke-width="5"
-        fill="none"
-      />
-    </svg>
-    <div
-      class="absolute mx-auto inset-x-0 top-0 -translate-y-1/2 flex-none w-[18%] sm:w-1/5"
-    >
-      <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
-    </div>
-    {#key selectedSeats}
-      <div
-        class="absolute inset-x-0 top-[20%] sm:top-[15%] flex-none basis-1/5"
-      >
-        <SelSeatOverview {selectedSeats} />
-      </div>
-    {/key}
-  </div>
-
-  <div class="ring-2 ring-white max-h-[60vh] w-auto max-w-full"
-  style="{aspectRatio}">
+  <div
+    class="flex-col max-h-[80vh] w-auto max-w-[60%] sm:mr-12 sm:ml-24"
+    style={aspectRatio}
+  >
     <Cinemahall
       {seats}
       {selectedSeats}
@@ -172,5 +101,19 @@
         signal = signal;
       }}
     />
+  </div>
+  <div class="flex flex-col w-1/3 h-[60vh] ring-2 ring-white bg-backgroundBlue sm:rounded-md">
+    <div
+      class="mx-auto w-[20%] sm:w-[60%] xl:mb-4"
+    >
+      <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
+    </div>
+    {#key selectedSeats}
+      <div
+        class="mx-auto w-full h-full"
+      >
+        <SelSeatOverview {selectedSeats} />
+      </div>
+    {/key}
   </div>
 </div>
