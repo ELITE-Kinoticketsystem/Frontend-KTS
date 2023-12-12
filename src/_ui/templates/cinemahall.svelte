@@ -177,33 +177,40 @@
   }
 </script>
 
-<div
-  class="w-full h-full bg-backgroundBlue ring-1 ring-black ring-inset-1 grid"
-  style="grid-template-columns: repeat({seats.at(0).length}, minmax(0, 1fr)); grid-template-rows: repeat({seats.length}, minmax(0, 1fr));"
->
-  {#each seats as seatrow}
-    {#each seatrow as seat}
-      {#if seat.type === "regular" || seat.type === "double"}
-        <button
-          class="w-full h-full ring-white {seat.type === 'double'
-            ? 'col-span-2'
-            : ''} "
-          on:click={() => {
-            seatWasSelected(seat);
-            dispatch("seatWasSelected", { selectedSeats });
-          }}
-        >
-          {#key selectedSeats}
-            <DrawSeat
-              type={seat.type}
-              color={getColorKey(seat)}
-              bookedByOther={seat.bookedByOther}
-            />
-          {/key}
-        </button>
-      {:else if seat.type === "empty"}
-        <div class="w-full h-full"></div>
-      {/if}
+<div class="grid grid-cols-1 grid-rows-6 gap-y-12 h-full justify-between ring-1 ring-black">
+  <svg class="row-span-1 w-full  bg-backgroundBlue">
+    <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff"/>
+  </svg>
+
+  <div
+    class="row-span-5 w-full bg-backgroundBlue grid "
+    style="grid-template-columns: repeat({seats.at(0)
+      .length}, minmax(0, 1fr)); grid-template-rows: repeat({seats.length}, minmax(0, 1fr));"
+  >
+    {#each seats as seatrow}
+      {#each seatrow as seat}
+        {#if seat.type === "regular" || seat.type === "double"}
+          <button
+            class="w-full h-full ring-white {seat.type === 'double'
+              ? 'col-span-2'
+              : ''} "
+            on:click={() => {
+              seatWasSelected(seat);
+              dispatch("seatWasSelected", { selectedSeats });
+            }}
+          >
+            {#key selectedSeats}
+              <DrawSeat
+                type={seat.type}
+                color={getColorKey(seat)}
+                bookedByOther={seat.bookedByOther}
+              />
+            {/key}
+          </button>
+        {:else if seat.type === "empty"}
+          <div class="w-full h-full"></div>
+        {/if}
+      {/each}
     {/each}
-  {/each}
+  </div>
 </div>
