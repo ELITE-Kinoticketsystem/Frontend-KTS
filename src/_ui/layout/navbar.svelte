@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import { afterNavigate, beforeNavigate } from "$app/navigation";
   import { page } from "$app/stores";
   import { AuthService } from "$lib/_services/authService";
@@ -9,9 +8,15 @@
 
   let showDropdown = false;
 
+  let location = "";
+
   let url: string;
 
-  onMount(() => (url = $page.url.pathname));
+  onMount(() => {
+    url = $page.url.pathname;
+
+    location = localStorage.getItem("cinema") || "Not selected";
+  });
 
   beforeNavigate(() => {
     showDropdown = false;
@@ -21,6 +26,11 @@
   afterNavigate(() => {
     showDropdown = false;
     url = $page.url.pathname;
+  });
+
+  let lang: String;
+  onMount(() => {
+    lang = window.localStorage.getItem("lang")!;
   });
 </script>
 
@@ -137,6 +147,19 @@
                 class="p-3 space-y-1 text-sm text-textWhite"
                 aria-labelledby="regionDropDown"
               >
+                <li>
+                  <a href="/locations">
+                    <div
+                      class="flex flex-col items-center p-2 rounded hover:bg-buttonBlue duration-300"
+                    >
+                      <span
+                        class:hidden={location == "" ||
+                          location == "Not selected"}>Location: {location}</span
+                      >
+                      Change location
+                    </div>
+                  </a>
+                </li>
                 <li>
                   <a href={isUserLoggedIn ? "/dashboard" : "/auth/register"}>
                     <div

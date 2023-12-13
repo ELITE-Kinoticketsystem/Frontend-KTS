@@ -23,7 +23,7 @@
 </script>
 
 <svelte:head>
-  <title>Search Actors</title>
+  <title>Cinemika - Actors</title>
 </svelte:head>
 
 <div class="flex w-screen h-max">

@@ -32,6 +32,9 @@ importers:
       svelte-chartjs:
         specifier: ^3.1.2
         version: 3.1.2(chart.js@4.4.1)(svelte@4.2.8)
+      svelte-lazy-image:
+        specifier: ^0.5.1
+        version: 0.5.1
       sweetalert2:
         specifier: ^11.10.1
         version: 11.10.1
@@ -96,6 +99,9 @@ importers:
       svelte-check:
         specifier: ^3.6.2
         version: 3.6.2(postcss@8.4.32)(svelte@4.2.8)
+      svelte-intersection-observer:
+        specifier: ^0.10.1
+        version: 0.10.1
       tailwindcss:
         specifier: ^3.3.6
         version: 3.3.6
@@ -615,7 +621,7 @@ packages:
       vitefu: 0.2.5(vite@4.5.1)
     transitivePeerDependencies:
       - supports-color
-
+      
   /@tailwindcss/aspect-ratio@0.4.2(tailwindcss@3.3.6):
     resolution: {integrity: sha512-8QPrypskfBa7QIMuKHg2TA7BqES6vhBrDLOv8Unb6FcFyd3TjKbc6lcmb9UPQHxfl24sXoJ41ux/H7qQQvfaSQ==}
     peerDependencies:
@@ -623,7 +629,7 @@ packages:
     dependencies:
       tailwindcss: 3.3.6
     dev: false
-
+    
   /@tailwindcss/forms@0.5.7(tailwindcss@3.3.6):
     resolution: {integrity: sha512-QE7X69iQI+ZXwldE+rzasvbJiyV/ju1FGHH0Qn2W3FKbuYtqp8LKcy6iSw79fVUT5/Vvf+0XgLCeYVG+UV6hOw==}
     peerDependencies:
@@ -656,7 +662,8 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
+    
+    
   /@types/react@18.2.43:
     resolution: {integrity: sha512-nvOV01ZdBdd/KW6FahSbcNplt2jCJfyWdTos61RYHV+FVv5L/g9AOX1bmbVcWcLFL8+KHQfh1zVIQrud6ihyQA==}
     dependencies:
@@ -692,7 +699,6 @@ packages:
       '@typescript-eslint/parser': 6.13.2(eslint@8.55.0)(typescript@5.3.3)
       '@typescript-eslint/scope-manager': 6.13.2
       '@typescript-eslint/type-utils': 6.13.2(eslint@8.55.0)(typescript@5.3.3)
-      '@typescript-eslint/utils': 6.13.2(eslint@8.55.0)(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.13.2
       debug: 4.3.4
       eslint: 8.55.0
@@ -734,7 +740,7 @@ packages:
       '@typescript-eslint/types': 6.13.2
       '@typescript-eslint/visitor-keys': 6.13.2
     dev: true
-
+    
   /@typescript-eslint/type-utils@6.13.2(eslint@8.55.0)(typescript@5.3.3):
     resolution: {integrity: sha512-Qr6ssS1GFongzH2qfnWKkAQmMUyZSyOr0W54nZNU1MDfo+U4Mv3XveeLZzadc/yq8iYhQZHYT+eoXJqnACM1tw==}
     engines: {node: ^16.0.0 || >=18.0.0}
@@ -759,7 +765,7 @@ packages:
     resolution: {integrity: sha512-7sxbQ+EMRubQc3wTfTsycgYpSujyVbI1xw+3UMRUcrhSy+pN09y/lWzeKDbvhoqcRbHdc+APLs/PWYi/cisLPg==}
     engines: {node: ^16.0.0 || >=18.0.0}
     dev: true
-
+    
   /@typescript-eslint/typescript-estree@6.13.2(typescript@5.3.3):
     resolution: {integrity: sha512-SuD8YLQv6WHnOEtKv8D6HZUzOub855cfPnPMKvdM/Bh1plv1f7Q/0iFUDLKKlxHcEstQnaUU4QZskgQq74t+3w==}
     engines: {node: ^16.0.0 || >=18.0.0}
@@ -2358,6 +2364,14 @@ packages:
     dependencies:
       svelte: 4.2.8
 
+  /svelte-intersection-observer@0.10.1:
+    resolution: {integrity: sha512-hvWZwd0S8t0osA0ChJ4uJDsLvZlULyE3roDEc8mWyeiLT9y25NKT/CKfncsDyS7EGq3B9zb4ZxsH2uNaaXWP4A==}
+    dev: true
+
+  /svelte-lazy-image@0.5.1:
+    resolution: {integrity: sha512-BDwywMngYjrEtL73N2ZKYYnWlNBWSnw31y1Mb3kNeXVc/9iDir6Ew3bfuDtuEyi3evBFXF0jixkCMFuTseWjWQ==}
+    dev: false
+    
   /svelte-preprocess@5.1.1(postcss@8.4.32)(svelte@4.2.8)(typescript@5.3.3):
     resolution: {integrity: sha512-p/Dp4hmrBW5mrCCq29lEMFpIJT2FZsRlouxEc5qpbOmXRbaFs7clLs8oKPwD3xCFyZfv1bIhvOzpQkhMEVQdMw==}
     engines: {node: '>= 14.10.0'}

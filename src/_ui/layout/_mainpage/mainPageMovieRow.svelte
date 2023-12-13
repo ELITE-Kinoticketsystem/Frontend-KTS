@@ -22,4 +22,3 @@
     <MovieRow {moviesToDisplay} />
   </div>
 </div>
-

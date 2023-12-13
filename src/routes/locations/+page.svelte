@@ -23,9 +23,9 @@
     });
   }
 
-  let cinema = "Not selected";
+  let cinema = "All";
   onMount(() => {
-    if (browser) cinema = localStorage.getItem("cinema");
+    if (browser) cinema = localStorage.getItem("cinema") || "All";
   });
 </script>
 
@@ -42,7 +42,7 @@
       class="text-textWhite text-lg py-px px-2 hover:bg-tileBlue duration-300 bg-buttonBlue rounded-lg"
       on:click={() => {
         if (browser) {
-          localStorage.setItem("cinema", "Not selected");
+          localStorage.setItem("cinema", "All");
           window.location.href = "/";
         }
       }}>Skip</button
