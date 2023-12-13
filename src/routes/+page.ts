@@ -4,6 +4,7 @@ export const load = async ({ fetch, params }) => {
         const movieData = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/movies");
         return await movieData.json();
     }
-    
-    return { first: fetchFirst() };
+
+
+    return { first: await fetchFirst() };
 }

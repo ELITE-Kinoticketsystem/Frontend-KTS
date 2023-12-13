@@ -87,15 +87,32 @@
 </script>
 
 <svelte:head>
-  <title>Search movies</title>
+  <title>Cinemika - Movies</title>
 </svelte:head>
 
 <div class="flex w-screen h-max">
-  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
-  <div class="flex flex-col flex-grow w-max">
-    <div class="flex justify-between">
-      <div class="justify-start">
-        <div class="flex space-x-4 relative">
+  <div class="w-0 sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="flex flex-col flex-grow w-full pb-5">
+    <div
+      class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:justify-between sm:px-0"
+    >
+      <div
+        class="flex-wrap sm:flex-nowrap sm:justify-start w-full sm:w-2/5 mx-auto px-3 sm:px-0 sm:mx-0 sm:mt-2"
+      >
+        <Searchbar
+          longSearchBarSize="w-full"
+          shortSearchBarSize="w-full"
+          shortSearchBarText="Search for a movie"
+          longSearchBarText="Search for a movie"
+          input={key}
+          on:inputChange={(event) => {
+            key = event.detail.toLowerCase().trim();
+            filter();
+          }}
+        />
+      </div>
+      <div class="flex flex-col lg:mx-0 sm:justify-end">
+        <div class="flex space-x-4 relative mx-auto">
           <div class="fskDropdown">
             <button
               id="dropdownBgHoverButton"
@@ -121,7 +138,9 @@
                 />
               </svg>
               {#key ratingText}
-                FSK {ratingText != "" ? `(${ratingText})` : ""}
+                FSK <span class="hidden xl:block"
+                  >{ratingText != "" ? `(${ratingText})` : ""}</span
+                >
               {/key}
               <svg
                 id="fsk"
@@ -201,7 +220,10 @@
                 />
               </svg>
 
-              Genres {genreAmount != 0 ? `(${genreAmount})` : "(All)"}
+              Genres
+              <span class="hidden lg:block"
+                >{genreAmount != 0 ? `(${genreAmount})` : "(All)"}</span
+              >
               <svg
                 id="genre"
                 class="w-2.5 h-2.5 ms-3 duration-300"
@@ -302,36 +324,25 @@
           </div>
         </div>
       </div>
-      <div class="justify-end w-2/5">
-        <Searchbar
-          longSearchBarSize="w-full"
-          shortSearchBarSize="w-full"
-          shortSearchBarText="Search for a movie"
-          longSearchBarText="Search for a movie"
-          input={key}
-          on:inputChange={(event) => {
-            key = event.detail.toLowerCase().trim();
-            filter();
-          }}
-        />
-      </div>
     </div>
     <hr class="h-px bg-textWhite border-0 w-full mt-2" />
-    <div
-      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-auto mt-5 gap-5"
-    >
-      {#key forNow}
-        {#if displayedMovies.length > 0}
-          {#each displayedMovies as movie}
-            <div class="relative">
-              <MainCard {movie} />.
-              <div class="absolute text-textWhite top-0 left-0">
-                <Rating count={true} rating={movie.rating} total={5.0} />
+    <div class="max-w-xs md:max-w-none mx-9">
+      <div
+        class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mt-5 gap-5 gap-y-5 md:gap-y-10"
+      >
+        {#key forNow}
+          {#if displayedMovies.length > 0}
+            {#each displayedMovies as movie}
+              <div class="relative hover:scale-105 duration-300">
+                <MainCard {movie} />.
+                <div class="absolute text-textWhite top-0 left-0">
+                  <Rating count={true} rating={movie.rating} total={5.0} />
+                </div>
               </div>
-            </div>
-          {/each}
-        {/if}
-      {/key}
+            {/each}
+          {/if}
+        {/key}
+      </div>
     </div>
     <div class="flex" class:hidden={displayedMovies.length != 0}>
       <p class="text-textWhite text-xl mt-4">
@@ -349,5 +360,5 @@
       </p>
     </div>
   </div>
-  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="w-0 sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>

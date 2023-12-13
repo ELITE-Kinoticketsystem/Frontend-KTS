@@ -27,7 +27,7 @@
 </script>
 
 <head:svelte>
-  <title>Your favorites</title>
+  <title>Cinemika - Favorites</title>
 </head:svelte>
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />

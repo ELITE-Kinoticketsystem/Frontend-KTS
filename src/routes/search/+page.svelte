@@ -1,7 +1,9 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { onMount } from "svelte";
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
+  import { fade } from "svelte/transition";
 
   let key: string = "";
   let displayedKey: string = "";
@@ -67,21 +69,22 @@
     });
   }
 
-  /*{displayedKey}
-            <span class="opacity-50">{filteredMovies[0].movieName}</span>*/
-
-  $: valueAuto = "";
+  onMount(() => {
+    if (browser) {
+      document.getElementById("default-search")!.focus();
+    }
+  });
 </script>
 
 <svelte:head>
-  <title>Search help</title>
+  <title>Cinemika - Search</title>
 </svelte:head>
 
 <div class="flex w-screen h-full">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
-  <div class="flex flex-col flex-grow w-full h-max">
+  <div class="flex flex-col flex-grow w-full h-max pb-5">
     <p class="text-textWhite font-semibold">
-      Here you can search for an actor(s), for movie(s) or genre(s)
+      Here you can search for actor(s), movie(s) or genre(s)
     </p>
     <Searchbar
       longSearchBarSize="w-full"
@@ -99,7 +102,7 @@
     />
     {#key key}
       {#if filteredMovies.length > 0}
-        <div class="movies">
+        <div class="movies" ransition:fade={{ delay: 250, duration: 300 }}>
           <p class="text-textWhite text-xl mt-4">
             <span class="font-bold">Movies</span> ({Math.min(
               filteredMovies.length,
@@ -108,17 +111,19 @@
             {displayedKey}
           </p>
           <hr class="h-px bg-textWhite border-0 w-full" />
-          <div class="flex mx-auto mt-5">
+          <div class="flex mx-auto my-5">
             <div class="grid grid-cols-5 mx-auto gap-5">
               {#each filteredMovies.splice(0, 5) as movie}
-                <MainCard {movie} />
+                <div class="hover:scale-105 duration-300">
+                  <MainCard {movie} />
+                </div>
               {/each}
             </div>
           </div>
         </div>
       {/if}
       {#if filterActors.length > 0}
-        <div class="actors">
+        <div class="actors" ransition:fade={{ delay: 250, duration: 300 }}>
           <p class="text-textWhite text-xl mt-4">
             <span class="font-bold">Actors</span> ({Math.min(
               filterActors.length,
@@ -126,17 +131,19 @@
             )}) - {displayedKey}
           </p>
           <hr class="h-px bg-textWhite border-0 w-full" />
-          <div class="flex mx-auto mt-5">
+          <div class="flex mx-auto my-5">
             <div class="grid grid-cols-5 mx-auto gap-5">
               {#each filterActors.splice(0, 5) as actor}
-                <MainCard movie={actor} isActor={true} />
+                <div class="hover:scale-105 duration-300">
+                  <MainCard movie={actor} isActor={true} />
+                </div>
               {/each}
             </div>
           </div>
         </div>
       {/if}
       {#if filterGenres.length > 0}
-        <div class="actors">
+        <div class="actors" ransition:fade={{ delay: 250, duration: 300 }}>
           <p class="text-textWhite text-xl mt-4">
             <span class="font-bold">Genres</span> ({Math.min(
               filterGenres.length,
@@ -144,10 +151,12 @@
             )}) - {displayedKey}
           </p>
           <hr class="h-px bg-textWhite border-0 w-full" />
-          <div class="flex mx-auto mt-5">
+          <div class="flex mx-auto my-5">
             <div class="grid grid-cols-5 mx-auto gap-5">
               {#each filterGenres.splice(0, 5) as movie}
-                <MainCard {movie} />
+                <div class="hover:scale-105 duration-300">
+                  <MainCard {movie} />
+                </div>
               {/each}
             </div>
           </div>

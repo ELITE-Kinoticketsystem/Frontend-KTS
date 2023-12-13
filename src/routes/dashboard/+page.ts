@@ -11,7 +11,7 @@ export const load = async ({ fetch, params }) => {
             date: "2023-09-23",
             theatre: "Cineplex Stuttgart",
             seats: "B1, B2, B3, B4, B5, B6",
-            price: 1550*6,
+            price: 1550*10,
         }, {
             title: "Stephen Curry: Legacy",
             date: "2023-01-01",
@@ -23,7 +23,7 @@ export const load = async ({ fetch, params }) => {
             date: "2023-12-31",
             theatre: "Cineplex Berlin",
             seats: "B1",
-            price: 2000,
+            price: 2000*3,
         },{
             title: "Warriors > Lakers",
             date: "2023-12-01",

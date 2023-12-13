@@ -70,7 +70,7 @@
         document.getElementById("visitedMovies"),
         0,
         visitedMovies,
-        3500
+        1750
       );
     animateValue(
       document.getElementById("totalAmountSpend"),
@@ -136,7 +136,7 @@
 </script>
 
 <head:svelte>
-  <title>{username}'s Dashboard</title>
+  <title>Cinemika - Dashboard</title>
 </head:svelte>
 
 <div class="flex w-screen h-max">

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useLazyImage as lazyImage } from "svelte-lazy-image";
   import CinemaTile from "./cinemaTile.svelte";
   export let movie: {
     src: string;
@@ -28,5 +29,6 @@
     src={movieCopy.src}
     alt={movieCopy.movieName}
     class="rounded-xl min-h-full aspect-auto object-cover"
+    use:lazyImage
   />
 </a>
