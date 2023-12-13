@@ -9,7 +9,6 @@
   class="ring-1 ring-white rounded-full"
 >
   <rect width="60" height="10" x="20" y="45" rx="4" fill="#ffffff" />
-  <rect width="10" height="60" x="45" y="20" rx="4" fill="#ffffff" />
   <rect
     width="100"
     height="100"
