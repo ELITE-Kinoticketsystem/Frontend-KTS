@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { SweetAlertUpdatableParameters } from "sweetalert2";
   import DrawSeat from "./drawSeat.svelte";
   import Swal from "sweetalert2";
 
@@ -7,11 +6,29 @@
 
   const dispatch = createEventDispatcher();
 
-  const selectedSeatColor = "#ff0055";
-  const unselectedSeatColor = "#00ff80";
+  function addColors(part1: number, col1: string, part2: number, col2: string) {
+    if (part1 + part2 > 1) {
+      console.log("Sum of parts were greater one");
+      return "#000000";
+    }
+
+    let red = Math.floor(
+      part1 * parseInt(col1.slice(0, 2), 16) +
+        part2 * parseInt(col2.slice(0, 2), 16)
+    );
+    let green = Math.floor(
+      part1 * parseInt(col1.slice(2, 4), 16) +
+        part2 * parseInt(col2.slice(2, 4), 16)
+    );
+    let blue = Math.floor(
+      part1 * parseInt(col1.slice(4, 6), 16) +
+        part2 * parseInt(col2.slice(4, 6), 16)
+    );
+
+    return red.toString(16) + green.toString(16) + blue.toString(16);
+  }
 
   export let seats: any[] = [];
-
   export let selectedSeats = seats.filter((seat) => seat.available); //used as an ordered list
 
   $: seats = seats;
@@ -52,7 +69,6 @@
     if (x + rightOffset === selectedSeats.at(0).x) {
       return true;
     }
-
     return false;
   }
 
@@ -61,9 +77,24 @@
     x: number;
     y: number;
     available: boolean;
+    bookedByOther: boolean;
+    category: string;
   }) {
-    //case: no selected seats yet
+    if (seat.bookedByOther) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        color: "#FAFAFA",
+        timer: 5000,
+        customClass: "rounded-lg w-[70%] sm:w-1/3",
+        timerProgressBar: true,
+        background: "#354A5F",
+        text: "This seat is already booked!\nPlease select another seat!",
+      });
+      return;
+    }
 
+    //case: no selected seats yet
     if (selectedSeats.length === 0) {
       seats.at(seat.y).at(seat.x).available = false;
       selectedSeats = [
@@ -120,38 +151,66 @@
     }
     seats.at(seat.y).at(seat.x).available = false;
   }
+
+  function getColorKey(seat: any) {
+    let found = false;
+    for (let i = 0; i < selectedSeats.length; ++i) {
+      if (selectedSeats[i].x === seat.x && selectedSeats[i].y === seat.y) {
+        found = true;
+        break;
+      }
+    }
+    if (found) {
+      return "#00ff00";
+    }
+
+    switch (seat.category) {
+      case "regular":
+        return "#dd0000";
+      case "premium":
+        return "#cccc0c";
+      case "student":
+        return "#0000cc";
+      default:
+        return "#000000";
+    }
+  }
 </script>
 
-<div class="min-w-fit overflow-hidden ring-1 ring-inset-0 ring-white">
-  <div class="">
-    <div class="grid grid-rows-6 grid-cols-10">
-      {#each seats as seatrow}
-        {#each seatrow as seat}
-          {#if seat.type === "regular" || seat.type === "double"}
-            <div class="grid {seat.type === 'double' ? 'col-span-2' : ''}">
-              <button
-                on:click={() => {
-                  seatWasSelected(seat);
-                  dispatch("seatWasSelected", { selectedSeats });
-                }}
-              >
-                <div class="relative">
-                  {#key selectedSeats}
-                    <DrawSeat
-                      type={seat.type}
-                      color={seat.available
-                        ? unselectedSeatColor
-                        : selectedSeatColor}
-                    />
-                  {/key}
-                </div>
-              </button>
-            </div>
-          {:else if seat.type === "empty"}
-            <div class="grid"></div>
-          {/if}
-        {/each}
+<div class="grid grid-cols-1 grid-rows-6 gap-y-12 h-full justify-between ring-1 ring-black">
+  <svg class="row-span-1 w-full  bg-backgroundBlue">
+    <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff"/>
+  </svg>
+
+  <div
+    class="row-span-5 w-full bg-backgroundBlue grid "
+    style="grid-template-columns: repeat({seats.at(0)
+      .length}, minmax(0, 1fr)); grid-template-rows: repeat({seats.length}, minmax(0, 1fr));"
+  >
+    {#each seats as seatrow}
+      {#each seatrow as seat}
+        {#if seat.type === "regular" || seat.type === "double"}
+          <button
+            class="w-full h-full ring-white {seat.type === 'double'
+              ? 'col-span-2'
+              : ''} "
+            on:click={() => {
+              seatWasSelected(seat);
+              dispatch("seatWasSelected", { selectedSeats });
+            }}
+          >
+            {#key selectedSeats}
+              <DrawSeat
+                type={seat.type}
+                color={getColorKey(seat)}
+                bookedByOther={seat.bookedByOther}
+              />
+            {/key}
+          </button>
+        {:else if seat.type === "empty"}
+          <div class="w-full h-full"></div>
+        {/if}
       {/each}
-    </div>
+    {/each}
   </div>
 </div>

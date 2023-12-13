@@ -6,42 +6,54 @@
 
   let seats: any[] = [];
   let selectedSeats: any[] = [];
-  $: selectedSeats = selectedSeats; 
+
+  $: selectedSeats = selectedSeats;
   $: seats = seats;
   $: signal = selectedSeats.length > 0 ? 1 : 0;
 
-  let seat = { type: "regular", available: true, x: 0, y: 0 };
-  let doubleSeat = { type: "double", available: true, x: 0, y: 0 };
-  let emptySeat = { type: "empty", available: false, x: 0, y: 0 };
-  let emptyDoubleSeat = { type: "emptyDouble", available: false, x: 0, y: 0 };
-
   let seatrow: any[] = [];
-  function getSeat(type: string, x: number, y: number) {
-    return { type, x, y, available: true };
+  function getSeat(
+    type: string,
+    x: number,
+    y: number,
+    bookedByOther: boolean,
+    category: string
+  ) {
+    return { type, x, y, available: true, bookedByOther, category };
   }
   function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
   }
-  export const nrOfRows = 6;
-  export const nrOfCols = 10;
+  export let nrOfRows = 36;
+  export let nrOfCols = 38;
 
   for (let y = 0; y < nrOfRows; ++y) {
     for (let x = 0; x < nrOfCols; ++x) {
       let choice = getRandomInt(100);
+      let booked = getRandomInt(100) > 80 ? true : false;
+      let category = "regular";
+      if (getRandomInt(100) < 40) {
+        category = "premium";
+      }
+      if (getRandomInt(100) < 40) {
+        category = "student";
+      }
+      if (getRandomInt(100) < 40) {
+        category = "regular";
+      }
+
       if (choice < 20) {
         if (x < nrOfCols - 1) {
-          doubleSeat.x = x;
-          doubleSeat.y = y;
-          seatrow.push(getSeat("double", x, y));
-          seatrow.push(getSeat("emptyDouble", x + 1, y));
+          seatrow.push(getSeat("double", x, y, booked, category));
+          seatrow.push(getSeat("emptyDouble", x + 1, y, booked, category));
           ++x;
         } else {
-          seatrow.push(getSeat("regular", x, y));
+          seatrow.push(getSeat("regular", x, y, booked, category));
         }
       } else if (choice >= 20 && choice <= 80) {
-        seatrow.push(getSeat("regular", x, y));
+        seatrow.push(getSeat("regular", x, y, booked, category));
       } else {
-        seatrow.push(getSeat("empty", x, y));
+        seatrow.push(getSeat("empty", x, y, booked, category));
       }
     }
     seats.push(seatrow);
@@ -67,44 +79,40 @@
       text: "Be quicker!",
     });
   }
+
+  let aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
+
 </script>
 
-<div class="flex mx-10 sm:mx-40 h-auto">
-  <div class="relative flex flex-col items-center">
-    <div class="w-1/5 absolute top-0 right-0 translate-y-1 z-10">
-
+<div
+  class="flex flex-row  justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4 "
+>
+  <div
+    class="flex-col max-h-[80vh] w-auto max-w-[60%] sm:mr-12 sm:ml-24"
+    style={aspectRatio}
+  >
+    <Cinemahall
+      {seats}
+      {selectedSeats}
+      on:seatWasSelected={(e) => {
+        selectedSeats = e.detail.selectedSeats;
+        seats = seats;
+        signal = signal;
+      }}
+    />
+  </div>
+  <div class="flex flex-col w-1/3 h-[60vh] ring-2 ring-white bg-backgroundBlue sm:rounded-md">
+    <div
+      class="mx-auto w-[20%] sm:w-[60%] xl:mb-4"
+    >
       <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
-
     </div>
-    <div class="flex w-full h-fit mx-5 mb-20 bg-red-100">
-      <svg
-        id="itself"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 3"
-        preserveAspectRatio="xMidYMid meet"
-        class="w-full h-auto"
-        fill="#ffffff"
+    {#key selectedSeats}
+      <div
+        class="mx-auto w-full h-full"
       >
-        <rect width="100" height="3" rx="1" ry="1" fill="#ffffff" />
-      </svg>
-    </div>
-
-      <div class="flex basis-3/4">
-        <Cinemahall
-          {seats}
-          {selectedSeats}
-          on:seatWasSelected={(e) => {
-            selectedSeats = e.detail.selectedSeats;
-            seats = seats;
-            signal = signal;
-          }}
-        />
-      </div>
-
-      {#key selectedSeats}
-      <div class="flex basis-1/5">
         <SelSeatOverview {selectedSeats} />
       </div>
-      {/key}
+    {/key}
   </div>
 </div>
