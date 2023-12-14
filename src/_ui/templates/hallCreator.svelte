@@ -83,13 +83,22 @@
   let X = seats.at(0).length;
   let Y = seats.length;
 
-  function check(){
+  function check() {
     let nextX = 0;
     let nextY = 0;
-    for(let i = 0; i < seats.length; ++i){
-      for(let j = 0; j < seats.at(0).length; ++j){
-        if(i !== nextY || j !== nextX){
-          console.log("Error at: " + i +","+j+" should have been: " + nextX + ","+nextY);
+    for (let i = 0; i < seats.length; ++i) {
+      for (let j = 0; j < seats.at(0).length; ++j) {
+        if (i !== nextY || j !== nextX) {
+          console.log(
+            "Error at: " +
+              i +
+              "," +
+              j +
+              " should have been: " +
+              nextX +
+              "," +
+              nextY
+          );
         }
         ++nextX;
       }
@@ -154,6 +163,7 @@
 
     seats = seats;
   }
+  
   function emptyCellWasClicked(x: number, y: number) {
     switch (seatTypeToPlace) {
       case "regular":
@@ -445,8 +455,9 @@
     >
       <button on:click={addColToRight}><PlusButton /></button>
     </div>
-    <div class="absolute -right-8 sm:-right-14 top-1/2 -translate-y-1/2 w-10">
+    <div class="absolute -right-8 sm:-right-[3.75rem] top-1/2 -translate-y-1/2 w-12">
       <SizeInput
+        placeholder={"X:"}
         bind:updateSize={X}
         on:sizeChanged={(e) => {
           setColsFromRight(e.detail);
@@ -464,8 +475,9 @@
     >
       <button on:click={addColToLeft}><PlusButton /></button>
     </div>
-    <div class="absolute -left-8 sm:-left-14 top-1/2 -translate-y-1/2 w-10">
+    <div class="absolute -left-8 sm:-left-[3.75rem] top-1/2 -translate-y-1/2 w-12">
       <SizeInput
+        placeholder={"X:"}
         bind:updateSize={X}
         on:sizeChanged={(e) => {
           setColsFromLeft(e.detail);
@@ -484,9 +496,10 @@
       <button on:click={addRowToBottom}><PlusButton /></button>
     </div>
     <div
-      class="absolute -bottom-8 sm:-bottom-14 left-1/2 -translate-x-1/2 w-10"
+      class="absolute -bottom-8 sm:-bottom-14 left-1/2 -translate-x-1/2 w-12"
     >
       <SizeInput
+        placeholder={"Y:"}
         bind:updateSize={Y}
         on:sizeChanged={(e) => {
           setRowsFromBottom(e.detail);
@@ -504,8 +517,9 @@
     >
       <button on:click={addRowToTop}><PlusButton /></button>
     </div>
-    <div class="absolute -top-8 sm:-top-14 left-1/2 -translate-x-1/2 w-10">
+    <div class="absolute -top-8 sm:-top-14 left-1/2 -translate-x-1/2 w-12">
       <SizeInput
+        placeholder={"Y:"}
         bind:updateSize={Y}
         on:sizeChanged={(e) => {
           setRowsFromTop(e.detail);
