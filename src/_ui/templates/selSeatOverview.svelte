@@ -24,7 +24,7 @@
 
 <div class="flex flex-col w-full h-full mx-auto sm:mt-1 lg:mt-2 mb-4">
   <p
-    class="text-center font-semibold text-textWhite text-xs sm:text-sm md:text-sm lg:text-lg xl:text-2xl xl:mb-8"
+    class="text-center font-semibold text-textWhite text-xs sm:text-sm md:text-sm lg:text-lg xl:text-4xl xl:mb-8"
   >
     Your selection
   </p>
@@ -32,7 +32,7 @@
   {#each distinctSeatsWithCount as seatWithCount}
     <div class="flex mx-auto">
       <p
-        class="text-xs sm:text-sm md:text-sm lg:text-lg xl:text-2xl xl:mb-2 text-white"
+        class="text-xs sm:text-sm md:text-sm lg:text-lg xl:text-4xl xl:mb-2 text-white"
       >
         {seatWithCount[1]}x {seatWithCount[0]}
       </p>

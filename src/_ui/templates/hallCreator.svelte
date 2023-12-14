@@ -10,11 +10,12 @@
 
   export let seatTypeToPlace = "regular";
   export let curSeatCategory = "regular";
+  export let clearAllSeatsSignal = 0;
 
   let seats: any[] = [];
   let seatrowforFill = [];
-  const xStartDim = 11;
-  const yStartDim = 11;
+  const xStartDim = 23;
+  const yStartDim = 15;
 
   function fireNotEnoughCols() {
     Swal.fire({
@@ -124,6 +125,16 @@
   $: {
     curSeatCategory = curSeatCategory;
   }
+  $: if(clearAllSeatsSignal === 1) {
+    for(let y = 0; y < Y; ++y){
+      for(let x = 0; x < X; ++x){
+        seats.at(y).at(x).type = 'empty';
+        seats.at(y).at(x).category = 'regular'
+      }
+    }
+    seats = seats;
+    clearAllSeatsSignal = 0;
+  }
 
   function eraseSeatAt(seatType: string, x: number, y: number) {
     //clicked left part of doubleSeat
@@ -163,7 +174,7 @@
 
     seats = seats;
   }
-  
+
   function emptyCellWasClicked(x: number, y: number) {
     switch (seatTypeToPlace) {
       case "regular":
@@ -451,11 +462,11 @@
     {/each}
 
     <div
-      class="absolute -right-8 sm:-right-14 top-1/2 -translate-y-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -right-8 sm:-right-0 translate-x-[150%] top-1/2 -translate-y-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={addColToRight}><PlusButton /></button>
     </div>
-    <div class="absolute -right-8 sm:-right-[3.75rem] top-1/2 -translate-y-1/2 w-12">
+    <div class="absolute -right-8 sm:-right-0 sm:translate-x-[120%] top-1/2 -translate-y-1/2 w-14">
       <SizeInput
         placeholder={"X:"}
         bind:updateSize={X}
@@ -465,17 +476,17 @@
       />
     </div>
     <div
-      class="absolute -right-8 sm:-right-14 top-1/2 translate-y-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -right-8 sm:-right-0 translate-x-[150%] top-1/2 translate-y-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={removeRightCol}><MinusButton /></button>
     </div>
 
     <div
-      class="absolute -left-8 sm:-left-14 top-1/2 -translate-y-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -left-8 sm:-left-0 top-1/2 -translate-x-[150%] -translate-y-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={addColToLeft}><PlusButton /></button>
     </div>
-    <div class="absolute -left-8 sm:-left-[3.75rem] top-1/2 -translate-y-1/2 w-12">
+    <div class="absolute -left-8 sm:-left-0 top-1/2 -translate-x-[120%] -translate-y-1/2 w-14">
       <SizeInput
         placeholder={"X:"}
         bind:updateSize={X}
@@ -485,18 +496,18 @@
       />
     </div>
     <div
-      class="absolute -left-8 sm:-left-14 top-1/2 translate-y-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -left-8 sm:-left-0 top-1/2 translate-y-[90%] -translate-x-[150%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={removeLeftCol}><MinusButton /></button>
     </div>
 
     <div
-      class="absolute -bottom-8 sm:-bottom-14 left-1/2 translate-x-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -bottom-8 sm:-bottom-0 translate-y-[150%] left-1/2 translate-x-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={addRowToBottom}><PlusButton /></button>
     </div>
     <div
-      class="absolute -bottom-8 sm:-bottom-14 left-1/2 -translate-x-1/2 w-12"
+      class="absolute -bottom-8 sm:-bottom-0 translate-y-[155%] left-1/2 -translate-x-1/2 w-14"
     >
       <SizeInput
         placeholder={"Y:"}
@@ -507,17 +518,17 @@
       />
     </div>
     <div
-      class="absolute -bottom-8 sm:-bottom-14 left-1/2 -translate-x-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -bottom-8 sm:-bottom-0 translate-y-[150%] left-1/2 -translate-x-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={removeBottomRow}><MinusButton /></button>
     </div>
 
     <div
-      class="absolute -top-8 sm:-top-14 left-1/2 translate-x-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -top-8 sm:-top-0 -translate-y-[150%] left-1/2 translate-x-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={addRowToTop}><PlusButton /></button>
     </div>
-    <div class="absolute -top-8 sm:-top-14 left-1/2 -translate-x-1/2 w-12">
+    <div class="absolute -top-8 sm:-top-0 -translate-y-[155%] left-1/2 -translate-x-1/2 w-14">
       <SizeInput
         placeholder={"Y:"}
         bind:updateSize={Y}
@@ -527,7 +538,7 @@
       />
     </div>
     <div
-      class="absolute -top-8 sm:-top-14 left-1/2 -translate-x-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -top-8 sm:-top-0 -translate-y-[150%] left-1/2 -translate-x-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
     >
       <button on:click={removeTopRow}><MinusButton /></button>
     </div>

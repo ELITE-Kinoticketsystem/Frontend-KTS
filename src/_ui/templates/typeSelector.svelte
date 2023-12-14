@@ -10,8 +10,8 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="flex flex-col items-center h- w-full bg-backgroundBlue rounded-lg ring-1 ring-white">
-  <div class="w-full mt-5 mb-5">
+<div class="flex flex-col items-center w-full bg-backgroundBlue rounded-lg ring-1 ring-white">
+  <div class="w-full mt-2 mb-3">
     <p
       class="text-center font-semibold xl:font-bold text-textWhite text-sm sm:text-xl xl:text-2xl"
     >

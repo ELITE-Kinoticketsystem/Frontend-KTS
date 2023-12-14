@@ -6,28 +6,6 @@
 
   const dispatch = createEventDispatcher();
 
-  function addColors(part1: number, col1: string, part2: number, col2: string) {
-    if (part1 + part2 > 1) {
-      console.log("Sum of parts were greater one");
-      return "#000000";
-    }
-
-    let red = Math.floor(
-      part1 * parseInt(col1.slice(0, 2), 16) +
-        part2 * parseInt(col2.slice(0, 2), 16)
-    );
-    let green = Math.floor(
-      part1 * parseInt(col1.slice(2, 4), 16) +
-        part2 * parseInt(col2.slice(2, 4), 16)
-    );
-    let blue = Math.floor(
-      part1 * parseInt(col1.slice(4, 6), 16) +
-        part2 * parseInt(col2.slice(4, 6), 16)
-    );
-
-    return red.toString(16) + green.toString(16) + blue.toString(16);
-  }
-
   export let seats: any[] = [];
   export let selectedSeats = seats.filter((seat) => seat.available); //used as an ordered list
 
@@ -102,6 +80,7 @@
           type: seat.type,
           x: seat.type === "emptyDouble" ? seat.x - 1 : seat.x,
           y: seat.y,
+          category: seat.category
         },
       ];
       return;
@@ -141,11 +120,11 @@
     if (selectedSeats.at(selectedSeats.length - 1).x < seat.x) {
       selectedSeats = [
         ...selectedSeats,
-        { type: seat.type, x: xCor, y: seat.y },
+        { type: seat.type, x: xCor, y: seat.y, category: seat.category },
       ];
     } else {
       selectedSeats = [
-        { type: seat.type, x: xCor, y: seat.y },
+        { type: seat.type, x: xCor, y: seat.y, category: seat.category },
         ...selectedSeats,
       ];
     }
@@ -161,29 +140,29 @@
       }
     }
     if (found) {
-      return "#00ff00";
+      return "#ffffff";//user selected color
     }
 
     switch (seat.category) {
       case "regular":
-        return "#dd0000";
-      case "premium":
-        return "#cccc0c";
-      case "student":
-        return "#0000cc";
+        return "#ff0000";
+      case "vip":
+        return "#00ff00";
+      case "loge":
+        return "#0000ff";
       default:
         return "#000000";
     }
   }
 </script>
 
-<div class="grid grid-cols-1 grid-rows-6 gap-y-12 h-full justify-between ring-1 ring-black">
-  <svg class="row-span-1 w-full  bg-backgroundBlue">
+<div class="grid grid-cols-1 grid-rows-6 gap-y-12 h-full justify-between">
+  <svg class="row-span-1 w-full pt-4 px-2 bg-tileBlue rounded-lg">
     <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff"/>
   </svg>
 
   <div
-    class="row-span-5 w-full bg-backgroundBlue grid "
+    class="row-span-5 w-full p-3 rounded-md bg-tileBlue grid "
     style="grid-template-columns: repeat({seats.at(0)
       .length}, minmax(0, 1fr)); grid-template-rows: repeat({seats.length}, minmax(0, 1fr));"
   >

@@ -4,11 +4,12 @@
 
   const dispatch = createEventDispatcher();
 
-  const pattern = new RegExp("^[0-9]{0,3}$");
+  const pattern = new RegExp('^[1-9][0-9]?[0-9]?$');
 
   export let placeholder = "X:";
   export let updateSize = 11;
   $: {
+    updateSize = updateSize;
     previousSize = updateSize;
     size = updateSize;
   }
@@ -28,7 +29,7 @@
         customClass: "rounded-lg w-[70%] sm:w-1/3",
         timerProgressBar: true,
         background: "#354A5F",
-        text: "Please enter a number between 0-999",
+        text: "Please enter a number between 1-999",
       });
       size = previousSize;
       return;
@@ -47,10 +48,11 @@
      bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
     type="text"
     maxlength="3"
-    title={"Enter a number between 0-999"}
+    title={"Enter a number between 1-999"}
     {placeholder}
     on:keydown={(e) => {
       if (e.key === "Enter") {
+        e.preventDefault();
         giveSizeUpdateIfNecessary();
       }
     }}

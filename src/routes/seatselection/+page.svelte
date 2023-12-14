@@ -3,6 +3,7 @@
   import Cinemahall from "../../_ui/templates/cinemahall.svelte";
   import SelSeatOverview from "../../_ui/templates/selSeatOverview.svelte";
   import Timer from "../../_ui/templates/timer.svelte";
+  import SeatLegend from "../../_ui/templates/seatLegend.svelte";
 
   let seats: any[] = [];
   let selectedSeats: any[] = [];
@@ -24,8 +25,8 @@
   function getRandomInt(max: number) {
     return Math.floor(Math.random() * max);
   }
-  export let nrOfRows = 36;
-  export let nrOfCols = 38;
+  export let nrOfRows = 12;
+  export let nrOfCols = 12;
 
   for (let y = 0; y < nrOfRows; ++y) {
     for (let x = 0; x < nrOfCols; ++x) {
@@ -33,13 +34,10 @@
       let booked = getRandomInt(100) > 80 ? true : false;
       let category = "regular";
       if (getRandomInt(100) < 40) {
-        category = "premium";
+        category = "vip";
       }
       if (getRandomInt(100) < 40) {
-        category = "student";
-      }
-      if (getRandomInt(100) < 40) {
-        category = "regular";
+        category = "loge";
       }
 
       if (choice < 20) {
@@ -50,7 +48,7 @@
         } else {
           seatrow.push(getSeat("regular", x, y, booked, category));
         }
-      } else if (choice >= 20 && choice <= 80) {
+      } else if (choice >= 20 && choice <= 50) {
         seatrow.push(getSeat("regular", x, y, booked, category));
       } else {
         seatrow.push(getSeat("empty", x, y, booked, category));
@@ -79,14 +77,11 @@
       text: "Be quicker!",
     });
   }
-
+  $: console.log(seats);
   let aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
-
 </script>
 
-<div
-  class="flex flex-row  justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4 "
->
+<div class="flex flex-row justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4">
   <div
     class="flex-col max-h-[80vh] w-auto max-w-[60%] sm:mr-12 sm:ml-24"
     style={aspectRatio}
@@ -101,18 +96,22 @@
       }}
     />
   </div>
-  <div class="flex flex-col w-1/3 h-[60vh] ring-2 ring-white bg-backgroundBlue sm:rounded-md">
-    <div
-      class="mx-auto w-[20%] sm:w-[60%] xl:mb-4"
-    >
-      <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
-    </div>
-    {#key selectedSeats}
-      <div
-        class="mx-auto w-full h-full"
-      >
-        <SelSeatOverview {selectedSeats} />
+  <div class="flex flex-col  w-1/3">
+    <div class="flex flex-col  h-[60vh] bg-tileBlue sm:rounded-md">
+      <div class="mx-auto w-[20%] sm:w-[60%] xl:mb-4">
+        <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
       </div>
-    {/key}
+      {#key selectedSeats}
+        <div class="mx-auto w-full h-full">
+          <SelSeatOverview {selectedSeats} />
+        </div>
+      {/key}
+    </div>
+    <button class="bg-tileBlue rounded-lg ring-1 ring-white text-textWhite text-xl hover:bg-blue-400 h-12 my-4">
+      Book now
+    </button>
+    <div class="w-full">
+      <SeatLegend />
+    </div>
   </div>
 </div>
