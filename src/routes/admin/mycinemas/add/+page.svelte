@@ -17,9 +17,23 @@
   $: Y = Y;
 
   function createHall() {
+    let createWasSuccessfull = true;
+    Swal.fire({
+      title: "How should the hall be named?",
+      text: "Write something interesting:",
+      input: "text",
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.value) {
+        console.log("Result: " + result.value);
+      }
+    });
     Swal.fire({
       title: "Creating Hall...",
     });
+    if (createWasSuccessfull) {
+      Swal.fire({ title: "Hall was created succesfully" });
+    }
   }
 </script>
 
