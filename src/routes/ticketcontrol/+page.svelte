@@ -88,10 +88,9 @@
         let ticket;
 
         await getTicket().then((tickets) =>{
-            let ticketArray = tickets
-            for(let i=0; i<ticketArray.length; i++){
-                if(ticketArray[i].qrcode === decodedTextToString){
-                    ticket = ticketArray[i];
+            for(let i=0; i<tickets.length; i++){
+                if(tickets[i].qrcode === decodedTextToString){
+                    ticket = tickets[i];
                 }
             }
 
@@ -116,10 +115,9 @@
         let ticket;
 
         await getTicket().then((tickets) =>{
-            let ticketArray = tickets
-            for(let i=0; i<ticketArray.length; i++){
-                if(ticketArray[i].qrcode === ticketQrcodeMaually){
-                    ticket = ticketArray[i];
+            for(let i=0; i<tickets.length; i++){
+                if(tickets[i].qrcode === ticketQrcodeMaually){
+                    ticket = tickets[i];
                 }
             }
 
