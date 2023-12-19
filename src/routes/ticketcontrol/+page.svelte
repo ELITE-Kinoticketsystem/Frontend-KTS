@@ -6,7 +6,7 @@
 
     let html5Qrcode;
     let cameraId;
-    let mauallInput = false;
+    let maualInput = false;
     let ticketQrcodeMaually;
 
     $: movieTitle = "";
@@ -54,13 +54,13 @@
     }
 
     function manual(event){
-        mauallInput = true;
+        maualInput = true;
         ticketQrcodeMaually = event.target.value;
     }
 
     function onScanSuccess(decodedText, decodedResult) {
         //alert(`Code matched = ${decodedText}`)
-        if(mauallInput){
+        if(maualInput){
             showData();
         }else{
             fetchData(decodedText);
