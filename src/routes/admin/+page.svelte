@@ -77,6 +77,13 @@
           "/admin/mymovies/edit": "Movie",
           "/admin/myevents/edit": "Event",
         });
+      } else if (type.toLowerCase() === "overview") {
+        resolve({
+          "/admin/mylocations": "Location",
+          "/admin/mycinemas": "Cinema",
+          "/admin/mymovies": "Movie",
+          "/admin/myevents": "Event",
+        });
       } else {
         resolve({
           "/admin/mylocations/remove": "Location",
@@ -110,6 +117,9 @@
   }
   async function deletePopUp() {
     await fireSwal("remove", "What do you want to remove?");
+  }
+  async function overViewPopUp() {
+    await fireSwal("overview", "What do you want to see?");
   }
   ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 </script>
@@ -266,6 +276,31 @@
             </svg>
 
             Remove settings
+          </div>
+        </button>
+      </div>
+      <div class="grid col-span-3 bg-tileBlue rounded-md w-full h-full">
+        <button
+          class="flex px-10 py-5 bg-buttonBlue rounded-md hover:bg-green-500 duration-300 text-textWhite"
+          on:click={overViewPopUp}
+        >
+          <div class="flex mx-auto my-auto">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-5 h-5 my-auto mr-1"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+              />
+            </svg>
+
+            Overview an element
           </div>
         </button>
       </div>

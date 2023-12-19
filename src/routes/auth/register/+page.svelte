@@ -35,8 +35,18 @@
     );
   }
 
-  function register() {
-    if (AuthService.register(firstname, lastname, username, email, password)) {
+  async function register() {
+    const registerRequest = await AuthService.register(
+      firstname,
+      lastname,
+      username,
+      email,
+      password
+    );
+    const registerData = registerRequest.json();
+    console.log(registerData);
+
+    if (registerRequest.ok) {
       window.location.href =
         "/?registerStatus=" + RegisterStatus.REGISTERED.toString();
     } else {

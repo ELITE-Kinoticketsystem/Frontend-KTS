@@ -5,24 +5,14 @@
 
   export let moviesToDisplay: any[] = [];
 
-  let randomBegin = Math.floor(Math.random() * moviesToDisplay.length) + 1;
-  if (randomBegin + 5 > moviesToDisplay.length) {
-    randomBegin = moviesToDisplay.length - 5;
-  }
-
   function getYear(dateTime: string): string {
-    const date = new Date(dateTime);
+    const date = parseISOString(dateTime);
     return date.getFullYear().toString();
   }
-
-  moviesToDisplay.forEach((movie) => {
-    movie.fsk = Math.floor(Math.random() * 5) * 6;
-    if (movie.fsk == 24) movie.fsk = 16;
-    movie.description =
-      "The astonishing coming-of-age story of one of the most influential, dynamic and surprising players in basketball history: Stephen Curry. In a mix of intimate cinéma-vérité, archival footage and filmed interviews, this documentary follows Curry's rapid rise - from diminutive college athlete in a small-town Division I college to four-time NBA champion building one of the most dominant sports dynasties in the world.";
-    movie.duration = Math.floor(Math.random() * 180) + 1;
-    movie.releaseDate = new Date();
-  });
+  function parseISOString(s: string) {
+    var b = s.split(/\D+/);
+    return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
+  }
 </script>
 
 <Splide
@@ -31,14 +21,14 @@
   class="relative w-full group"
 >
   <SplideTrack class="rounded-xl group">
-    {#each moviesToDisplay.slice(randomBegin, randomBegin + 5) as movie}
+    {#each moviesToDisplay as movie}
       <SplideSlide>
-        <a href="/movies/{movie.movieId}">
+        <a href="/movies/{movie.ID}">
           <img
             use:lazyImage
             class="w-full sm:h-36 md:h-60 xl:h-96 2xl:h-[32rem] object-cover group"
-            src={movie.src}
-            alt={movie.movieName}
+            src={movie.BannerPicURL}
+            alt={movie.Title}
           />
           <div
             class="absolute bottom-0 left-0 w-full h-full bg-backgroundBlue opacity-0 group-hover:opacity-90 transition-opacity duration-300"
@@ -46,13 +36,13 @@
             <div class="grid grid-cols-2 px-5 py-5 mt-8">
               <div class="grid basis-2">
                 <img
-                  src={movie.src}
-                  alt={movie.movieName}
+                  src={movie.CoverPicURL}
+                  alt={movie.Title}
                   class="w-min h-1/4 mx-auto rounded-md"
                 />
               </div>
               <div class="text-textWhite text-center mx-auto pr-10">
-                <p class="text-3xl mb-2">{movie.movieName}</p>
+                <p class="text-3xl mb-2">{movie.Title}</p>
                 <p class="flex text-md">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -70,8 +60,8 @@
                   </svg>
 
                   <span class="ml-1">
-                    {#each movie.genre as genre, index}
-                      {genre}{#if index != movie.genre.length - 1},{/if}
+                    {#each movie.Genres as genre, index}
+                      {genre.GenreName}{#if index != movie.Genres.length - 1},{/if}
                     {/each}</span
                   >
                 </p>
@@ -90,7 +80,7 @@
                       d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
                     />
                   </svg>
-                  <span class="ml-1">FSK {movie.fsk}</span>
+                  <span class="ml-1">FSK {movie.Fsk}</span>
                 </p>
                 <p class="flex text-md">
                   <svg
@@ -107,7 +97,7 @@
                       d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <span class="ml-1">{movie.duration}min</span>
+                  <span class="ml-1">{movie.TimeInMin}min</span>
                 </p>
                 <p class="flex text-md">
                   <svg
@@ -125,10 +115,10 @@
                     />
                   </svg>
 
-                  <span class="ml-1">{getYear(movie.releaseDate)}</span>
+                  <span class="ml-1">{getYear(movie.ReleaseDate)}</span>
                 </p>
                 <div class=" text-textWhite text-md break-words text-justify">
-                  <span class="break-words">{movie.description}</span>
+                  <span class="break-words">{movie.Description}</span>
                 </div>
               </div>
             </div>

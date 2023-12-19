@@ -3,6 +3,7 @@
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
   import { Rating } from "flowbite-svelte";
+  import { invalidateAll } from "$app/navigation";
 
   let displayedMovies: any[] = [];
   let showFskDropdown = false;
@@ -11,18 +12,6 @@
   export let data;
 
   const allMovies = data.movies;
-
-  allMovies.push({
-    movieName: "The Matrix",
-    movieId: "1",
-    genre: ["action", "sci-fi"],
-    rating: "4.5",
-    description:
-      "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-    src: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-    specialEventId: "1",
-    fsk: "16",
-  });
 
   let forNow = 0;
   const genres = ["awesome", "action", "adventure", "sci-fi"];
@@ -33,6 +22,7 @@
   }
   onMount(() => {
     filter();
+    invalidateAll();
   });
 
   let map = new Map();

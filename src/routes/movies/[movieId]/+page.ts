@@ -1,10 +1,10 @@
 export const load = async ({ fetch, params }) => {
     async function fetchMovie(){
-        const movieData = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/movies/" + params.movieId);
+        const movieData = await fetch("http://172.205.209.190:8080/movies/" + params.movieId, { mode: "cors" });
         return await movieData.json();
     }
     async function fetchTheatres(){
-        const theatres = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/movies/" + params.movieId);
+        const theatres = await fetch("http://172.205.209.190:8080/movies/" + params.movieId);
         return await theatres.json();
     }
 

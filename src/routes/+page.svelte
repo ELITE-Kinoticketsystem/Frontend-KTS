@@ -4,11 +4,17 @@
   import MainPageMovieRow from "../_ui/layout/_mainpage/mainPageMovieRow.svelte";
   import IntersectionObserver from "svelte-intersection-observer";
   import { fade } from "svelte/transition";
+  import { onMount } from "svelte";
+  import { invalidateAll } from "$app/navigation";
 
   export let data;
 
   let moviesToDisplay = data.first;
   let items: any[] = [];
+
+  onMount(() => {
+    invalidateAll();
+  });
 </script>
 
 <svelte:head>

@@ -21,28 +21,13 @@
 
   const reviews = data.reviews.reviews;
 
+  movie.genre = ["Action", "Adventure", "Comedy", "Drama", "Fantasy"];
+
   reviews.forEach((review) => {
     const date = new Date(review.datetime);
     review.datetime = date.toLocaleString();
     review.datetime = review.datetime.split(" ")[0].slice(0, -1);
   });
-
-  movie = {
-    src: "https://resizing.flixster.com/P5ZdS6yYcgAsXniyJV6xMfCP1CM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzhmMGUwMzg0LTg4OWYtNDNlNy05OWExLTBhNTMwZTJiMTBmZC5wbmc=",
-    movieName: "Stephen Curry Underrated",
-    movieId: "1",
-    description:
-      "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history.\
-       The focus is on his rise from barely mediocre college player to four-time NBA champion. \
-       Today he is widely considered to be the greatest shooter to ever play the game of basketball \
-       and this documentary shows what it took to get to that point. He is also the father to three children \
-       and husband to his wife Ayesha Curry who likes to cook food for a living.",
-    genre: ["Documentary", "Sport", "Biography", "Family"],
-    fsk: "0",
-    rating: 4.2,
-    duration: 120,
-    releaseDate: "2023-11-30T00:00:00.000Z",
-  };
 
   let cinema = "";
   if (browser) {
@@ -83,16 +68,17 @@
   onMount(() => {
     if (browser)
       ytPlayer = YouTubePlayer("player-1", {
-        videoId: "NHhTMh0nURA",
+        videoId: movie.TrailerURL,
       });
   });
+
   function startVideo() {
     ytPlayer.playVideo();
   }
 </script>
 
 <head:svelte>
-  <title>Cinemika - {movie.movieName}</title>
+  <title>Cinemika - {movie.Title}</title>
 </head:svelte>
 
 <div class="flex w-screen h-max">
@@ -113,8 +99,8 @@
       <div class="flex flex-row mt-14">
         <div class="relative basis-1/3 flex-shrink-0 h-max">
           <img
-            src={movie.src}
-            alt={movie.movieName}
+            src={movie.CoverPicUrl}
+            alt={movie.Title}
             class="min-w-full h-auto aspect-auto overflow-hidden rounded-md"
           />
         </div>
@@ -122,10 +108,10 @@
           <div
             class="flex flex-col sm:flex-row md:flex-row text-textWhite mx-auto sm:text-md md:text-xl xl:text-2xl 2xl:text-4xl font-bold"
           >
-            <p class="break-words">{movie.movieName}</p>
+            <p class="break-words">{movie.Title}</p>
 
             <a class="mx-auto xl:ml-5 xl:mt-1" href="#review">
-              <Rating id="ratingLab" total={5} rating={movie.rating} />
+              <Rating id="ratingLab" total={5} rating={movie.Rating} />
             </a>
           </div>
           <div
@@ -148,8 +134,8 @@
               </svg>
 
               <span class="ml-1">
-                {#each movie.genre as genre, index}
-                  {genre}{#if index != movie.genre.length - 1},{/if}
+                {#each movie.Genres as genre, index}
+                  {genre.GenreName}{#if index != movie.Genres.length - 1},{/if}
                 {/each}</span
               >
             </p>
@@ -168,7 +154,7 @@
                   d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
                 />
               </svg>
-              <span class="ml-1">FSK {movie.fsk}</span>
+              <span class="ml-1">FSK {movie.Fsk}</span>
             </p>
             <p class="flex text-sm">
               <svg
@@ -185,7 +171,7 @@
                   d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span class="ml-1">{movie.duration}min</span>
+              <span class="ml-1">{movie.TimeInMin}min</span>
             </p>
             <p class="flex text-sm">
               <svg
@@ -203,13 +189,13 @@
                 />
               </svg>
 
-              <span class="ml-1">{getYear(movie.releaseDate)}</span>
+              <span class="ml-1">{getYear(movie.ReleaseDate)}</span>
             </p>
           </div>
           <div
             class=" text-textWhite my-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl break-words text-justify"
           >
-            <span class="break-words">{movie.description}</span>
+            <span class="break-words">{movie.Description}</span>
           </div>
         </div>
       </div>
