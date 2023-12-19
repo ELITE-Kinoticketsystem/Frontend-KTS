@@ -11,7 +11,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
-  class="h-full relative flex flex-row overflow-x-scroll scrollbar gap-x-5 sm:gap-x-12 p-4 scroll-smooth"
+  class="h-full flex flex-row overflow-x-scroll gap-x-5 sm:gap-x-12 p-4 scroll-smooth"
   id="scroll-{divId}"
   on:mouseenter={() => {
     mouseIsInDiv = true;
@@ -22,7 +22,7 @@
 >
   {#each moviesToDisplay as movie}
     <div
-      class="flex-none basis-[30%] sm:basis-1/6 h-max hover:scale-105 duration-300"
+      class="flex-none sm:w-[15%] min-h-full hover:scale-105 duration-300"
     >
       <MainCard {movie} />
     </div>

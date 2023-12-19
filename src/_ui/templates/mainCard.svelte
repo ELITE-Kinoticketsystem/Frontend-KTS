@@ -22,15 +22,15 @@
   </p>
 </a>-->
 <div class="flex flex-col w-full h-full items-center">
-  <div class="flex-none h-[88%] overflow-hidden">
+  <div class="flex w-full h-[88%] overflow-hidden">
     <img
-      class="object-cover aspect-auto rounded-md"
+      class="min-w-full min-h-full object-cover aspect-auto rounded-md"
       src={isActor ? movie.imgSrcs[1] : movie.CoverPicURL}
       alt={isActor ? movie.name : movie.Title}
     />
   </div>
-  <div class="flex flex-col place-content-evenly w-full h-[12%]">
-    <p class="text-center break-wors text-textWhite font-semibold text-[85%]">
+  <div class="flex flex-col place-content-evenly w-full h-[11%]">
+    <p class="text-center break-wors text-textWhite font-semibold text-[100%]">
       {isActor ? movie.name : movie.Title}
     </p>
   </div>
