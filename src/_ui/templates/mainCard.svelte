@@ -5,14 +5,14 @@
   export let isActor: boolean = false;
 </script>
 
-<a
+<!--<a
   class="flex flex-col items-center w-full h-full"
   href={isActor ? "/actors/" + movie.actorId : "/movies/" + movie.ID}
 >
   <img
     src={isActor ? movie.imgSrcs[1] : movie.CoverPicURL}
     alt={isActor ? movie.name : movie.Title}
-    class="flex h-[90%] w-max rounded-md aspect-auto object-cover mb-4"
+    class="object-cover aspect-auto rounded-md"
     use:lazyImage={{ threshold: 0.5 }}
   />
   <p
@@ -20,4 +20,18 @@
   >
     {isActor ? movie.name : movie.Title}
   </p>
-</a>
+</a>-->
+<div class="flex flex-col w-full h-full items-center">
+  <div class="flex-none h-[88%] overflow-hidden">
+    <img
+      class="object-cover aspect-auto rounded-md"
+      src={isActor ? movie.imgSrcs[1] : movie.CoverPicURL}
+      alt={isActor ? movie.name : movie.Title}
+    />
+  </div>
+  <div class="flex flex-col place-content-evenly w-full h-[12%]">
+    <p class="text-center break-wors text-textWhite font-semibold text-[85%]">
+      {isActor ? movie.name : movie.Title}
+    </p>
+  </div>
+</div>

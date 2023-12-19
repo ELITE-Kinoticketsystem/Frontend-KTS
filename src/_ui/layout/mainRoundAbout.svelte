@@ -34,11 +34,11 @@
             class="absolute bottom-0 left-0 w-full h-full bg-backgroundBlue opacity-0 group-hover:opacity-90 transition-opacity duration-300"
           >
             <div class="grid grid-cols-2 px-5 py-5 mt-8">
-              <div class="grid basis-2">
+              <div class="grid">
                 <img
                   src={movie.CoverPicURL}
                   alt={movie.Title}
-                  class="w-min h-1/4 mx-auto rounded-md"
+                  class="w-min h-full max-h-[80%] mx-auto rounded-md"
                 />
               </div>
               <div class="text-textWhite text-center mx-auto pr-10">
