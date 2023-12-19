@@ -2,13 +2,22 @@
   import Swal from "sweetalert2";
 
   export let value = "0";
-  export let maxValue = "23";
+  export let maxValue = "9";
+  $: {
+    value = value;
+    maxValue = maxValue;
+  }
 
   const pattern = new RegExp("\\d");
 
   function fireAndResetIfInvalidValue() {
+    if (value === "") {
+      value = "0";
+      return;
+    }
+    
     if (!pattern.test(value) || Number(value) > Number(maxValue)) {
-      value = "";
+      value = "0";
       Swal.fire({
         title: `Only values between 0-${maxValue} are allowed`,
       });
@@ -23,7 +32,7 @@
   class="flex flex-col items-center justify-between w-full h-full rounded-sm"
 >
   <button
-    on:mouseenter={() => {
+    on:mouseenter={(e) => {
       upperHovering = true;
     }}
     on:mouseleave={() => {
@@ -54,14 +63,13 @@
   </button>
 
   <input
-    class="h-[60%] w-full p-[0.2rem] duration-300 text-center font-semibold text-textWhite text-sm border border-gray-300 rounded-sm
+    class="h-[60%] w-full p-[0.2rem] duration-300 text-center text-textWhite text-[80%] border border-gray-300 rounded-md
      bg-buttonBlue focus:ring-blue-500 focus:border-blue-500
      [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
     type="text"
     maxlength="1"
     on:keydown={(e) => {
       if (e.key === "Enter") {
-        e.preventDefault();
         fireAndResetIfInvalidValue();
       }
     }}
