@@ -6,8 +6,14 @@
 
     let html5Qrcode;
     let cameraId;
-    let manuel_input = false;
-    let ticketQrcodeMauelly;
+    let mauallInput = false;
+    let ticketQrcodeMaually;
+
+    $: movieTitle = "";
+    $: theater = "";
+    $: showTime = "";
+    $: payed = "";
+    $: amount = ""
 
     onMount(init);
 
@@ -27,7 +33,7 @@
     }
     function start() {
         html5Qrcode.start(
-            {deviceId: {exact: cameraId}},
+            {facingMode: 'environment'},
             {
                 fps: 10,
                 qrbox: { width: 250, height: 250 },
@@ -39,7 +45,7 @@
     }
 
     async function stop() {
-        html5Qrcode.stop()
+        html5Qrcode.stop();
         scanning = false;
     }
 
@@ -47,14 +53,14 @@
         html5Qrcode.resume()
     }
 
-    function manuel(event){
-        manuel_input = true;
-        ticketQrcodeMauelly = event.target.value;
+    function manual(event){
+        mauallInput = true;
+        ticketQrcodeMaually = event.target.value;
     }
 
     function onScanSuccess(decodedText, decodedResult) {
         //alert(`Code matched = ${decodedText}`)
-        if(manuel_input){
+        if(mauallInput){
             showData();
         }else{
             fetchData(decodedText);
@@ -89,20 +95,11 @@
                 }
             }
 
-                    const movieTitle = `<div>MovieTitle:  ${ticket.movieTitle}</div>`;
-                    const theater = `<div>Teather: ${ticket.theater}</div>`;
-                    const showtime = `<div>Showtime: ${ticket.showtime}</div>`;
-                    const payed = `<div>Payed: ${ticket.payed}</div>`;
-                    const amount = `<div>Amount: ${ticket.amount}</div>`;
-
-                    let container = document.getElementById('container1');
-
-                    container.innerHTML = '';
-                    container.insertAdjacentHTML('beforeend', movieTitle);
-                    container.insertAdjacentHTML('beforeend', theater);
-                    container.insertAdjacentHTML('beforeend', showtime);
-                    container.insertAdjacentHTML('beforeend', payed);
-                    container.insertAdjacentHTML('beforeend', amount);
+                    movieTitle = `<div>MovieTitle: ${ticket.movieTitle}</div>`;
+                    theater = `<div>Theater: ${ticket.theater}</div>`;
+                    showTime = `<div>ShowTime: ${ticket.showtime}</div>`;
+                    payed = `<div>Payed: ${ticket.payed}</div>`;
+                    amount = `<div>Amount: ${ticket.amount}</div>`;
 
             /*
             const qrCodeTicket = ticketArray.filter((ticket) =>{
@@ -121,25 +118,16 @@
         await getTicket().then((tickets) =>{
             let ticketArray = tickets
             for(let i=0; i<ticketArray.length; i++){
-                if(ticketArray[i].qrcode === ticketQrcodeMauelly){
+                if(ticketArray[i].qrcode === ticketQrcodeMaually){
                     ticket = ticketArray[i];
                 }
             }
 
-            const movieTitle = `<div>MovieTitle:  ${ticket.movieTitle}</div>`;
-            const theater = `<div>Teather: ${ticket.theater}</div>`;
-            const showtime = `<div>Showtime: ${ticket.showtime}</div>`;
-            const payed = `<div>Payed: ${ticket.payed}</div>`;
-            const amount = `<div>Amount: ${ticket.amount}</div>`;
-
-            let container = document.getElementById('container2');
-
-            container.innerHTML = '';
-            container.insertAdjacentHTML('beforeend', movieTitle);
-            container.insertAdjacentHTML('beforeend', theater);
-            container.insertAdjacentHTML('beforeend', showtime);
-            container.insertAdjacentHTML('beforeend', payed);
-            container.insertAdjacentHTML('beforeend', amount);
+            movieTitle = `<div>MovieTitle: ${ticket.movieTitle}</div>`;
+            theater = `<div>Theater: ${ticket.theater}</div>`;
+            showTime = `<div>ShowTime: ${ticket.showtime}</div>`;
+            payed = `<div>Payed: ${ticket.payed}</div>`;
+            amount = `<div>Amount: ${ticket.amount}</div>`;
 
             /*
             const qrCodeTicket = ticketArray.filter((ticket) =>{
@@ -176,6 +164,10 @@
         color: black;
         padding: 5px 20px 5px 20px;
     }
+
+    div{
+        color: white;
+    }
 </style>
 
 <main>
@@ -183,7 +175,11 @@
 
     {#if scanning}
         <div id="container1">
-
+            {@html movieTitle}
+            {@html theater}
+            {@html showTime}
+            {@html payed}
+            {@html amount}
         </div>
 
         <button on:click={stop}>Stop Scanning</button>
@@ -191,9 +187,13 @@
 
     {:else}
         <button on:click={start}>Start Scanning</button>
-        <label for="manuel"> <input placeholder="Type QRCode manuelly..." id = "manuel" type = 'text' on:input={manuel} style="width: 210px"> <button id="manuel" on:click={showData}>Check</button></label>
+        <label for="manual"> <input placeholder="Type QRCode manually..." id = "manual" type = 'text' on:input={manual} style="width: 210px"> <button id="manual" on:click={showData}>Check</button></label>
         <div id="container2">
-
+            {@html movieTitle}
+            {@html theater}
+            {@html showTime}
+            {@html payed}
+            {@html amount}
         </div>
     {/if}
 </main>
