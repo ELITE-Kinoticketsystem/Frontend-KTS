@@ -1,12 +1,11 @@
 export class AuthService {
-  private static url: string = "https://172.205.209.190:8080/auth";
 
   public static async login(username: string, password: string) {
     const body = JSON.stringify({
       "username": username,
       "password": password
     });
-    return await fetch(this.url + "/login", {
+    return await fetch(apiUrl + "/login", {
       method : "POST",
       mode: "cors",
       credentials: "include",
@@ -67,7 +66,7 @@ export class AuthService {
       "firstname": firstname,
       "lastname": lastname
     });
-    return await fetch(this.url + "/register", {
+    return await fetch(apiUrl + "/register", {
       method : "POST",
       mode: "cors",
       credentials: "include",
@@ -78,4 +77,4 @@ export class AuthService {
     });
   }
 }
-
+export const apiUrl = "https://cinemika.westeurope.cloudapp.azure.com:8080";

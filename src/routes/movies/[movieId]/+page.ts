@@ -1,10 +1,12 @@
+import { apiUrl } from '$lib/_services/authService.js';
+
 export const load = async ({ fetch, params }) => {
     async function fetchMovie(){
-        const movieData = await fetch("https://172.205.209.190:8080/movies/" + params.movieId, { mode: "cors" });
+        const movieData = await fetch(apiUrl+"/movies/" + params.movieId, { mode: "cors" });
         return await movieData.json();
     }
     async function fetchTheatres(){
-        const theatres = await fetch("https://172.205.209.190:8080/movies/" + params.movieId);
+        const theatres = await fetch(apiUrl+"/movies/" + params.movieId);
         return await theatres.json();
     }
 
