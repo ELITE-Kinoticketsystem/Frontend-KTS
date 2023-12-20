@@ -47,9 +47,16 @@
 </script>
 
 <div
-  class="w-full h-full flex flex-col items-center justify-between ring-1 ring-white bg-backgroundBlue rounded-md pb-3 px-3"
+  class="w-full h-full flex flex-col items-center justify-between ring-1 ring-white bg-tileBlue rounded-md pb-3 px-3"
 >
   <div class="flex flex-row w-full h-[87%] overflow-x-scroll pt-5">
+    {#if movies.length === 0}
+      <div class="w-full h-full flex flex-col place-content-evenly">
+        <p class="text-center text-textWhite text-xl font-semibold">
+          Select a movie
+        </p>
+      </div>
+    {/if}
     {#each movies as movie, thisMovie}
       <div class="relative flex-none w-[80%] h-full mx-5">
         <ImgWithUndertitle
@@ -82,12 +89,17 @@
   </div>
   <div class="relative flex w-full h-[10%]">
     <input
-      class="w-full rounded-lg p-2 duration-300 text-sm text-textWhite
+      class="w-full h-full rounded-lg p-2 duration-300 text-sm text-textWhite
       border border-gray-300 bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
       type="text"
       maxlength="24"
       placeholder="Search for movies..."
       bind:value={inputValue}
+      on:focus={() => {
+        if (inputValue.length > 0) {
+          showEligibleMovies(inputValue);
+        }
+      }}
       on:keydown={() => {
         showEligibleMovies(inputValue);
       }}

@@ -11,7 +11,7 @@
     />
   </div>
   <div class="flex flex-col place-content-evenly w-full h-[12%]">
-    <p class="text-center break-wors text-textWhite font-semibold text-[85%]">
+    <p class="text-center text-textWhite font-semibold text-[85%]">
       {element.undertitle}
     </p>
   </div>

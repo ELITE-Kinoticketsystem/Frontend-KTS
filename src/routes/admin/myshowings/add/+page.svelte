@@ -1,5 +1,6 @@
 <script lang="ts">
   import DescrInput from "../../../../_ui/templates/descrInput.svelte";
+  import EventPreview from "../../../../_ui/templates/eventPreview.svelte";
   import MovieSelector from "../../../../_ui/templates/movieSelector.svelte";
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
@@ -11,17 +12,42 @@
   let movies: any[] = [];
   let prices = { regular: 10, vip: 5, loge: 3 };
   let is3D = false;
-  let description = "Here comes your description..";
+  let description = "";
   let eventType = "regular";
+
+  let nrOfShowings = 0;
+  let movieNames: any[] = [];
+  let descriptionLength = 0;
 
   $: {
     allShowings = allShowings;
-    console.log(allShowings);
     movies = movies;
     prices = prices;
     is3D = is3D;
     description = description;
     eventType = movies.length > 1 ? "special" : "regular";
+  }
+  $: {
+    nrOfShowings = 0;
+    for (let i = 0; i < allShowings.length; ++i) {
+      nrOfShowings += allShowings[i].times.length;
+    }
+    movieNames = [];
+    for (let i = 0; i < movies.length; ++i) {
+      movieNames.push(movies.at(i).title);
+    }
+    descriptionLength = description.length;
+  }
+
+  function createEvent() {
+    let obj = {
+      allShowings,
+      movies,
+      prices,
+      is3D,
+      description,
+      eventType,
+    };
   }
 </script>
 
@@ -34,24 +60,23 @@
     </p>
 
     <button
-      class=" bg-tileBlue ring-1 ring-white rounded-lg hover:bg-blue-400 px-3 text-textWhite text-lg font-semibold"
+      on:click={createEvent}
+      class=" bg-tileBlue ring-1 ring-white rounded-lg hover:bg-blue-400 px-3 text-textWhite text-xl font-semibold"
     >
       Publish now
     </button>
   </div>
 
   <div class="flex flex-row gap-x-10 w-full h-[40vh] mb-6">
-    <div class="w-[17%] h-full rounded-md">
+    <div class="flex-none w-[17%] h-full rounded-md">
       <MovieSelector bind:movies />
     </div>
     <div class="flex flex-col justify-between w-[20%] h-full">
-      <div
-        class="w-full h-[77%] bg-backgroundBlue ring-1 ring-white rounded-lg"
-      >
+      <div class="w-full h-[77%] bg-tileBlue ring-1 ring-white rounded-lg">
         <PriceForCatSetter bind:prices />
       </div>
       <div
-        class="flex flex-row w-full items-center justify-between p-2 bg-backgroundBlue ring-1 ring-white rounded-lg"
+        class="flex flex-row w-full items-center justify-between p-2 bg-tileBlue ring-1 ring-white rounded-lg"
       >
         <p
           class="w-[66%] text-center text-textWhite font-bold text-xl rounded-md bg-slate-500 py-[0.6rem]"
@@ -62,23 +87,28 @@
           <input
             bind:checked={is3D}
             type="checkbox"
-            class="w-[40%] mx-auto h-auto aspect-1 rounded-md ring-1 ring-slate-500"
+            class="w-[50%] mx-auto h-auto aspect-1 rounded-md ring-1 ring-slate-500"
+            style="input[type=checkbox]:checked:after:background-color: rgb(10 42 22 / var(--tw-bg-opacity));"
           />
         </div>
       </div>
     </div>
-    <div class="w-[40%] h-full">
+    <div class="w-[36%] h-full">
       <DescrInput bind:description />
     </div>
-    <div class="w-[16%] h-full">
-      <p class="bg-backgroundBlue w-full h-full ring-1 ring-white rounded-lg">
-        Ace
-      </p>
+    <div class="w-[20%] h-full">
+      <EventPreview
+        bind:movieNames
+        bind:nrOfShowings
+        bind:descriptionLength
+        bind:is3D
+        bind:prices
+      />
     </div>
   </div>
 
   <div
-    class="flex flex-row justify-between gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-backgroundBlue px-4 py-3"
+    class="flex flex-row justify-between gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
   >
     <img
       class="w-[14%] my-2 h-auto object-cover aspect-auto rounded-md"

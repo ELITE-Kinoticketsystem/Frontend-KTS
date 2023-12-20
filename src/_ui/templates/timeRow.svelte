@@ -12,7 +12,7 @@
 </script>
 
 <div
-  class="h-full w-full flex flex-row gap-x-2 items-center px-3 bg-tileBlue rounded-md"
+  class="h-full w-full flex flex-row gap-x-2 items-center px-3 bg-backgroundBlue rounded-md"
 >
   <div class="w-[20%] h-[70%]">
     <HallDropdown bind:hallname />
