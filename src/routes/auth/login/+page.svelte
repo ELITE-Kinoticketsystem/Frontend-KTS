@@ -1,6 +1,7 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
   import { browser } from "$app/environment";
+  import { LoginStatus } from "$lib/statusEnums";
 
   const authService = new AuthService();
   const isUserLoggedIn = authService.isUserLoggedIn();
@@ -23,9 +24,8 @@
 
   async function login() {
     const userIsLoggedIn = await AuthService.login(username, password);
-    console.log(userIsLoggedIn);
-    /*
-    if (userIsLoggedIn) {
+
+    if (userIsLoggedIn.status === 200) {
       if (browser) {
         window.location.href =
           "/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGIN.toString();
@@ -37,7 +37,7 @@
 
       errorMsg.hidden = false;
       submitButton.disabled = true;
-    }*/
+    }
   }
 
   function onSignIn(googleUser: any) {

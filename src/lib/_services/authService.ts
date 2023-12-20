@@ -1,5 +1,5 @@
 export class AuthService {
-  private static url: string = "http://172.205.209.190:8080/auth";
+  private static url: string = "https://172.205.209.190:8080/auth";
 
   public static async login(username: string, password: string) {
     const body = JSON.stringify({
