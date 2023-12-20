@@ -90,7 +90,7 @@
     />
     {#key key}
       {#if filteredMovies.length > 0}
-        <div class="movies" ransition:fade={{ delay: 250, duration: 300 }}>
+        <div class="movies" transition:fade={{ delay: 250, duration: 300 }}>
           <p class="text-textWhite text-xl mt-4">
             <span class="font-bold">Movies</span> ({Math.min(
               filteredMovies.length,
@@ -111,7 +111,7 @@
         </div>
       {/if}
       {#if filterActors.length > 0}
-        <div class="actors" ransition:fade={{ delay: 250, duration: 300 }}>
+        <div class="actors" transition:fade={{ delay: 250, duration: 300 }}>
           <p class="text-textWhite text-xl mt-4">
             <span class="font-bold">Actors</span> ({Math.min(
               filterActors.length,
@@ -131,7 +131,7 @@
         </div>
       {/if}
       {#if filterGenres.length > 0}
-        <div class="actors" ransition:fade={{ delay: 250, duration: 300 }}>
+        <div class="actors" transition:fade={{ delay: 250, duration: 300 }}>
           <p class="text-textWhite text-xl mt-4">
             <span class="font-bold">Genres</span> ({Math.min(
               filterGenres.length,

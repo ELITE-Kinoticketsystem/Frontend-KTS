@@ -1,7 +1,12 @@
 <script>
+  import { onMount } from "svelte";
   import Footer from "../_ui/layout/footer.svelte";
   import Navbar from "../_ui/layout/navbar.svelte";
   import "../app.css";
+  import { invalidateAll } from "$app/navigation";
+  onMount(() => {
+    invalidateAll();
+  });
 </script>
 
 <div class="relative flex flex-col justify-between min-w-screen min-h-screen">

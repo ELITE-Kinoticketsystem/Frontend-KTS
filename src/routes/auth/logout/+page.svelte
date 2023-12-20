@@ -7,6 +7,8 @@
 
   const isUserLoggedIn = authService.isUserLoggedIn();
   if (browser && isUserLoggedIn) {
+    window.Cookies.remove("token");
+    window.Cookies.remove("refreshToken");
     window.location.href =
       "/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGOUT.toString();
   } else {
