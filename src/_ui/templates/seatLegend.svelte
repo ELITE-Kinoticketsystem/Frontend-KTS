@@ -2,6 +2,7 @@
   const regularColor = "#ff0000";
   const vipColor = '#00ff00';
   const logeColor = '#0000ff';
+  const selectedColor='#ffff00'
 </script>
 
 <div
@@ -48,6 +49,20 @@
     </svg>
     <div class="col-span-4">
       <p class="c text-center text-textWhite text-lg font-semibold">loge</p>
+    </div>
+  </div>
+  <div class="grid grid-cols-5 mx-2 mb-3 bg-backgroundBlue ring-1 ring-white rounded-md">
+    <svg
+      class="pl-2 col-span-1"
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      height="100%"
+      viewBox="0 0 100 50"
+    >
+      <rect width="100" height="50" rx="20" fill={selectedColor} />
+    </svg>
+    <div class="col-span-4">
+      <p class="c text-center text-textWhite text-lg font-semibold">selected</p>
     </div>
   </div>
 </div>

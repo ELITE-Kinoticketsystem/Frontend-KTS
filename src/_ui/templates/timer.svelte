@@ -37,7 +37,7 @@
   }
 </script>
 
-<div class="flex flex-row overflow-hidden w-full rounded-sm sm:rounded-lg xl:rounded-2xl bg-headerBlue mt-8 pr-1 ring-1 ring-white">
+<div class="flex flex-row overflow-hidden w-full rounded-sm sm:rounded-lg xl:rounded-2xl bg-headerBlue mt-8 pr-10 ring-1 ring-white">
   <div class="flex flex-none basis-1/3">
     <svg
       xmlns="http://www.w3.org/2000/svg"

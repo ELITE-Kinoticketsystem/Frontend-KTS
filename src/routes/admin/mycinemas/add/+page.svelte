@@ -18,7 +18,67 @@
 
   function createHall() {
     Swal.fire({
-      title: "Creating Hall...",
+      title: "How do you want to name the hall?",
+      input: "text",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#888888",
+      cancelButtonColor: "#cccccc",
+      color: "#FAFAFA",
+      customClass: {
+        input: "rounded-md text-backgroundBlue",
+        title: "text-textWhite bg-backgroundBlue",
+        popup: "bg-backgroundBlue",
+      },
+      preConfirm: (hallName) => {
+        let nameIsValid = true;
+        if (!nameIsValid) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Hall name is already in use, enter a different name.'
+          );
+        } else {
+          let halls = {
+            cinestar: "Cinestar",
+            cineplex: "Cineplex",
+            elias: "Elias",
+            istDerBeste: "istDerBeste",
+          };
+          Swal.fire({
+            title: `In which of your theatres is ${hallName}?`,
+            input: "select",
+            inputOptions: halls,
+            showCancelButton: true,
+            customClass: {
+              input: "rounded-md text-backgroundBlue bg-textWhite",
+              title: "text-textWhite bg-backgroundBlue",
+              popup: "bg-backgroundBlue",
+            },
+          }).then((selectedHall) => {
+            let creationWasSuccessfull = true;
+            if (creationWasSuccessfull) {
+              Swal.fire({
+                title: `${hallName} was created succesfully!`,
+                timer: 1500,
+                customClass: {
+                  input: "rounded-md text-backgroundBlue",
+                  title: "text-textWhite bg-backgroundBlue",
+                  popup: "bg-backgroundBlue",
+                },
+              });
+            } else {
+              Swal.fire({
+                title: `${hallName} could not be created due to internal problems!`,
+                timer: 1500,
+                customClass: {
+                  input: "rounded-md text-backgroundBlue",
+                  title: "text-textWhite bg-backgroundBlue",
+                  popup: "bg-backgroundBlue",
+                },
+              });
+            }
+          });
+        }
+      },
     });
   }
 </script>
@@ -70,7 +130,23 @@
         >
         <button
           on:click={() => {
-            clearAllSeatsSignal = 1;
+            Swal.fire({
+              title: "Do you want to remove all placed seats?",
+              showDenyButton: true,
+              confirmButtonText: "Delete",
+              confirmButtonColor: "#ff0000",
+              denyButtonColor: "#888888",
+              denyButtonText: "Cancel",
+              customClass: {
+                input: "rounded-md text-backgroundBlue",
+                title: "text-textWhite bg-backgroundBlue",
+                popup: "bg-backgroundBlue",
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                clearAllSeatsSignal = 1;
+              }
+            });
           }}
           class="rounded-md bg-tileBlue ring-1 ring-white text-textWhite py-1 px-4 hover:bg-blue-500"
           >Clear all</button

@@ -7,6 +7,7 @@
 
   let seats: any[] = [];
   let selectedSeats: any[] = [];
+  let startTime = 900;
 
   $: selectedSeats = selectedSeats;
   $: seats = seats;
@@ -77,7 +78,10 @@
       text: "Be quicker!",
     });
   }
-  $: console.log(seats);
+  function bookSelectedSeats() {
+    Swal.fire({ title: "Booking seats..." });
+  }
+
   let aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
 </script>
 
@@ -96,10 +100,10 @@
       }}
     />
   </div>
-  <div class="flex flex-col  w-1/3">
-    <div class="flex flex-col  h-[60vh] bg-tileBlue sm:rounded-md">
+  <div class="flex flex-col w-1/3">
+    <div class="flex flex-col h-[60vh] bg-tileBlue sm:rounded-md">
       <div class="mx-auto w-[20%] sm:w-[60%] xl:mb-4">
-        <Timer startTime={120} {signal} on:timerFinished={timerFinished} />
+        <Timer {startTime} {signal} on:timerFinished={timerFinished} />
       </div>
       {#key selectedSeats}
         <div class="mx-auto w-full h-full">
@@ -107,9 +111,13 @@
         </div>
       {/key}
     </div>
-    <button class="bg-tileBlue rounded-lg ring-1 ring-white text-textWhite text-xl hover:bg-blue-400 h-12 my-4">
-      Book now
-    </button>
+    <a href="confirmation" class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-12 hover:bg-blue-400">
+      <p
+        class="bg-rd-50 mt-[0.6rem] text-center text-textWhite text-xl"
+      >
+        Book now
+      </p>
+    </a>
     <div class="w-full">
       <SeatLegend />
     </div>

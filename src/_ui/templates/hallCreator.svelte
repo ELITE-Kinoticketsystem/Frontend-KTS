@@ -23,9 +23,9 @@
       title: "There are no columns left for removal",
       color: "#FAFAFA",
       timer: 5000,
-      customClass: "rounded-lg w-[70%] sm:w-1/3",
+      customClass: "rounded-lg text-textWhite w-[70%] sm:w-1/3",
       timerProgressBar: true,
-      background: "#354A5F",
+      background: "#1a1f25",
       text: "Add a column first!",
     });
   }
@@ -35,9 +35,9 @@
       title: "There are no rows left for removal",
       color: "#FAFAFA",
       timer: 5000,
-      customClass: "rounded-lg w-[70%] sm:w-1/3",
+      customClass: "rounded-lg text-textWhite w-[70%] sm:w-1/3",
       timerProgressBar: true,
-      background: "#354A5F",
+      background: "#1a1f25",
       text: "Add a row first!",
     });
   }
@@ -48,9 +48,9 @@
         "A double seat can not be placed here because there is not enough space!",
       color: "#FAFAFA",
       timer: 5000,
-      customClass: "rounded-lg w-[70%] sm:w-1/3",
+      customClass: "rounded-lg w-[70%] text-textWhite sm:w-1/3",
       timerProgressBar: true,
-      background: "#354A5F",
+      background: "#1a1f25",
       text: "Select a grid cell where itself and its right neighbor is empty!",
     });
   }
@@ -125,11 +125,11 @@
   $: {
     curSeatCategory = curSeatCategory;
   }
-  $: if(clearAllSeatsSignal === 1) {
-    for(let y = 0; y < Y; ++y){
-      for(let x = 0; x < X; ++x){
-        seats.at(y).at(x).type = 'empty';
-        seats.at(y).at(x).category = 'regular'
+  $: if (clearAllSeatsSignal === 1) {
+    for (let y = 0; y < Y; ++y) {
+      for (let x = 0; x < X; ++x) {
+        seats.at(y).at(x).type = "empty";
+        seats.at(y).at(x).category = "regular";
       }
     }
     seats = seats;
@@ -466,7 +466,9 @@
     >
       <button on:click={addColToRight}><PlusButton /></button>
     </div>
-    <div class="absolute -right-8 sm:-right-0 sm:translate-x-[120%] top-1/2 -translate-y-1/2 w-14">
+    <div
+      class="absolute -right-8 sm:-right-0 sm:translate-x-[120%] top-1/2 -translate-y-1/2 w-14"
+    >
       <SizeInput
         placeholder={"X:"}
         bind:updateSize={X}
@@ -486,7 +488,9 @@
     >
       <button on:click={addColToLeft}><PlusButton /></button>
     </div>
-    <div class="absolute -left-8 sm:-left-0 top-1/2 -translate-x-[120%] -translate-y-1/2 w-14">
+    <div
+      class="absolute -left-8 sm:-left-0 top-1/2 -translate-x-[120%] -translate-y-1/2 w-14"
+    >
       <SizeInput
         placeholder={"X:"}
         bind:updateSize={X}
@@ -528,7 +532,9 @@
     >
       <button on:click={addRowToTop}><PlusButton /></button>
     </div>
-    <div class="absolute -top-8 sm:-top-0 -translate-y-[155%] left-1/2 -translate-x-1/2 w-14">
+    <div
+      class="absolute -top-8 sm:-top-0 -translate-y-[155%] left-1/2 -translate-x-1/2 w-14"
+    >
       <SizeInput
         placeholder={"Y:"}
         bind:updateSize={Y}

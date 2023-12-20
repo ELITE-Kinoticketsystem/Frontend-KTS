@@ -80,7 +80,7 @@
           type: seat.type,
           x: seat.type === "emptyDouble" ? seat.x - 1 : seat.x,
           y: seat.y,
-          category: seat.category
+          category: seat.category,
         },
       ];
       return;
@@ -140,7 +140,7 @@
       }
     }
     if (found) {
-      return "#ffffff";//user selected color
+      return "#ffffff"; //user selected color
     }
 
     switch (seat.category) {
@@ -158,11 +158,11 @@
 
 <div class="grid grid-cols-1 grid-rows-6 gap-y-12 h-full justify-between">
   <svg class="row-span-1 w-full pt-4 px-2 bg-tileBlue rounded-lg">
-    <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff"/>
+    <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff" />
   </svg>
 
   <div
-    class="row-span-5 w-full p-3 rounded-md bg-tileBlue grid "
+    class="row-span-5 w-full p-3 rounded-md bg-tileBlue grid"
     style="grid-template-columns: repeat({seats.at(0)
       .length}, minmax(0, 1fr)); grid-template-rows: repeat({seats.length}, minmax(0, 1fr));"
   >

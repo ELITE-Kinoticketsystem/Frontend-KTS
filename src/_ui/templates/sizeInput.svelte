@@ -4,7 +4,7 @@
 
   const dispatch = createEventDispatcher();
 
-  const pattern = new RegExp('^[1-9][0-9]?[0-9]?$');
+  const pattern = new RegExp("^[1-9][0-9]?[0-9]?$");
 
   export let placeholder = "X:";
   export let updateSize = 11;
