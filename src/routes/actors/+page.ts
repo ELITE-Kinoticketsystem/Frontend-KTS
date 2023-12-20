@@ -1,6 +1,6 @@
 export const load = async ({ fetch, params }) => {
     async function fetchActorData() {
-        const actData = await fetch("http://172.205.209.190:8080/actors", {
+        const actData = await fetch("https://172.205.209.190:8080/actors", {
             mode: "cors",
             credentials: "include"
         });
