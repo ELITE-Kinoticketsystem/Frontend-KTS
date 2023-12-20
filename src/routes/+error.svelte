@@ -1,13 +1,15 @@
 <script>
+  import { page } from "$app/stores";
+  console.log($page.error);
 </script>
 
 <svelte:head>
   <title>Cinemika - 404 Not Found</title>
 </svelte:head>
 
-<div class="bg-transparent text-white font-sans">
+<div class=" text-white font-sans w-full">
   <div
-    class="container mx-auto px-4 flex flex-col items-center justify-center h-screen"
+    class="container mx-auto px-4 flex flex-col items-center justify-center mt-32"
   >
     <h1 class="text-6xl font-bold mb-4 text-buttonBlue">404</h1>
     <h2 class="text-4xl font-semibold mb-4 text-white">

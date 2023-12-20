@@ -3,6 +3,7 @@
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
   import { Rating } from "flowbite-svelte";
+  import { invalidateAll } from "$app/navigation";
 
   let displayedMovies: any[] = [];
   let showFskDropdown = false;
@@ -11,18 +12,6 @@
   export let data;
 
   const allMovies = data.movies;
-
-  allMovies.push({
-    movieName: "The Matrix",
-    movieId: "1",
-    genre: ["action", "sci-fi"],
-    rating: "4.5",
-    description:
-      "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-    src: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-    specialEventId: "1",
-    fsk: "16",
-  });
 
   let forNow = 0;
   const genres = ["awesome", "action", "adventure", "sci-fi"];
@@ -33,6 +22,7 @@
   }
   onMount(() => {
     filter();
+    invalidateAll();
   });
 
   let map = new Map();
@@ -50,12 +40,12 @@
       for (let i = 0; i < checkedGenres.length; i++) {
         if (checkedGenres[i]) {
           allMovies.forEach((movie: any) => {
-            movie.genre.forEach((genre: any) => {
+            movie.Genres.forEach((genre: any) => {
               genre = genre.toLowerCase();
             });
             if (
               movie.genre.includes(genres[i].toLowerCase()) &&
-              movie.fsk <= age &&
+              movie.Fsk <= age &&
               !displayedMovies.includes(movie)
             ) {
               displayedMovies.push(movie);
@@ -66,7 +56,7 @@
     } else {
       if (ratingRange != 100) {
         displayedMovies = allMovies.filter((movie: any) => {
-          return movie.fsk <= age;
+          return movie.Fsk <= age;
         });
       } else {
         displayedMovies = JSON.parse(JSON.stringify(allMovies));
@@ -74,7 +64,7 @@
     }
     if (key != "") {
       displayedMovies = displayedMovies.filter((movie: any) => {
-        return movie.movieName.toLowerCase().includes(key.toLowerCase());
+        return movie.Title.toLowerCase().includes(key.toLowerCase());
       });
     }
   }
@@ -282,11 +272,11 @@
               on:click={() => {
                 if (sort % 2 == 1) {
                   displayedMovies = displayedMovies.sort((a, b) => {
-                    return a.rating - b.rating;
+                    return a.Rating - b.Rating;
                   });
                 } else {
                   displayedMovies = displayedMovies.sort((a, b) => {
-                    return b.rating - a.rating;
+                    return b.Rating - a.Rating;
                   });
                 }
                 sort++;
@@ -334,10 +324,7 @@
           {#if displayedMovies.length > 0}
             {#each displayedMovies as movie}
               <div class="relative hover:scale-105 duration-300">
-                <MainCard {movie} />.
-                <div class="absolute text-textWhite top-0 left-0">
-                  <Rating count={true} rating={movie.rating} total={5.0} />
-                </div>
+                <MainCard {movie} />
               </div>
             {/each}
           {/if}
