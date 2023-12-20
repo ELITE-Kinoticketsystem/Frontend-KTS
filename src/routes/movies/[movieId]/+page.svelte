@@ -99,7 +99,7 @@
       <div class="flex flex-row mt-14">
         <div class="relative basis-1/3 flex-shrink-0 h-max">
           <img
-            src={movie.CoverPicUrl}
+            src={movie.CoverPicURL}
             alt={movie.Title}
             class="min-w-full h-auto aspect-auto overflow-hidden rounded-md"
           />

@@ -18,24 +18,13 @@
 
   let allActors: any[] = data.actors;
 
-  allMovies.push({
-    movieName: "The Matrix",
-    movieId: "1",
-    genre: ["Action", "Sci-Fi"],
-    description:
-      "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-    src: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-    specialEventId: "1",
-    fsk: "16",
-  });
-
   function loadFilterMovies() {
     if (key === "" || key === undefined) {
       filteredMovies = [];
       return;
     }
     filteredMovies = allMovies.filter((movie: any) => {
-      return movie.movieName.toLowerCase().includes(key);
+      return movie.Title.toLowerCase().includes(key);
     });
   }
 
@@ -45,7 +34,7 @@
       return;
     }
     filterActors = allActors.filter((actor: any) => {
-      return actor.name.toLowerCase().includes(key);
+      return actor.Name.toLowerCase().includes(key);
     });
   }
 
@@ -55,11 +44,10 @@
       return;
     }
     filterGenres = allMovies.filter((movie: any) => {
-      for (let i = 0; i < movie.genre.length; i++) {
+      for (let i = 0; i < movie.Genres.length; i++) {
         if (
-          movie.genre
-            .at(i)
-            .toLowerCase()
+          movie.Genres.at(i)
+            .GenreName.toLowerCase()
             .trim()
             .includes(key.toLowerCase().trim())
         ) {

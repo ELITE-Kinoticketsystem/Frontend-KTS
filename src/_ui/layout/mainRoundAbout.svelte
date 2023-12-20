@@ -5,6 +5,16 @@
 
   export let moviesToDisplay: any[] = [];
 
+  const maxLength = 500;
+
+  moviesToDisplay.forEach((movies) => {
+    if (movies.Description.length > maxLength) {
+      movies.Description =
+        movies.Description.substring(0, maxLength) +
+        "<span class='text-buttonBlue hover:text-darkTextWhite duration-300'> [Read more]</span>";
+    }
+  });
+
   function getYear(dateTime: string): string {
     const date = parseISOString(dateTime);
     return date.getFullYear().toString();
@@ -118,7 +128,7 @@
                   <span class="ml-1">{getYear(movie.ReleaseDate)}</span>
                 </p>
                 <div class=" text-textWhite text-md break-words text-justify">
-                  <span class="break-words">{movie.Description}</span>
+                  <span class="break-words">{@html movie.Description}</span>
                 </div>
               </div>
             </div>

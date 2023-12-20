@@ -9,6 +9,7 @@ export class AuthService {
     return await fetch(this.url + "/login", {
       method : "POST",
       mode: "cors",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json"
       },
@@ -44,7 +45,7 @@ export class AuthService {
   }
 
   public isUserLoggedIn(): boolean {
-    return false;
+    return true;
   }
 
   public getUser(): string {
@@ -69,6 +70,7 @@ export class AuthService {
     return await fetch(this.url + "/register", {
       method : "POST",
       mode: "cors",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json"
       },
