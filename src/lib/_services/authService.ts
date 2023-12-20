@@ -5,7 +5,7 @@ export class AuthService {
       "username": username,
       "password": password
     });
-    return await fetch(apiUrl + "/login", {
+    return await fetch(apiUrl + "/auth/login", {
       method : "POST",
       mode: "cors",
       credentials: "include",
@@ -66,7 +66,7 @@ export class AuthService {
       "firstname": firstname,
       "lastname": lastname
     });
-    return await fetch(apiUrl + "/register", {
+    return await fetch(apiUrl + "/auth/register", {
       method : "POST",
       mode: "cors",
       credentials: "include",
