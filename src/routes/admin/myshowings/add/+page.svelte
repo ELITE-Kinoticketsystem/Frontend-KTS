@@ -5,11 +5,14 @@
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
 
+  export let data: { first: any };
+
   let src =
     "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg";
 
   let allShowings: any[] = [{ date: "1999-12-09", times: ["12:00"] }];
-  let movies: any[] = [];
+  let allDbMovies: any[] = data.first;
+  let selectedMovies: any[] = [];
   let prices = { regular: 10, vip: 5, loge: 3 };
   let is3D = false;
   let description = "";
@@ -21,11 +24,11 @@
 
   $: {
     allShowings = allShowings;
-    movies = movies;
+    selectedMovies = selectedMovies;
     prices = prices;
     is3D = is3D;
     description = description;
-    eventType = movies.length > 1 ? "special" : "regular";
+    eventType = selectedMovies.length > 1 ? "special" : "regular";
   }
   $: {
     nrOfShowings = 0;
@@ -33,8 +36,8 @@
       nrOfShowings += allShowings[i].times.length;
     }
     movieNames = [];
-    for (let i = 0; i < movies.length; ++i) {
-      movieNames.push(movies.at(i).title);
+    for (let i = 0; i < selectedMovies.length; ++i) {
+      movieNames.push(selectedMovies.at(i).Title);
     }
     descriptionLength = description.length;
   }
@@ -42,13 +45,14 @@
   function createEvent() {
     let obj = {
       allShowings,
-      movies,
+      selectedMovies,
       prices,
       is3D,
       description,
       eventType,
     };
   }
+  let mouseIsOverCheckbox = false;
 </script>
 
 <div class="flex flex-col w-[85%] mx-auto">
@@ -69,7 +73,7 @@
 
   <div class="flex flex-row gap-x-10 w-full h-[40vh] mb-6">
     <div class="flex-none w-[17%] h-full rounded-md">
-      <MovieSelector bind:movies />
+      <MovieSelector bind:allDbMovies bind:selectedMovies />
     </div>
     <div class="flex flex-col justify-between w-[20%] h-full">
       <div class="w-full h-[77%] bg-tileBlue ring-1 ring-white rounded-lg">
@@ -83,12 +87,18 @@
         >
           Supports 3D
         </p>
-        <div class="w-[30%] flex flew-row items-center">
+        <div class="h-[95%] w-[25%] my-auto">
           <input
+            on:mouseenter={() => {
+              mouseIsOverCheckbox = true;
+            }}
+            on:mouseleave={() => {
+              mouseIsOverCheckbox = false;
+            }}
             bind:checked={is3D}
             type="checkbox"
-            class="w-[50%] mx-auto h-auto aspect-1 rounded-md ring-1 ring-slate-500"
-            style="input[type=checkbox]:checked:after:background-color: rgb(10 42 22 / var(--tw-bg-opacity));"
+            class="w-auto mx-auto h-full aspect-1 rounded-md ring-1 ring-slate-500"
+            style={mouseIsOverCheckbox ? "cursor: pointer" : "cursor: grabbing"}
           />
         </div>
       </div>
@@ -117,12 +127,12 @@
     />
 
     <div class="w-[85%] h-full">
-      <div class="h-[10%] flex flex-row gap-x-5">
+      <div class="h-[10%] flex flex-row gap-x-5 mb-2">
         <p class="font-semibold text-center text-2xl text-textWhite">
           Select date:
         </p>
       </div>
-      <div class="h-[90%] w-full">
+      <div class="h-[85%] w-full">
         <ShowTimeTool bind:allShowings />
       </div>
     </div>

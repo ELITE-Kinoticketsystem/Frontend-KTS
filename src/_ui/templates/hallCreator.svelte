@@ -11,8 +11,8 @@
   export let seatTypeToPlace = "regular";
   export let curSeatCategory = "regular";
   export let clearAllSeatsSignal = 0;
-
-  let seats: any[] = [];
+  export let seats: any[] = [];
+  
   let seatrowforFill = [];
   const xStartDim = 23;
   const yStartDim = 15;

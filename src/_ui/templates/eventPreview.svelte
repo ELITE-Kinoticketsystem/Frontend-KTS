@@ -6,20 +6,12 @@
   export let descriptionLength = 0;
   export let prices = { regular: 10, vip: 10, loge: 0 };
   export let is3D = false;
-  const maxNrChar = 27;
+  const maxNrChar = 20;
   let displayedMovieNameString = "";
 
   $: {
-    if (movieNames.length === 0) {
-      displayedMovieNameString = "No movie selected";
-    } else {
-      let joined = movieNames.join(",");
-      if (joined.length > maxNrChar) {
-        displayedMovieNameString = joined.slice(0, maxNrChar) + "..";
-      } else {
-        displayedMovieNameString = joined;
-      }
-    }
+    displayedMovieNameString =
+      movieNames.length === 0 ? "No movie selected" : movieNames.join(",");
   }
 
   $: {
@@ -32,7 +24,7 @@
 </script>
 
 <div
-  class="w-full h-full flex flex-col items-center place-content-evenly rounded-lg bg-tileBlue ring-1 ring-white"
+  class="w-full h-full flex flex-col items-center place-content-evenly overflow-hidden rounded-lg bg-tileBlue ring-1 ring-white"
 >
   <p class="w-full h-[10%] text-center text-textWhite font-bold text-xl">
     Preview

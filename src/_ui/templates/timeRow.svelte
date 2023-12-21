@@ -21,18 +21,18 @@
   <input
     type="date"
     bind:value={date}
-    class="flex w-[13%] h-[70%] bg-gray-50 border border-gray-300 text-gray-900 text-[90%] rounded-lg focus:ring-blue-500
+    class="flex w-[14%] h-[70%] bg-gray-50 border border-gray-300 text-gray-900 text-[90%] rounded-lg focus:ring-blue-500
       focus:border-blue-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
       dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
     placeholder="Select date"
   />
 
   <div
-    class="w-[80%] h-full flex flex-row gap-x-4 items-center overflow-x-scroll py-2 px-1"
+    class="w-[80%] h-full flex flex-row gap-x-3 items-center overflow-x-scroll overflow-y-hidden py-[0.4rem] px-1"
   >
     {#key times}
       {#each times as time, thisTime}
-        <div class="relative flex-none w-[13%] h-full">
+        <div class="relative flex-none w-[14%] h-full">
           <input
             class="w-full h-full rounded-md text-[90%]"
             type="time"
