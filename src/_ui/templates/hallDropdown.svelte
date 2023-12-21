@@ -5,7 +5,11 @@
   let hallnames: string[] = ["Cineplex", "Cinestar", "Elias"];
 
   $: {
-    hallname = hallname;
+    if(hallnames.length===0){
+      hallnames = ["No halls found"];
+    } else{
+      hallnames = hallnames;
+    }
   }
 
   async function showEligibleHalls() {
@@ -25,9 +29,9 @@
     {hallname}
   </p>
   <div
-    class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[200%] max-h-[420%]
+    class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[100%] max-h-[420%]
       overflow-y-scroll ring-1 ring-slate-500 rounded-md
-      {eligibleHallsAreVisible % 2 == 0 ? 'flex' : 'hidden'}"
+      {eligibleHallsAreVisible % 2 === 0? 'flex' : 'hidden'}"
   >
     {#each hallnames as curHallname}
       <button

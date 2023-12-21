@@ -17,7 +17,7 @@
     </div>
     <div class="flex flex-col place-content-evenly w-full h-[11%]">
       <p
-        class="flex mx-auto text-center text-textWhite font-semibold text-[85%]"
+        class=" mx-auto text-[0.9cqw] p-[0.1rem] text-center leading-snug line-clamp-2 text-textWhite font-semibold"
       >
         {isActor ? movie.Name : movie.Title}
       </p>

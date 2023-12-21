@@ -1,72 +1,58 @@
 <script lang="ts">
   import Swal from "sweetalert2";
   import ImgWithUndertitle from "./imgWithUndertitle.svelte";
+  import SeatLegend from "./seatLegend.svelte";
+
+  export let allDbMovies: any[] = [];
+  export let selectedMovies: any[] = [];
+  const maxNrOfChar = 15;
 
   let inputValue = "";
   let eligibleMoviePreviewIsVisible = false;
   let moviesEligibleToBeAdded: any[] = [];
-  $: moviesEligibleToBeAdded = moviesEligibleToBeAdded;
+  let hoveredMovieSize = "h-[100%]";
 
-  let exampleMovie = {
-    title: "Steph Curry Underrated",
-    start: new Date("2023-12-09T12:00:00.000Z"),
-    end: new Date("2023-12-09T14:00:00.000Z"),
-    description: "Awesome movie with Wardell Stephen the goat Curry",
-    eventType: "regular",
-    is3D: true,
-    cover:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-  };
-  moviesEligibleToBeAdded = [exampleMovie];
-
-  export let movies: {
-    title: string;
-    start: Date;
-    end: Date;
-    description: string;
-    eventType: string;
-    is3D: boolean;
-    cover: string;
-  }[] = [];
   $: {
-    movies = movies;
-    console.log(movies);
+    moviesEligibleToBeAdded = moviesEligibleToBeAdded;
+    hoveredMovieSize = hoveredMovieSize;
+    console.log(hoveredMovieSize);
   }
 
-  async function showEligibleMovies(searchPattern: string) {
-    // const movieData = await fetch("https://www.google.de");
-    // moviesEligibleToBeAdded = await movieData.json();
-    moviesEligibleToBeAdded = [
-      exampleMovie,
-      exampleMovie,
-      exampleMovie,
-      exampleMovie,
-    ];
-    eligibleMoviePreviewIsVisible = true;
+  $: {
+    selectedMovies = selectedMovies;
+    moviesEligibleToBeAdded = allDbMovies.filter((movie) => {
+      if (movie.Title.toLowerCase().includes(inputValue.toLowerCase())) {
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 </script>
 
 <div
   class="w-full h-full flex flex-col items-center justify-between ring-1 ring-white bg-tileBlue rounded-md pb-3 px-3"
 >
-  <div class="flex flex-row w-full h-[87%] overflow-x-scroll pt-5">
-    {#if movies.length === 0}
+  <div
+    class="flex flex-row w-full h-[88%] overflow-y-hidden overflow-x-scroll pt-5 pb-1"
+  >
+    {#if selectedMovies.length === 0}
       <div class="w-full h-full flex flex-col place-content-evenly">
         <p class="text-center text-textWhite text-xl font-semibold">
           Select a movie
         </p>
       </div>
     {/if}
-    {#each movies as movie, thisMovie}
+    {#each selectedMovies as movie, thisMovie}
       <div class="relative flex-none w-[80%] h-full mx-5">
         <ImgWithUndertitle
-          element={{ src: movie.cover, undertitle: movie.title }}
+          element={{ src: movie.CoverPicURL, undertitle: movie.Title }}
         />
         <button
           class="absolute w-[18%] h-[9%] top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full"
           on:click={() => {
-            movies.splice(thisMovie, 1);
-            movies = movies;
+            selectedMovies.splice(thisMovie, 1);
+            selectedMovies = selectedMovies;
           }}
         >
           <svg
@@ -97,38 +83,48 @@
       bind:value={inputValue}
       on:focus={() => {
         if (inputValue.length > 0) {
-          showEligibleMovies(inputValue);
+          eligibleMoviePreviewIsVisible = true;
         }
       }}
       on:keydown={() => {
-        showEligibleMovies(inputValue);
+        eligibleMoviePreviewIsVisible = true;
       }}
       on:blur={() => {
         eligibleMoviePreviewIsVisible = false;
       }}
     />
     <div
-      class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[200%] max-h-[420%]
+      class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[140%] max-h-[420%]
       overflow-y-scroll ring-1 ring-slate-50 rounded-md
       {eligibleMoviePreviewIsVisible ? 'flex' : 'hidden'}"
     >
+      {#if moviesEligibleToBeAdded.length == 0}
+        <p
+          class="h-full text-textWhite text-center my-auto bg-buttonBlue py-[0.95rem] rounded-md ring-1 ring-slate-50"
+        >
+          No movies found!
+        </p>
+      {/if}
+
       {#each moviesEligibleToBeAdded as movie}
         <button
           class="flex flex-row w-full h-full bg-buttonBlue ring-1 ring-slate-50 hover:bg-blue-300"
           on:mousedown={() => {
-            movies = [...movies, movie];
+            selectedMovies = [...selectedMovies, movie];
             eligibleMoviePreviewIsVisible = false;
           }}
         >
           <img
             class="w-[20%] h-[90%] object-cover aspect-auto my-auto rounded-md p-1"
-            src={movie.cover}
+            src={movie.CoverPicURL}
             alt="movie preview"
           />
           <p
-            class="w-[75%] mx-auto my-auto text-center font-semibold text-[88%] text-textWhite"
+            class="w-[75%] h-[80%] mx-auto my-auto text-center font-semibold text-[100%] leading-tight text-textWhite"
           >
-            {movie.title}
+            {movie.Title.length > maxNrOfChar
+              ? movie.Title.slice(0, maxNrOfChar) + ".."
+              : movie.Title}
           </p>
         </button>
       {/each}

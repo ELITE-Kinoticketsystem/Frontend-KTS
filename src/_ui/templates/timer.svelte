@@ -37,8 +37,10 @@
   }
 </script>
 
-<div class="flex flex-row overflow-hidden w-full rounded-sm sm:rounded-lg xl:rounded-2xl bg-headerBlue mt-8 pr-10 ring-1 ring-white">
-  <div class="flex flex-none basis-1/3">
+<div
+  class="flex flex-row overflow-hidden w-full h-full rounded-sm sm:rounded-lg xl:rounded-2xl bg-headerBlue mt-8 pr-10 ring-1 ring-white"
+>
+  <div class="flex-none basis-1/3">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -54,11 +56,17 @@
       />
     </svg>
   </div>
-  <div class="flex my-auto basis-2/3">
+  <div class=" my-auto basis-2/3 h-full">
     {#key currentTime}
-        <p class="mx-auto font-mono text-textWhite text-xs sm:text-base md:text-xl lg:text-2xl xl:text-6xl font-semibold">
+      <div
+        class="flex flex-col place-content-evenly items-center h-full"
+      >
+        <p
+          class="w-full h-full text-center font-mono text-textWhite text-[3cqw] p-1 font-semibold"
+        >
           {minutes}:{higherDigitSeconds}{lowerDigitSeconds}
         </p>
+      </div>
     {/key}
   </div>
 </div>

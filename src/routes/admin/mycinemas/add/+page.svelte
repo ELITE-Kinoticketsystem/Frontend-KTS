@@ -11,10 +11,28 @@
   let curSeatCategory = seatCategories.at(0);
   let X = 23;
   let Y = 15;
+  let seats: any[] = [];
+  $: seats = seats;
   $: seatTypeToPlace = seatTypeToPlace;
   $: curSeatCategory = curSeatCategory;
   $: X = X;
   $: Y = Y;
+
+  function hallIsEmpty() {
+    let nonEmptySeatFound = false;
+    for (let i = 0; i < Y; ++i) {
+      for (let j = 0; j < X; ++j) {
+        if (seats.at(i).at(j).type !== "empty") {
+          nonEmptySeatFound = true;
+          break;
+        }
+      }
+      if (nonEmptySeatFound) {
+        break;
+      }
+    }
+    return !nonEmptySeatFound;
+  }
 
   function createHall() {
     Swal.fire({
@@ -48,13 +66,15 @@
             input: "select",
             inputOptions: halls,
             showCancelButton: true,
+            confirmButtonColor: "#d888888",
             customClass: {
               input: "rounded-md text-backgroundBlue bg-textWhite",
               title: "text-textWhite bg-backgroundBlue",
               popup: "bg-backgroundBlue",
+              confirmButton: "bg-buttonBlue",
             },
           }).then((selectedHall) => {
-            let creationWasSuccessfull = true;
+            let creationWasSuccessfull = !true;
             if (creationWasSuccessfull) {
               Swal.fire({
                 title: `${hallName} was created succesfully!`,
@@ -95,7 +115,7 @@
     <div
       class="bg-backgroundBlue ring-1 ring-white rounded-lg my-4 py-2 w-[60%] mx-auto"
     >
-      <p class="text-center text-textWhite font-sembold sm:text-2xl">
+      <p class="text-center text-textWhite font-semibold sm:text-xl px-2">
         Width: {X} Length: {Y}
       </p>
     </div>
@@ -130,6 +150,10 @@
         >
         <button
           on:click={() => {
+            if (hallIsEmpty()) {
+              return;
+            }
+
             Swal.fire({
               title: "Do you want to remove all placed seats?",
               showDenyButton: true,
@@ -157,6 +181,7 @@
 
   <div class="col-span-2 row-span-2 sm:row-span-1 sm:col-span-7 sm:mt-20">
     <HallCreator
+      bind:seats
       bind:seatTypeToPlace
       bind:curSeatCategory
       bind:clearAllSeatsSignal
