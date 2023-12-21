@@ -81,10 +81,6 @@
 
         const url = new URL('https://657cb0cd853beeefdb99d741.mockapi.io/tickets');
         const decodedTextToString = decodedText.toString();
-        // url.searchParams.append('qrcode', decodedTextToString);
-        //console.log("URL", url);
-        //console.log("DecodedText", decodedText);
-        //console.log("DecodedToString", decodedTextToString);
         let ticket;
 
         await getTicket().then((tickets) =>{
@@ -99,15 +95,6 @@
                     showTime = `<div>ShowTime: ${ticket.showtime}</div>`;
                     payed = `<div>Payed: ${ticket.payed}</div>`;
                     amount = `<div>Amount: ${ticket.amount}</div>`;
-
-            /*
-            const qrCodeTicket = ticketArray.filter((ticket) =>{
-                ticket.qrcode = decodedText
-            })
-            console.log(qrCodeTicket.movieTitle);
-            console.log(qrCodeTicket.theater);
-            console.log(qrCodeTicket.qrcode);
-*/
         })
     }
 
@@ -126,15 +113,6 @@
             showTime = `<div>ShowTime: ${ticket.showtime}</div>`;
             payed = `<div>Payed: ${ticket.payed}</div>`;
             amount = `<div>Amount: ${ticket.amount}</div>`;
-
-            /*
-            const qrCodeTicket = ticketArray.filter((ticket) =>{
-                ticket.qrcode = decodedText
-            })
-            console.log(qrCodeTicket.movieTitle);
-            console.log(qrCodeTicket.theater);
-            console.log(qrCodeTicket.qrcode);
-*/
         })
     }
 
@@ -192,6 +170,9 @@
             {@html showTime}
             {@html payed}
             {@html amount}
+            <svg width="160" height="250">
+                <text x="0" y="15" fill="green" font-size="120">Valid!</text>
+            </svg>
         </div>
     {/if}
 </main>
