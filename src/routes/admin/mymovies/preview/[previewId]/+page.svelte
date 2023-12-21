@@ -1,7 +1,5 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import YouTubePlayer from "youtube-player";
-  import { onMount } from "svelte";
   import { Rating } from "flowbite-svelte";
 
   export let data;
@@ -34,20 +32,6 @@
         resolve(movie);
       }
     });
-  }
-  var ytPlayer: any;
-  function loadVideo() {
-    ytPlayer = YouTubePlayer("player-1", {
-      videoId: "NHhTMh0nURA",
-    });
-  }
-
-  onMount(() => {
-    loadVideo();
-  });
-
-  function startVideo() {
-    ytPlayer.playVideo();
   }
 </script>
 
@@ -127,8 +111,8 @@
                 </svg>
 
                 <span class="ml-1">
-                  {#each movie.Genres as genre, index}
-                    {genre}{#if index != movie.Genres.length - 1},{/if}
+                  {#each movie.genre as genre, index}
+                    {genre}{#if index != movie.genre.length - 1},{/if}
                   {/each}</span
                 >
               </p>

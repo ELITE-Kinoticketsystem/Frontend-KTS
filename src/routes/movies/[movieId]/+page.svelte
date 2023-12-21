@@ -6,8 +6,8 @@
   import { browser } from "$app/environment";
   import Showings from "../../../_ui/layout/_movies/showings.svelte";
   import Cinemas from "../../../_ui/layout/_movies/cinemas.svelte";
-  import YouTubePlayer from "youtube-player";
   import { onMount } from "svelte";
+  import { invalidateAll } from "$app/navigation";
 
   const authService = new AuthService();
 
@@ -60,20 +60,13 @@
     }
   }
 
+  onMount(() => {
+    invalidateAll();
+  });
+
   function getYear(dateTime: string): string {
     const date = new Date(dateTime);
     return date.getFullYear().toString();
-  }
-  var ytPlayer: any;
-  onMount(() => {
-    if (browser)
-      ytPlayer = YouTubePlayer("player-1", {
-        videoId: movie.TrailerURL,
-      });
-  });
-
-  function startVideo() {
-    ytPlayer.playVideo();
   }
 </script>
 
@@ -84,18 +77,17 @@
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="">
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="flex flex-col">
-      <button
-        on:mouseenter={() => {
-          startVideo();
-        }}
-      >
-        <div
-          id="player-1"
-          class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
-        />
-      </button>
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/{movie.TrailerURL}"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+        allowfullscreen
+        class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
+      />
       <div class="flex flex-row mt-14">
         <div class="relative basis-1/3 flex-shrink-0 h-max">
           <img
