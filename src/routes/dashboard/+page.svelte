@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { browser, dev } from "$app/environment";
+  import { browser } from "$app/environment";
   import { AuthService } from "$lib/_services/authService";
   import { SessionStatus } from "$lib/statusEnums";
   import "chart.js/auto";
@@ -8,8 +8,8 @@
   import { InvoiceTemplate } from "$lib/invoice";
 
   const invoicetemplate = new InvoiceTemplate();
-  const authService = new AuthService();
-  const isLoggedIn = authService.isUserLoggedIn();
+
+  
 
   export let data;
   let ticketHistory = data.tickets || [];

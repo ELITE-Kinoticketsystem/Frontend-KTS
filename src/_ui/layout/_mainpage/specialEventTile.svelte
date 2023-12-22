@@ -1,10 +1,8 @@
 <script lang="ts">
   import SpecialCard from "../../templates/specialCard.svelte";
   import TextMainSite from "../../templates/textMainSite.svelte";
-  import { AuthService } from "$lib/_services/authService";
 
-  const isUserLoggedIn = new AuthService().isUserLoggedIn();
-
+  export let isUserLoggedIn: boolean;
   export let specialMovies: any;
   export let textData: any;
   let randomEvents = Math.floor(Math.random() * specialMovies.length) + 1;

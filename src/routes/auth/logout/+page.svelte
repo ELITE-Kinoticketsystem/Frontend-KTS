@@ -1,19 +1,25 @@
 <script>
   import { browser } from "$app/environment";
-  import { AuthService } from "$lib/_services/authService";
-  import { LoginStatus } from "$lib/statusEnums";
+  import { AuthService, apiUrl } from "$lib/_services/authService";
+  import { onMount } from "svelte";
 
-  const authService = new AuthService();
+  let isUserLoggedIn = false;
 
-  const isUserLoggedIn = authService.isUserLoggedIn();
-  if (browser && isUserLoggedIn) {
-    window.Cookies.remove("token");
-    window.Cookies.remove("refreshToken");
-    window.location.href =
-      "/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGOUT.toString();
-  } else {
-    if (browser) window.location.href = "/auth/login";
-  }
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+      if (browser && isUserLoggedIn) {
+        fetch(apiUrl + "/auth/logout", {
+          method: "POST",
+          credentials: "include",
+        });
+        //window.location.href =
+        //"/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGOUT.toString();
+      } else {
+        if (browser) window.location.href = "/auth/login";
+      }
+    });
+  });
 </script>
 
 <div class="min-h-screen flex flex-col justify-center items-center">

@@ -3,13 +3,6 @@
   import { browser } from "$app/environment";
   import { LoginStatus } from "$lib/statusEnums";
 
-  const authService = new AuthService();
-  const isUserLoggedIn = authService.isUserLoggedIn();
-
-  if (isUserLoggedIn) {
-    if (browser) window.location.href = "/dashboard";
-  }
-
   $: username = "";
   $: password = "";
 

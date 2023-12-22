@@ -1,17 +1,15 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { AuthService } from "$lib/_services/authService";
+  import { onMount } from "svelte";
   import Swal from "sweetalert2";
-  import MovieRow from "../../_ui/templates/movieRow.svelte";
-  import TextMainSite from "../../_ui/templates/textMainSite.svelte";
 
-  const authService = new AuthService();
-
-  if (browser) {
-    if (!authService.isUserLoggedIn()) {
-      window.location.href = "/auth/login";
-    }
-  }
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+  });
 
   export let data;
 

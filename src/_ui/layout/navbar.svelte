@@ -3,16 +3,17 @@
   import { page } from "$app/stores";
   import { AuthService } from "$lib/_services/authService";
   import { onMount } from "svelte";
-
-  const isUserLoggedIn = new AuthService().isUserLoggedIn();
-
   let showDropdown = false;
 
   let location = "";
 
   let url: string;
 
-  onMount(() => {
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
     url = $page.url.pathname;
 
     location = localStorage.getItem("cinema") || "Not selected";
@@ -26,11 +27,6 @@
   afterNavigate(() => {
     showDropdown = false;
     url = $page.url.pathname;
-  });
-
-  let lang: String;
-  onMount(() => {
-    lang = window.localStorage.getItem("lang")!;
   });
 </script>
 
