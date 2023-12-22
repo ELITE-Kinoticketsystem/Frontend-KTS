@@ -63,8 +63,10 @@
         icon: "error",
         title: "Oops...",
         color: "#FAFAFA",
-        timer: 5000,
-        customClass: "rounded-lg w-[70%] sm:w-1/3",
+        timer: 25000,
+        customClass:
+          "rounded-lg w-[70%] sm:w-[15%] sm:h-[15%] absolute top-0 right-0 -translate-x-[300%]",
+
         timerProgressBar: true,
         background: "#354A5F",
         text: "This seat is already booked!\nPlease select another seat!",
@@ -145,7 +147,7 @@
 
     switch (seat.category) {
       case "regular":
-        return "#ff0000";
+        return "#00ff99";
       case "vip":
         return "#00ff00";
       case "loge":

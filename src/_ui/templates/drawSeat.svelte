@@ -3,7 +3,7 @@
   export let type = "regular";
   export let bookedByOther = false;
 
-  const bookedColor = "#cccccc";
+  const bookedColor = "#777777";
 </script>
 
 {#if type === "regular"}
