@@ -44,6 +44,9 @@
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
+      preserveAspectRatio="xMidYMid meet"
+      width="100%"
+      height="100%"
       viewBox="-4 -2 28 28"
       stroke-width="1.5"
       stroke="#ffffff"
@@ -58,9 +61,7 @@
   </div>
   <div class=" my-auto basis-2/3 h-full">
     {#key currentTime}
-      <div
-        class="flex flex-col place-content-evenly items-center h-full"
-      >
+      <div class="flex flex-col place-content-evenly items-center h-full">
         <p
           class="w-full h-full text-center font-mono text-textWhite text-[3cqw] p-1 font-semibold"
         >

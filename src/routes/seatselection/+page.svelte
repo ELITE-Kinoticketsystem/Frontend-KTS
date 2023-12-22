@@ -5,10 +5,10 @@
   import Timer from "../../_ui/templates/timer.svelte";
   import SeatLegend from "../../_ui/templates/seatLegend.svelte";
 
-  export let data: {first: any};
-  
-  let seats: any[] = data.first;
-  console.log(seats);
+  //export let data: { first: any };
+
+  //let seats: any = data.first;
+  let seats: any[] = [];
   let selectedSeats: any[] = [];
   let startTime = 900;
 
@@ -52,7 +52,7 @@
         } else {
           seatrow.push(getSeat("regular", x, y, booked, category));
         }
-      } else if (choice >= 20 && choice <= 50) {
+      } else if (choice >= 20 && choice <= 80) {
         seatrow.push(getSeat("regular", x, y, booked, category));
       } else {
         seatrow.push(getSeat("empty", x, y, booked, category));

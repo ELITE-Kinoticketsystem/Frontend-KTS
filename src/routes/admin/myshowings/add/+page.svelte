@@ -5,7 +5,7 @@
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
 
-  export let data: { first: any };
+  export let data: { first: any };console.log(data.first);
 
   let src =
     "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg";

@@ -1,8 +1,8 @@
 <script lang="ts">
-  const regularColor = "#ff0000";
+  const regularColor = "#00ff00";
   const vipColor = '#00ff00';
   const logeColor = '#0000ff';
-  const selectedColor='#ffff00'
+  const selectedColor='#777777'
 </script>
 
 <div
