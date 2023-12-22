@@ -1,14 +1,7 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
-  import { browser } from "$app/environment";
   import Swal from "sweetalert2";
   import { RegisterStatus } from "$lib/statusEnums";
-
-  const authService = new AuthService();
-
-  if (browser && authService.isUserLoggedIn()) {
-    window.location.href = "/dashboard";
-  }
 
   $: firstname = "";
   $: lastname = "";

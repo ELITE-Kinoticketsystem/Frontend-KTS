@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
-  import { Rating } from "flowbite-svelte";
   import { invalidateAll } from "$app/navigation";
 
   let displayedMovies: any[] = [];
@@ -11,10 +10,17 @@
 
   export let data;
 
-  const allMovies = data.movies;
+  let allMovies = data.movies;
+  const allGenres = data.genres;
+
+  for (let i = 0; i < allMovies.length; i++) {
+    for (let j = 0; j < allMovies[i].Genres.length; j++) {
+      allMovies[i].Genres[j] = allMovies[i].Genres[j].GenreName.toLowerCase();
+    }
+  }
 
   let forNow = 0;
-  const genres = ["awesome", "action", "adventure", "sci-fi"];
+  const genres = allGenres;
 
   let checkedGenres: boolean[] = [];
   for (let i = 0; i < genres.length; i++) {
@@ -44,7 +50,7 @@
               genre = genre.toLowerCase();
             });
             if (
-              movie.genre.includes(genres[i].toLowerCase()) &&
+              movie.Genres.includes(genres[i].toLowerCase()) &&
               movie.Fsk <= age &&
               !displayedMovies.includes(movie)
             ) {

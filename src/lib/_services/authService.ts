@@ -43,8 +43,21 @@ export class AuthService {
     //localStorage.removeItem('token');
   }
 
-  public isUserLoggedIn(): boolean {
-    return false;
+  public static async isUserLoggedIn(): Promise<boolean> {
+    return new Promise(async (resolve) => {
+      await fetch(apiUrl + "/auth/logged-in", {
+      method : "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    }).then(response => {
+      response.json().then(data => {
+        resolve(data.loggedIn);
+      });
+    });
+  });
   }
 
   public getUser(): string {

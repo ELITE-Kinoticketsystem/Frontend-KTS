@@ -6,14 +6,19 @@
   import { fade } from "svelte/transition";
   import { onMount } from "svelte";
   import { invalidateAll } from "$app/navigation";
+  import { AuthService } from "$lib/_services/authService";
 
   export let data;
 
   let moviesToDisplay = data.first;
   let items: any[] = [];
 
-  onMount(() => {
+  let isUserLoggedIn = false;
+  onMount(async () => {
     invalidateAll();
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
   });
 </script>
 
@@ -32,6 +37,7 @@
         <div transition:fade={{ delay: 200 }}>
           <div class="flex mx-8 lg:mx-16">
             <MainPageMovieRow
+              {isUserLoggedIn}
               {moviesToDisplay}
               textData={{
                 refs: ["/yourwatchlist", "/likedbyother"],
@@ -49,6 +55,7 @@
         <div transition:fade={{ delay: 200 }}>
           <div class="flex mx-8 min-h-fit h-[21vh] sm:h-[33vh] lg:mx-16">
             <SpecialEventTile
+              {isUserLoggedIn}
               specialMovies={moviesToDisplay}
               textData={{
                 refs: ["/specialevents", "/specialevents"],
@@ -66,6 +73,7 @@
         <div transition:fade={{ delay: 200 }}>
           <div class="flex mb-4 mx-8 lg:mx-16">
             <MainPageMovieRow
+              {isUserLoggedIn}
               {moviesToDisplay}
               textData={{
                 refs: ["/yoursuggestions", "/upcomingmovies"],

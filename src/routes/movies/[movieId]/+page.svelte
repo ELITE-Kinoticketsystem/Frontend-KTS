@@ -9,10 +9,12 @@
   import { onMount } from "svelte";
   import { invalidateAll } from "$app/navigation";
 
-  const authService = new AuthService();
-
-  const isUserLoggedIn = authService.isUserLoggedIn();
-
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+  });
   export let data;
 
   let movie: any = data.movie;

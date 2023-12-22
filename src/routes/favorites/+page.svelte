@@ -1,12 +1,18 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { AuthService } from "$lib/_services/authService.js";
+  import { onMount } from "svelte";
 
-  const authService = new AuthService();
-
-  if (!authService.isUserLoggedIn()) {
-    if (browser) window.location.href = "/auth/login";
-  }
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+    if (isUserLoggedIn && browser) {
+      goto("/auth/login");
+    }
+  });
   export let data;
 
   const favorites: any[] = data.favoriteMovies;
