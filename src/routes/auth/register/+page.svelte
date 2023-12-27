@@ -2,6 +2,7 @@
   import { AuthService } from "$lib/_services/authService";
   import Swal from "sweetalert2";
   import { RegisterStatus } from "$lib/statusEnums";
+  import { goto } from "$app/navigation";
 
   $: firstname = "";
   $: lastname = "";
@@ -40,8 +41,7 @@
     console.log(registerData);
 
     if (registerRequest.ok) {
-      window.location.href =
-        "/?registerStatus=" + RegisterStatus.REGISTERED.toString();
+      goto("/?registerStatus=" + RegisterStatus.REGISTERED.toString());
     } else {
       Swal.fire({
         title: "Error",

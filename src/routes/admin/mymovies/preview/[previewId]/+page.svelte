@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { Rating } from "flowbite-svelte";
 
   export let data;
@@ -9,7 +10,7 @@
     return new Promise((resolve, reject) => {
       if (browser) {
         if (window.localStorage.getItem("draft-" + previewId) == null) {
-          window.location.href = "/admin";
+          goto("/admin");
           reject();
         }
         let draftString = window.localStorage

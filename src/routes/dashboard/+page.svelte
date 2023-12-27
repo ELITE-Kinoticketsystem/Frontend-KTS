@@ -1,30 +1,27 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { AuthService } from "$lib/_services/authService";
-  import { SessionStatus } from "$lib/statusEnums";
   import "chart.js/auto";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
   import { InvoiceTemplate } from "$lib/invoice";
+  import { goto } from "$app/navigation";
 
   const invoicetemplate = new InvoiceTemplate();
 
-  
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+
+    if (!isUserLoggedIn) {
+      goto("/auth/login");
+    }
+  });
 
   export let data;
   let ticketHistory = data.tickets || [];
-
-  if (browser) {
-    if (!isLoggedIn) {
-      if (false) {
-        window.location.href =
-          "/auth/login?sessionStatus=" + SessionStatus.EXPIRED;
-      } else {
-        window.location.href =
-          "/auth/login?sessionStatus=" + SessionStatus.NOT_LOGGED_IN;
-      }
-    }
-  }
   const username = "John Doe";
   const email = "john.doe@cinemika.com";
 
@@ -300,7 +297,7 @@
                   color: "#fff",
                   background: "#29313A",
                 }).then(() => {
-                  window.location.href = "/";
+                  goto("/");
                 });
               }
             });

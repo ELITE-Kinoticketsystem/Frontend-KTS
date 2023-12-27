@@ -1,10 +1,27 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
   import { browser } from "$app/environment";
-  import { LoginStatus } from "$lib/statusEnums";
+  import { page } from "$app/stores";
+  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
 
   $: username = "";
   $: password = "";
+
+  let redirect: string | null = null;
+
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+
+    if (isUserLoggedIn) {
+      if (redirect) goto(redirect);
+      else goto("/dashboard");
+    }
+    redirect = $page.url.searchParams.get("redirect");
+  });
 
   function validateButton() {
     const erroMsg = document.getElementById("erroMsg")!;
@@ -20,8 +37,11 @@
 
     if (userIsLoggedIn.status === 200) {
       if (browser) {
-        window.location.href =
-          "/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGIN.toString();
+        if (redirect) {
+          goto(redirect);
+        } else {
+          goto("/dashboard");
+        }
       }
     } else {
       const errorMsg = document.getElementById("erroMsg")!;
