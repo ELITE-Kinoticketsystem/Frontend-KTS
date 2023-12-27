@@ -57,7 +57,7 @@
         class="text-textWhite py-3 w-1/2 bg-buttonBlue hover:bg-green-500 duration-300 mx-auto rounded-md"
         on:click={() => {
           if (browser) {
-            window.location.href = "/tickets/" + tickets[0].ticketId;
+            goto("/tickets/" + tickets[0].ticketId);
           }
         }}>Pay</button
       >

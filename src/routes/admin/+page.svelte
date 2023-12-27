@@ -10,7 +10,7 @@
   import { onMount } from "svelte";
   import LineChart from "../../_ui/charts/LineChart.svelte";
   import Swal from "sweetalert2";
-  import { invalidate, invalidateAll } from "$app/navigation";
+  import { goto, invalidate, invalidateAll } from "$app/navigation";
   import type { PageData } from "./$types";
 
   export let data: PageData;
@@ -105,7 +105,7 @@
       },
     });
     if (option) {
-      window.location.href = option;
+      goto(option);
     }
   }
 

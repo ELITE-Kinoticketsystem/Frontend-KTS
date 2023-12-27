@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser, dev } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
@@ -131,7 +132,7 @@
   function previewSite() {
     if (browser) {
       if (draftSaved) {
-        window.location.href = "/admin/mymovies/preview/" + uniqueReviewId;
+        goto("/admin/mymovies/preview/" + uniqueReviewId);
       } else {
         Swal.fire({
           icon: "info",
@@ -145,7 +146,7 @@
   function create() {
     if (browser) {
       window.localStorage.removeItem("draft-" + uniqueReviewId);
-      window.location.href = "/admin/mymovies";
+      goto("/admin/mymovies");
     }
   }
 
@@ -180,9 +181,9 @@
           showCancelButton: true,
         });
         if (option) {
-          window.location.href =
-            "/admin/mymovies/add?fromUUID=" +
-            draftIds.get(inputOptions[option]);
+          goto(
+            "/admin/mymovies/add?fromUUID=" + draftIds.get(inputOptions[option])
+          );
         }
       })
       .catch(() => {});
@@ -191,7 +192,7 @@
   function deleteDraft() {
     if (browser) {
       window.localStorage.removeItem("draft-" + uniqueReviewId);
-      window.location.href = "/admin/mymovies/add";
+      goto("/admin/mymovies/add");
     }
   }
   function uuidv4() {

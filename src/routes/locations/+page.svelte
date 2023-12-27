@@ -2,6 +2,7 @@
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
+  import { goto } from "$app/navigation";
 
   export let data;
 
@@ -43,7 +44,7 @@
       on:click={() => {
         if (browser) {
           localStorage.setItem("cinema", "All");
-          window.location.href = "/";
+          goto("/");
         }
       }}>Skip</button
     >
@@ -80,7 +81,7 @@
             on:click={() => {
               if (browser) {
                 localStorage.setItem("cinema", location.city);
-                window.location.href = "/";
+                goto("/");
               }
             }}
           >

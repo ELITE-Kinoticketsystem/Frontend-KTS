@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { AuthService } from "$lib/_services/authService";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
@@ -9,6 +10,9 @@
     await AuthService.isUserLoggedIn().then((res) => {
       isUserLoggedIn = res;
     });
+    if (!isUserLoggedIn) {
+      goto("/auth/login?redirect=/confirmation");
+    }
   });
 
   export let data;
@@ -150,13 +154,13 @@
       <button
         class="bg-buttonBlue w-1/2 py-2 text-textWhite text-xl rounded-lg hover:bg-green-500 duration-300"
         on:click={() => {
-          if (browser) window.location.href = "/reservation";
+          goto("/reservation");
         }}>Confirm reservation</button
       >
       <button
         class="bg-buttonBlue w-1/2 py-2 text-textWhite text-xl rounded-lg hover:bg-green-500 duration-300"
         on:click={() => {
-          if (browser) window.location.href = "/booking";
+          goto("/booking");
         }}>Confirm purchase</button
       >
     </div>

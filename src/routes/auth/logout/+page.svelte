@@ -1,5 +1,6 @@
 <script>
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { AuthService, apiUrl } from "$lib/_services/authService";
   import { onMount } from "svelte";
 
@@ -16,7 +17,7 @@
         //window.location.href =
         //"/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGOUT.toString();
       } else {
-        if (browser) window.location.href = "/auth/login";
+        goto("/auth/login");
       }
     });
   });
