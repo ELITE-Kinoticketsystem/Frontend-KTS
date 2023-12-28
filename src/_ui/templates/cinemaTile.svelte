@@ -1,6 +1,6 @@
 <script lang="ts">
   import CinemaTile from "$lib/assets/cinemaTile.png";
-
+  import { useLazyImage as lazyImage } from "svelte-lazy-image";
   export let cinemaLocation: string = "";
   export let cinemaCompany: string = "";
 </script>
@@ -12,6 +12,7 @@
     src={CinemaTile}
     alt="{cinemaCompany} & {cinemaLocation}"
     class="flex m-6 aspect-auto w-[80%] sm:w-[70%]"
+    use:lazyImage
   />
 
   <div class="flex flex-col items-center mb-1">

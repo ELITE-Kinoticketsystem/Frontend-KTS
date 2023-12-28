@@ -16,6 +16,11 @@
       answer:
         "We accept all major credit cards, including Visa, Mastercard, and American Express. We also support payment through popular digital wallets such as Apple Pay and Google Pay.",
     },
+    {
+      question: "How can I change the cinema's location?",
+      answer:
+        "To change the cinema's location, go to the <a href='/locations' class='text-buttonBlue hover:text-blue-500 duration-300'>locations page</a> under the user icon in the navbar and select the cinema you want to visit.",
+    },
   ];
   for (let i = 0; i < questions.length; i++) {
     questionsShown.push(false);
@@ -29,7 +34,7 @@
   <h1 class="text-4xl font-bold mb-8">Frequently Asked Questions</h1>
   <div class="space-y-6">
     {#each questions as question, index}
-      <div class="border rounded-lg px-6 py-4 bg-gray-800 justify-between">
+      <div class="border rounded-lg px-6 py-4 bg-tileBlue justify-between">
         <div class="flex flex-row justify-between">
           <h2 class="text-2xl font-semibold mb-2 justify-start">
             {question.question}
@@ -51,7 +56,7 @@
               stroke-width="1.5"
               stroke="currentColor"
               class="w-6 h-6 my-auto justify-end duration-300"
-              class:rotate-180={!questionsShown[index]}
+              class:rotate-180={questionsShown[index]}
             >
               <path
                 stroke-linecap="round"
@@ -62,7 +67,7 @@
           </button>
         </div>
         <p class:hidden={!questionsShown[index]} class="duration-300">
-          {question.answer}
+          {@html question.answer}
         </p>
       </div>
     {/each}

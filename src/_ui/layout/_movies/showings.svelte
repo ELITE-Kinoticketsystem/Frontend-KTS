@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { createEventDispatcher } from "svelte";
 
   export let cinema: any;
@@ -155,7 +156,7 @@
                   <button
                     class="hover:scale-110 duration-300"
                     on:click={() => {
-                      if (browser) window.location.href = "/seatselection";
+                      goto("/seatselection");
                     }}>Book</button
                   >
                 </div>

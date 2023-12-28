@@ -1,14 +1,19 @@
-import { browser } from "$app/environment";
-
 export class AuthService {
-  private isLoggedIn: boolean = true;
 
-  public login(username: string, password: string): boolean {
-    // Perform login logic here
-    // ...
-    // Set isLoggedIn to true if login was successful
-    this.isLoggedIn = true;
-    return true; //TODO return if login was successful
+  public static async login(username: string, password: string) {
+    const body = JSON.stringify({
+      "username": username,
+      "password": password
+    });
+    return await fetch(apiUrl + "/auth/login", {
+      method : "POST",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: body
+    });
   }
 
   public changePassword(oldPassword: string, newPassword: string): boolean {
@@ -35,12 +40,24 @@ export class AuthService {
     // Perform logout logic here
     // ...
     // Set isLoggedIn to false if logout is successful
-    this.isLoggedIn = false;
     //localStorage.removeItem('token');
   }
 
-  public isUserLoggedIn(): boolean {
-    return this.isLoggedIn;
+  public static async isUserLoggedIn(): Promise<boolean> {
+    return new Promise(async (resolve) => {
+      await fetch(apiUrl + "/auth/logged-in", {
+      method : "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    }).then(response => {
+      response.json().then(data => {
+        resolve(data.loggedIn);
+      });
+    });
+  });
   }
 
   public getUser(): string {
@@ -54,10 +71,23 @@ export class AuthService {
     return ["movie1", "movie2", "movie3"];
   }
 
-  public static register(username: string, email: string, profilPicture?: string, password?: string, repeatPassword?: string): boolean {
-    // Perform register logic here
-    // ... 
-    
-    return true; //Todo return if register was successful
+  public static async register(firstname: string, lastname: string, username: string, email: string, password: string)  {
+    const body = JSON.stringify({
+      "username": username,
+      "email": email,
+      "password": password,
+      "firstname": firstname,
+      "lastname": lastname
+    });
+    return await fetch(apiUrl + "/auth/register", {
+      method : "POST",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: body
+    });
   }
 }
+export const apiUrl = "https://cinemika.westeurope.cloudapp.azure.com:8080";

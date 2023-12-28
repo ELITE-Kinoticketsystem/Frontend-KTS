@@ -2,6 +2,7 @@
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
+  import { goto } from "$app/navigation";
 
   export let data;
 
@@ -23,9 +24,9 @@
     });
   }
 
-  let cinema = "Not selected";
+  let cinema = "All";
   onMount(() => {
-    if (browser) cinema = localStorage.getItem("cinema");
+    if (browser) cinema = localStorage.getItem("cinema") || "All";
   });
 </script>
 
@@ -42,8 +43,8 @@
       class="text-textWhite text-lg py-px px-2 hover:bg-tileBlue duration-300 bg-buttonBlue rounded-lg"
       on:click={() => {
         if (browser) {
-          localStorage.setItem("cinema", "Not selected");
-          window.location.href = "/";
+          localStorage.setItem("cinema", "All");
+          goto("/");
         }
       }}>Skip</button
     >
@@ -80,7 +81,7 @@
             on:click={() => {
               if (browser) {
                 localStorage.setItem("cinema", location.city);
-                window.location.href = "/";
+                goto("/");
               }
             }}
           >

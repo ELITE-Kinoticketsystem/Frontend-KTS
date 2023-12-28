@@ -1,17 +1,23 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import { afterNavigate, beforeNavigate } from "$app/navigation";
   import { page } from "$app/stores";
   import { AuthService } from "$lib/_services/authService";
   import { onMount } from "svelte";
-
-  const isUserLoggedIn = new AuthService().isUserLoggedIn();
-
   let showDropdown = false;
+
+  let location = "";
 
   let url: string;
 
-  onMount(() => (url = $page.url.pathname));
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+    url = $page.url.pathname;
+
+    location = localStorage.getItem("cinema") || "Not selected";
+  });
 
   beforeNavigate(() => {
     showDropdown = false;
@@ -137,6 +143,19 @@
                 class="p-3 space-y-1 text-sm text-textWhite"
                 aria-labelledby="regionDropDown"
               >
+                <li>
+                  <a href="/locations">
+                    <div
+                      class="flex flex-col items-center p-2 rounded hover:bg-buttonBlue duration-300"
+                    >
+                      <span
+                        class:hidden={location == "" ||
+                          location == "Not selected"}>Location: {location}</span
+                      >
+                      Change location
+                    </div>
+                  </a>
+                </li>
                 <li>
                   <a href={isUserLoggedIn ? "/dashboard" : "/auth/register"}>
                     <div

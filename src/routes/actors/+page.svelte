@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import MainCard from "../../_ui/templates/mainCard.svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
+  import { invalidateAll } from "$app/navigation";
 
   let actorInput: string = "";
   let displayedActorInput: string = "";
@@ -11,19 +13,23 @@
 
   let allActors = data.actors;
 
+  onMount(() => {
+    invalidateAll();
+  });
+
   function loadFilterActors() {
     if (actorInput === "" || actorInput === undefined) {
       filteredActors = [];
       return;
     }
     filteredActors = allActors.filter((actor: any) =>
-      actor.name.toLowerCase().includes(actorInput)
+      actor.Name.toLowerCase().includes(actorInput)
     );
   }
 </script>
 
 <svelte:head>
-  <title>Search Actors</title>
+  <title>Cinemika - Actors</title>
 </svelte:head>
 
 <div class="flex w-screen h-max">

@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { AuthService } from "$lib/_services/authService";
   import MovieRow from "../../templates/movieRow.svelte";
   import TextMainSite from "../../templates/textMainSite.svelte";
 
-  const authService = new AuthService();
-  const isUserLoggedIn = authService.isUserLoggedIn();
-
+  export let isUserLoggedIn: boolean;
   export let textData: any;
   export let moviesToDisplay: any;
 </script>
@@ -22,4 +19,3 @@
     <MovieRow {moviesToDisplay} />
   </div>
 </div>
-

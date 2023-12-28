@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useLazyImage as lazyImage } from "svelte-lazy-image";
   import CinemaTile from "./cinemaTile.svelte";
   export let movie: {
     src: string;
@@ -20,7 +21,8 @@
   href="/specialevents/{movieCopy.specialEventId}"
 >
   <div
-    class="absolute inset-y-0 left-0 h-auto w-1/3 sm:w-1/4 aspect-auto rounded-lg object-cover"
+    class="absolute inset-y-0 left-0 h-auto w-1/3 sm:w-1/4
+    aspect-auto rounded-lg object-cover"
   >
     <CinemaTile cinemaCompany="Cineplex" cinemaLocation="Mannheim" />
   </div>
@@ -28,5 +30,6 @@
     src={movieCopy.src}
     alt={movieCopy.movieName}
     class="rounded-xl min-h-full aspect-auto object-cover"
+    use:lazyImage
   />
 </a>

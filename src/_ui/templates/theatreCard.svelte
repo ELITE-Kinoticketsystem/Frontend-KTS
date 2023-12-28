@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { useLazyImage as lazyImage } from "svelte-lazy-image";
+
   export let theatre: any;
 </script>
 
@@ -10,6 +12,7 @@
       src={theatre.logo}
       alt={theatre.name}
       class="group-hover:scale-110 duration-300"
+      use:lazyImage
     />
   </div>
   <div class="mt-20">

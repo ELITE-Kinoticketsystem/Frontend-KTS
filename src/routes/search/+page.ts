@@ -1,12 +1,14 @@
+import { apiUrl } from '$lib/_services/authService.js';
+
 export const load = async ({ fetch, params }) => {
 
     async function fetchMovies(){
-        const movieData = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/movies");
+        const movieData = await fetch(apiUrl+"/movies/genres");
         return await movieData.json();
     }
 
     async function fetchActors(){
-        const actData = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/actors");
+        const actData = await fetch(apiUrl+"/actors");
         return await actData.json();
     }
     

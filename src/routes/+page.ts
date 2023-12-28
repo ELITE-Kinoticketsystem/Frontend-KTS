@@ -1,9 +1,16 @@
+import { apiUrl } from '$lib/_services/authService.js';
+
 export const load = async ({ fetch, params }) => {
 
+
     async function fetchFirst(){
-        const movieData = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/movies");
-        return await movieData.json();
+        const movieData = await fetch(apiUrl+"/movies/genres", {
+            mode: "cors"
+        })
+        return movieData.json();
     }
-    
-    return { first: fetchFirst() };
+
+
+    return { first: await fetchFirst()
+     };
 }

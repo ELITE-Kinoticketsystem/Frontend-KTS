@@ -1,18 +1,9 @@
 <script lang="ts">
+  import { useLazyImage as lazyImage } from "svelte-lazy-image";
   import { Splide, SplideSlide, SplideTrack } from "@splidejs/svelte-splide";
 
   export let srcs: Array<string> = [];
   let currentImg = 0;
-
-  function increaseIndex() {
-    currentImg = (currentImg + 1) % srcs.length;
-  }
-  function decreaseIndex() {
-    --currentImg;
-    if (currentImg < 0) {
-      currentImg = srcs.length - 1;
-    }
-  }
 </script>
 
 <div class="">
@@ -23,9 +14,10 @@
           {#each srcs as src}
             <SplideSlide>
               <img
-                class="w-full h-full object-cover "
+                class="w-full h-full object-cover"
                 {src}
                 alt="Actor"
+                use:lazyImage
               />
             </SplideSlide>
           {/each}

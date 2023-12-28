@@ -1,12 +1,18 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { AuthService } from "$lib/_services/authService.js";
+  import { onMount } from "svelte";
 
-  const authService = new AuthService();
-
-  if (!authService.isUserLoggedIn()) {
-    if (browser) window.location.href = "/auth/login";
-  }
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+    if (isUserLoggedIn && browser) {
+      goto("/auth/login");
+    }
+  });
   export let data;
 
   const favorites: any[] = data.favoriteMovies;
@@ -27,7 +33,7 @@
 </script>
 
 <head:svelte>
-  <title>Your favorites</title>
+  <title>Cinemika - Favorites</title>
 </head:svelte>
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />

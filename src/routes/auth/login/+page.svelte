@@ -1,17 +1,27 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
   import { browser } from "$app/environment";
-  import { LoginStatus } from "$lib/statusEnums";
+  import { page } from "$app/stores";
+  import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
 
-  const authService = new AuthService();
-  const isUserLoggedIn = authService.isUserLoggedIn();
-
-  if (isUserLoggedIn) {
-    if (browser) window.location.href = "/dashboard";
-  }
-
-  $: email = "";
+  $: username = "";
   $: password = "";
+
+  let redirect: string | null = null;
+
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+
+    if (isUserLoggedIn) {
+      if (redirect) goto(redirect);
+      else goto("/dashboard");
+    }
+    redirect = $page.url.searchParams.get("redirect");
+  });
 
   function validateButton() {
     const erroMsg = document.getElementById("erroMsg")!;
@@ -19,21 +29,19 @@
     erroMsg.hidden = true;
 
     const submitButton = document.getElementById("submitButton")!;
-    submitButton.disabled = !(
-      email.length > 0 &&
-      email.match(
-        /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-      ) &&
-      password.length > 0
-    );
+    submitButton.disabled = !(username.length > 0 && password.length > 0);
   }
 
   async function login() {
-    const userIsLoggedIn = await authService.login(email, password);
-    if (userIsLoggedIn) {
+    const userIsLoggedIn = await AuthService.login(username, password);
+
+    if (userIsLoggedIn.status === 200) {
       if (browser) {
-        window.location.href =
-          "/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGIN.toString();
+        if (redirect) {
+          goto(redirect);
+        } else {
+          goto("/dashboard");
+        }
       }
     } else {
       const errorMsg = document.getElementById("erroMsg")!;
@@ -81,21 +89,21 @@
     <form class="space-y-6" action="#" method="POST">
       <div>
         <label
-          for="email"
+          for="username"
           class="block text-sm font-medium leading-6 text-textWhite"
-          >E-Mail</label
+          >Username</label
         >
         <div class="mt-2">
           <input
-            id="email"
-            name="email"
-            bind:value={email}
+            id="username"
+            name="username"
+            bind:value={username}
             on:input={validateButton}
-            type="email"
-            autocomplete="email"
+            type="text"
+            autocomplete="username"
             required
             class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-textWhite focus:ring-2 bg-inputBlue focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="Enter an e-mail"
+            placeholder="Enter an username"
           />
         </div>
       </div>

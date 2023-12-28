@@ -1,30 +1,27 @@
 <script lang="ts">
-  import { browser, dev } from "$app/environment";
+  import { browser } from "$app/environment";
   import { AuthService } from "$lib/_services/authService";
-  import { SessionStatus } from "$lib/statusEnums";
   import "chart.js/auto";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
   import { InvoiceTemplate } from "$lib/invoice";
+  import { goto } from "$app/navigation";
 
   const invoicetemplate = new InvoiceTemplate();
-  const authService = new AuthService();
-  const isLoggedIn = authService.isUserLoggedIn();
+
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+
+    if (!isUserLoggedIn) {
+      goto("/auth/login");
+    }
+  });
 
   export let data;
   let ticketHistory = data.tickets || [];
-
-  if (browser) {
-    if (!isLoggedIn) {
-      if (false) {
-        window.location.href =
-          "/auth/login?sessionStatus=" + SessionStatus.EXPIRED;
-      } else {
-        window.location.href =
-          "/auth/login?sessionStatus=" + SessionStatus.NOT_LOGGED_IN;
-      }
-    }
-  }
   const username = "John Doe";
   const email = "john.doe@cinemika.com";
 
@@ -70,7 +67,7 @@
         document.getElementById("visitedMovies"),
         0,
         visitedMovies,
-        3500
+        1750
       );
     animateValue(
       document.getElementById("totalAmountSpend"),
@@ -136,7 +133,7 @@
 </script>
 
 <head:svelte>
-  <title>{username}'s Dashboard</title>
+  <title>Cinemika - Dashboard</title>
 </head:svelte>
 
 <div class="flex w-screen h-max">
@@ -300,7 +297,7 @@
                   color: "#fff",
                   background: "#29313A",
                 }).then(() => {
-                  window.location.href = "/";
+                  goto("/");
                 });
               }
             });

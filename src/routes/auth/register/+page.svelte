@@ -1,14 +1,8 @@
 <script lang="ts">
   import { AuthService } from "$lib/_services/authService";
-  import { browser } from "$app/environment";
   import Swal from "sweetalert2";
   import { RegisterStatus } from "$lib/statusEnums";
-
-  const authService = new AuthService();
-
-  if (browser && authService.isUserLoggedIn()) {
-    window.location.href = "/dashboard";
-  }
+  import { goto } from "$app/navigation";
 
   $: firstname = "";
   $: lastname = "";
@@ -35,10 +29,19 @@
     );
   }
 
-  function register() {
-    if (AuthService.register(firstname, lastname, username, email, password)) {
-      window.location.href =
-        "/?registerStatus=" + RegisterStatus.REGISTERED.toString();
+  async function register() {
+    const registerRequest = await AuthService.register(
+      firstname,
+      lastname,
+      username,
+      email,
+      password
+    );
+    const registerData = registerRequest.json();
+    console.log(registerData);
+
+    if (registerRequest.ok) {
+      goto("/?registerStatus=" + RegisterStatus.REGISTERED.toString());
     } else {
       Swal.fire({
         title: "Error",

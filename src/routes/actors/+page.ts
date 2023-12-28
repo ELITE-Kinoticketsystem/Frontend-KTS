@@ -1,6 +1,11 @@
+import { apiUrl } from '$lib/_services/authService.js';
+
 export const load = async ({ fetch, params }) => {
     async function fetchActorData() {
-        const actData = await fetch("https://655c510c25b76d9884fcf74d.mockapi.io/mock/actors");
+        const actData = await fetch(apiUrl+"/actors", {
+            mode: "cors",
+            credentials: "include"
+        });
         return await actData.json();
     }
 

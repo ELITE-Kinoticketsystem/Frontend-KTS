@@ -6,13 +6,15 @@
   import { browser } from "$app/environment";
   import Showings from "../../../_ui/layout/_movies/showings.svelte";
   import Cinemas from "../../../_ui/layout/_movies/cinemas.svelte";
-  import YouTubePlayer from "youtube-player";
   import { onMount } from "svelte";
+  import { invalidateAll } from "$app/navigation";
 
-  const authService = new AuthService();
-
-  const isUserLoggedIn = authService.isUserLoggedIn();
-
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+  });
   export let data;
 
   let movie: any = data.movie;
@@ -21,28 +23,13 @@
 
   const reviews = data.reviews.reviews;
 
+  movie.genre = ["Action", "Adventure", "Comedy", "Drama", "Fantasy"];
+
   reviews.forEach((review) => {
     const date = new Date(review.datetime);
     review.datetime = date.toLocaleString();
     review.datetime = review.datetime.split(" ")[0].slice(0, -1);
   });
-
-  movie = {
-    src: "https://resizing.flixster.com/P5ZdS6yYcgAsXniyJV6xMfCP1CM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzhmMGUwMzg0LTg4OWYtNDNlNy05OWExLTBhNTMwZTJiMTBmZC5wbmc=",
-    movieName: "Stephen Curry Underrated",
-    movieId: "1",
-    description:
-      "The documentary shows the coming-of-age story of Stephen Curry, one of the most influential players in basketball history.\
-       The focus is on his rise from barely mediocre college player to four-time NBA champion. \
-       Today he is widely considered to be the greatest shooter to ever play the game of basketball \
-       and this documentary shows what it took to get to that point. He is also the father to three children \
-       and husband to his wife Ayesha Curry who likes to cook food for a living.",
-    genre: ["Documentary", "Sport", "Biography", "Family"],
-    fsk: "0",
-    rating: 4.2,
-    duration: 120,
-    releaseDate: "2023-11-30T00:00:00.000Z",
-  };
 
   let cinema = "";
   if (browser) {
@@ -51,14 +38,9 @@
 
   let direction = 1;
 
+  let rating: number = 0;
+
   $: textAreaValue = "";
-  function validateButton() {
-    if (textAreaValue.length > 0) {
-      disabledLength = false;
-    } else {
-      disabledLength = true;
-    }
-  }
 
   function submitReview() {
     if (isUserLoggedIn && textAreaValue.length > 0) {
@@ -80,46 +62,39 @@
     }
   }
 
+  onMount(() => {
+    invalidateAll();
+  });
+
   function getYear(dateTime: string): string {
     const date = new Date(dateTime);
     return date.getFullYear().toString();
   }
-  var ytPlayer: any;
-  onMount(() => {
-    if (browser)
-      ytPlayer = YouTubePlayer("player-1", {
-        videoId: "NHhTMh0nURA",
-      });
-  });
-  function startVideo() {
-    ytPlayer.playVideo();
-  }
 </script>
 
 <head:svelte>
-  <title>Cinemika - {movie.movieName}</title>
+  <title>Cinemika - {movie.Title}</title>
 </head:svelte>
 
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="">
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="flex flex-col">
-      <button
-        on:mouseenter={() => {
-          startVideo();
-        }}
-      >
-        <div
-          id="player-1"
-          class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
-        />
-      </button>
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/{movie.TrailerURL}"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+        allowfullscreen
+        class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
+      />
       <div class="flex flex-row mt-14">
         <div class="relative basis-1/3 flex-shrink-0 h-max">
           <img
-            src={movie.src}
-            alt={movie.movieName}
+            src={movie.CoverPicURL}
+            alt={movie.Title}
             class="min-w-full h-auto aspect-auto overflow-hidden rounded-md"
           />
         </div>
@@ -127,10 +102,10 @@
           <div
             class="flex flex-col sm:flex-row md:flex-row text-textWhite mx-auto sm:text-md md:text-xl xl:text-2xl 2xl:text-4xl font-bold"
           >
-            <p class="break-words">{movie.movieName}</p>
+            <p class="break-words">{movie.Title}</p>
 
             <a class="mx-auto xl:ml-5 xl:mt-1" href="#review">
-              <Rating id="ratingLab" total={5} rating={movie.rating} />
+              <Rating id="ratingLab" total={5} rating={movie.Rating} />
             </a>
           </div>
           <div
@@ -153,8 +128,8 @@
               </svg>
 
               <span class="ml-1">
-                {#each movie.genre as genre, index}
-                  {genre}{#if index != movie.genre.length - 1},{/if}
+                {#each movie.Genres as genre, index}
+                  {genre.GenreName}{#if index != movie.Genres.length - 1},{/if}
                 {/each}</span
               >
             </p>
@@ -173,7 +148,7 @@
                   d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
                 />
               </svg>
-              <span class="ml-1">FSK {movie.fsk}</span>
+              <span class="ml-1">FSK {movie.Fsk}</span>
             </p>
             <p class="flex text-sm">
               <svg
@@ -190,7 +165,7 @@
                   d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span class="ml-1">{movie.duration}min</span>
+              <span class="ml-1">{movie.TimeInMin}min</span>
             </p>
             <p class="flex text-sm">
               <svg
@@ -208,13 +183,13 @@
                 />
               </svg>
 
-              <span class="ml-1">{getYear(movie.releaseDate)}</span>
+              <span class="ml-1">{getYear(movie.ReleaseDate)}</span>
             </p>
           </div>
           <div
             class=" text-textWhite my-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl break-words text-justify"
           >
-            <span class="break-words">{movie.description}</span>
+            <span class="break-words">{movie.Description}</span>
           </div>
         </div>
       </div>
@@ -263,7 +238,6 @@
               <textarea
                 id="review"
                 rows="6"
-                on:input={validateButton}
                 bind:value={textAreaValue}
                 disabled={!isUserLoggedIn}
                 class="px-0 w-full text-sm bg-headerBlue text-textWhite placeholder:text-textWhite border-0 focus:ring-0 focus:outline-none disabled:cursor-not-allowed"
@@ -273,42 +247,66 @@
                 required
               />
             </div>
-            <button
-              type="button"
-              on:click={async () => {
-                const { value: accept } = await Swal.fire({
-                  title: "Spoiler information",
-                  text: "Spoilers are allowed in reviews, but please be sure to mark them as spoilers.",
-                  input: "checkbox",
-                  icon: "info",
-                  inputValue: 1,
-                  inputPlaceholder: `
+            <div class="flex justify-between">
+              <button
+                type="button"
+                on:click={async () => {
+                  const { value: accept } = await Swal.fire({
+                    title: "Spoiler information",
+                    text: "Spoilers are allowed in reviews, but please be sure to mark them as spoilers.",
+                    input: "checkbox",
+                    icon: "info",
+                    inputValue: 1,
+                    inputPlaceholder: `
                     My review contains spoilers
                   `,
-                  confirmButtonText: `
+                    confirmButtonText: `
                     Continue&nbsp;<i class="fa fa-arrow-right"></i>
                   `,
-                });
-                if (accept) {
-                  Swal.fire({
-                    title: "Your review has been posted!",
-                    icon: "success",
-                    footer:
-                      "Your review was marked with containing spoilers, thank you for your honesty!",
                   });
-                } else {
-                  Swal.fire({
-                    title: "Your review has been posted!",
-                    icon: "success",
-                  });
-                }
-                submitReview();
-              }}
-              disabled={textAreaValue.length === 0 || !isUserLoggedIn}
-              class="inline-flex items-center disabled:cursor-not-allowed py-2.5 px-4 text-xs font-medium text-center text-white bg-buttonBlue rounded-lg focus:ring-4 focus:ring-primary-200 hover:disabled:bg-red-500 hover:enabled:bg-green-500 duration-300"
-            >
-              Post review
-            </button>
+                  if (accept) {
+                    Swal.fire({
+                      title: "Your review has been posted!",
+                      icon: "success",
+                      footer:
+                        "Your review was marked with containing spoilers, thank you for your honesty!",
+                    });
+                  } else {
+                    Swal.fire({
+                      title: "Your review has been posted!",
+                      icon: "success",
+                    });
+                  }
+                  submitReview();
+                }}
+                disabled={textAreaValue.length === 0 ||
+                  !isUserLoggedIn ||
+                  rating === 0}
+                class="inline-flex items-center disabled:cursor-not-allowed py-2.5 px-4 text-xs font-medium text-center text-white bg-buttonBlue rounded-lg focus:ring-4 focus:ring-primary-200 hover:disabled:bg-red-500 hover:enabled:bg-green-500 duration-300 justify-start"
+              >
+                Post review
+              </button>
+              <div class="flex mb-2 justify-end">
+                {#each { length: 5 } as _, i}
+                  <button on:click={() => (rating = i + 1)} type="button">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill={rating > i ? "#F5C914" : "none"}
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6 text-[#F5C914] duration-300"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                      />
+                    </svg>
+                  </button>
+                {/each}
+              </div>
+            </div>
           </form>
           {#each reviews as review, index}
             <article class="p-6 text-base bg-inputBlue rounded-lg">
