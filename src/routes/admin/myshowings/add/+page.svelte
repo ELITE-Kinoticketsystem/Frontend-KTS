@@ -5,13 +5,14 @@
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
 
-  export let data: { first: any };console.log(data.first);
+  export let data: { movies: any };
+  console.log(data.movies);
 
   let src =
     "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg";
 
   let allShowings: any[] = [{ date: "1999-12-09", times: ["12:00"] }];
-  let allDbMovies: any[] = data.first;
+  let allDbMovies: any[] = data.movies;
   let selectedMovies: any[] = [];
   let prices = { regular: 10, vip: 5, loge: 3 };
   let is3D = false;
@@ -29,8 +30,7 @@
     is3D = is3D;
     description = description;
     eventType = selectedMovies.length > 1 ? "special" : "regular";
-  }
-  $: {
+
     nrOfShowings = 0;
     for (let i = 0; i < allShowings.length; ++i) {
       nrOfShowings += allShowings[i].times.length;
@@ -55,7 +55,7 @@
   let mouseIsOverCheckbox = false;
 </script>
 
-<div class="flex flex-col w-[85%] mx-auto">
+<div class="flex flex-col w-[70%] mx-auto">
   <div
     class="flex flex-row w-full border-b-2 border-white mx-auto justify-between pb-2 mb-6"
   >
@@ -83,7 +83,7 @@
         class="flex flex-row w-full items-center justify-between p-2 bg-tileBlue ring-1 ring-white rounded-lg"
       >
         <p
-          class="w-[66%] text-center text-textWhite font-bold text-xl rounded-md bg-slate-500 py-[0.6rem]"
+          class="w-[66%] text-center text-textWhite font-bold text-[100%] rounded-md bg-slate-500 p-[0.5rem]"
         >
           Supports 3D
         </p>
@@ -118,7 +118,7 @@
   </div>
 
   <div
-    class="flex flex-row justify-between gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
+    class="flex flex-row justify-between  gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
   >
     <img
       class="w-[14%] my-2 h-auto object-cover aspect-auto rounded-md"
@@ -126,7 +126,7 @@
       alt="Movie of showing"
     />
 
-    <div class="w-[85%] h-full">
+    <div class="w-[85%] h-full overflow-hidden">
       <div class="h-[10%] flex flex-row gap-x-5 mb-2">
         <p class="font-semibold text-center text-2xl text-textWhite">
           Select date:

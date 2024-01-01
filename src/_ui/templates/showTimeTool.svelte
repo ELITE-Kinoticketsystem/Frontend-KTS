@@ -10,9 +10,11 @@
   }
 </script>
 
-<div class="w-full h-full flex flex-col items-center">
+<div
+  class="w-full h-full flex-none flex-col items-center"
+>
   <div
-    class="w-full h-full flex place-self-start flex-col gap-y-1 overflow-y-scroll"
+    class="w-full h-[82%] flex-none flex-col gap-y-1 overflow-hidden hover:overflow-y-auto"
   >
     {#each allShowings as showing}
       <div class="flex-none h-[24%] w-full">
@@ -24,7 +26,7 @@
     on:click={() => {
       allShowings = [...allShowings, { date: date, times: ["12:00"] }];
     }}
-    class="flex place-self-end mx-auto w-[3%] my-1 hover:bg-blue-400 rounded-full"
+    class="flex mx-auto w-[3%] my-3 hover:bg-blue-400 rounded-full"
   >
     <PlusButton />
   </button>

@@ -4,11 +4,12 @@
   import SelSeatOverview from "../../_ui/templates/selSeatOverview.svelte";
   import Timer from "../../_ui/templates/timer.svelte";
   import SeatLegend from "../../_ui/templates/seatLegend.svelte";
+  import { onMount } from "svelte";
 
-  //export let data: { first: any };
+  export let data: { first: any };
 
-  //let seats: any = data.first;
-  let seats: any[] = [];
+  let seats: any[] = data.first.seat_rows;
+
   let selectedSeats: any[] = [];
   let startTime = 900;
 
@@ -16,56 +17,19 @@
   $: seats = seats;
   $: signal = selectedSeats.length > 0 ? 1 : 0;
 
-  let seatrow: any[] = [];
-  function getSeat(
-    type: string,
-    x: number,
-    y: number,
-    bookedByOther: boolean,
-    category: string
-  ) {
-    return { type, x, y, available: true, bookedByOther, category };
-  }
-  function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-  }
-  export let nrOfRows = 12;
-  export let nrOfCols = 12;
-
-  for (let y = 0; y < nrOfRows; ++y) {
-    for (let x = 0; x < nrOfCols; ++x) {
-      let choice = getRandomInt(100);
-      let booked = getRandomInt(100) > 80 ? true : false;
-      let category = "regular";
-      if (getRandomInt(100) < 40) {
-        category = "vip";
-      }
-      if (getRandomInt(100) < 40) {
-        category = "loge";
-      }
-
-      if (choice < 20) {
-        if (x < nrOfCols - 1) {
-          seatrow.push(getSeat("double", x, y, booked, category));
-          seatrow.push(getSeat("emptyDouble", x + 1, y, booked, category));
-          ++x;
-        } else {
-          seatrow.push(getSeat("regular", x, y, booked, category));
-        }
-      } else if (choice >= 20 && choice <= 80) {
-        seatrow.push(getSeat("regular", x, y, booked, category));
-      } else {
-        seatrow.push(getSeat("empty", x, y, booked, category));
-      }
-    }
-    seats.push(seatrow);
-    seatrow = [];
-  }
+  const seatColors = {
+    regular: "#86BBD8",
+    vip: "#F6AE2D",
+    loge: "#33658A",
+    selected: "#00cc00",
+    blocked: "#777777",
+  };
 
   function timerFinished() {
     for (let i = 0; i < selectedSeats.length; ++i) {
-      seats.at(selectedSeats.at(i).y).at(selectedSeats.at(i).x).available =
-        true;
+      seats
+        .at(selectedSeats.at(i).RowNr)
+        .at(selectedSeats.at(i).ColumnNr).available = true;
     }
     seats = seats;
     selectedSeats = [];
@@ -84,8 +48,10 @@
   function bookSelectedSeats() {
     Swal.fire({ title: "Booking seats..." });
   }
-
-  let aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
+  let aspectRatio = "";
+  onMount(async () => {
+    aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
+  });
 </script>
 
 <div class="flex flex-row justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4">
@@ -95,6 +61,7 @@
   >
     <Cinemahall
       {seats}
+      {seatColors}
       {selectedSeats}
       on:seatWasSelected={(e) => {
         selectedSeats = e.detail.selectedSeats;
@@ -123,7 +90,7 @@
       </p>
     </a>
     <div class="w-full">
-      <SeatLegend />
+      <SeatLegend {seatColors} />
     </div>
   </div>
 </div>

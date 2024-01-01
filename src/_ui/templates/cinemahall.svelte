@@ -7,14 +7,21 @@
   const dispatch = createEventDispatcher();
 
   export let seats: any[] = [];
-  export let selectedSeats = seats.filter((seat) => seat.available); //used as an ordered list
+  export let seatColors: {
+    regular: string;
+    vip: string;
+    loge: string;
+    selected: string;
+    blocked: string;
+  };
+  export let selectedSeats = seats.filter((seat) => seat.Available); //used as an ordered list
 
   $: seats = seats;
   $: selectedSeats = selectedSeats;
 
   function isNeighborSeat(x: number, y: number) {
     //all selected seats share y coordinate
-    if (selectedSeats.at(0).y != y) {
+    if (selectedSeats.at(0).RowNr != y) {
       return false;
     }
     let leftOffset = 1;
@@ -22,43 +29,46 @@
     //go to the left until you encounter a nonempty seat
     while (x - leftOffset >= 0) {
       if (
-        seats.at(y).at(x - leftOffset).type === "empty" ||
-        seats.at(y).at(x - leftOffset).type === "emptyDouble"
+        seats.at(y).at(x - leftOffset).Type === "empty" ||
+        seats.at(y).at(x - leftOffset).Type === "emptyDouble"
       ) {
         ++leftOffset;
         continue;
       }
       break;
     }
-    if (selectedSeats.at(selectedSeats.length - 1).x === x - leftOffset) {
+    if (
+      selectedSeats.at(selectedSeats.length - 1).ColumnNr ===
+      x - leftOffset
+    ) {
       return true;
     }
     //go to the right until you encounter a nonempty seat
     while (x + rightOffset < seats.at(0).length) {
       if (
-        seats.at(y).at(x + rightOffset).type === "empty" ||
-        seats.at(y).at(x + rightOffset).type === "emptyDouble"
+        seats.at(y).at(x + rightOffset).Type === "empty" ||
+        seats.at(y).at(x + rightOffset).Type === "emptyDouble"
       ) {
         ++rightOffset;
         continue;
       }
       break;
     }
-    if (x + rightOffset === selectedSeats.at(0).x) {
+    if (x + rightOffset === selectedSeats.at(0).ColumnNr) {
       return true;
     }
     return false;
   }
 
   function seatWasSelected(seat: {
-    type: string;
-    x: number;
-    y: number;
-    available: boolean;
-    bookedByOther: boolean;
-    category: string;
+    Type: string;
+    ColumnNr: number;
+    RowNr: number;
+    Available: boolean;
+    BookedByOther: boolean;
+    Category: string;
   }) {
-    if (seat.bookedByOther) {
+    if (seat.BookedByOther) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -76,26 +86,30 @@
 
     //case: no selected seats yet
     if (selectedSeats.length === 0) {
-      seats.at(seat.y).at(seat.x).available = false;
+      seats.at(seat.RowNr).at(seat.ColumnNr).Available = false;
       selectedSeats = [
         {
-          type: seat.type,
-          x: seat.type === "emptyDouble" ? seat.x - 1 : seat.x,
-          y: seat.y,
-          category: seat.category,
+          Type: seat.Type,
+          ColumnNr:
+            seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr,
+          RowNr: seat.RowNr,
+          Category: seat.Category,
+          BookedByOther: false,
+          Available: false,
         },
       ];
       return;
     }
     //case: already selected seat was clicked
-    if (!seat.available) {
+    if (!seat.Available) {
       const index =
-        selectedSeats.at(Math.floor(selectedSeats.length / 2)).x > seat.x
+        selectedSeats.at(Math.floor(selectedSeats.length / 2)).ColumnNr >
+        seat.ColumnNr
           ? 0
           : selectedSeats.length - 1;
       seats
-        .at(selectedSeats.at(index).y)
-        .at(selectedSeats.at(index).x).available = true;
+        .at(selectedSeats.at(index).RowNr)
+        .at(selectedSeats.at(index).ColumnNr).Available = true;
       if (index === 0) {
         selectedSeats = selectedSeats.slice(1, selectedSeats.length);
       } else {
@@ -104,7 +118,7 @@
       return;
     }
     //case: not-selected seat was clicked
-    if (!isNeighborSeat(seat.x, seat.y)) {
+    if (!isNeighborSeat(seat.ColumnNr, seat.RowNr)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -118,40 +132,61 @@
       return;
     }
 
-    let xCor = seat.type === "emptyDouble" ? seat.x - 1 : seat.x;
-    if (selectedSeats.at(selectedSeats.length - 1).x < seat.x) {
+    let ColumnNr =
+      seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr;
+    if (selectedSeats.at(selectedSeats.length - 1).ColumnNr < seat.ColumnNr) {
       selectedSeats = [
         ...selectedSeats,
-        { type: seat.type, x: xCor, y: seat.y, category: seat.category },
+        {
+          Type: seat.Type,
+          ColumnNr,
+          RowNr: seat.RowNr,
+          Category: seat.Category,
+          Available: false,
+          BookedByOther: false,
+        },
       ];
     } else {
       selectedSeats = [
-        { type: seat.type, x: xCor, y: seat.y, category: seat.category },
+        {
+          Type: seat.Type,
+          ColumnNr,
+          RowNr: seat.RowNr,
+          Category: seat.Category,
+          Available: false,
+          BookedByOther: false,
+        },
         ...selectedSeats,
       ];
     }
-    seats.at(seat.y).at(seat.x).available = false;
+    seats.at(seat.RowNr).at(seat.ColumnNr).Available = false;
   }
 
   function getColorKey(seat: any) {
     let found = false;
     for (let i = 0; i < selectedSeats.length; ++i) {
-      if (selectedSeats[i].x === seat.x && selectedSeats[i].y === seat.y) {
+      if (
+        selectedSeats[i].ColumnNr === seat.ColumnNr &&
+        selectedSeats[i].RowNr === seat.RowNr
+      ) {
         found = true;
         break;
       }
     }
     if (found) {
-      return "#ffffff"; //user selected color
+      return seatColors.selected; //user selected color
+    }
+    if (seat.BookedByOther) {
+      return seatColors.blocked;
     }
 
-    switch (seat.category) {
+    switch (seat.Category) {
       case "regular":
-        return "#00ff99";
+        return seatColors.regular;
       case "vip":
-        return "#00ff00";
+        return seatColors.vip;
       case "loge":
-        return "#0000ff";
+        return seatColors.loge;
       default:
         return "#000000";
     }
@@ -170,9 +205,9 @@
   >
     {#each seats as seatrow}
       {#each seatrow as seat}
-        {#if seat.type === "regular" || seat.type === "double"}
+        {#if seat.Type === "regular" || seat.Type === "double"}
           <button
-            class="w-full h-full ring-white {seat.type === 'double'
+            class="w-full h-full ring-white {seat.Type === 'double'
               ? 'col-span-2'
               : ''} "
             on:click={() => {
@@ -182,13 +217,13 @@
           >
             {#key selectedSeats}
               <DrawSeat
-                type={seat.type}
+                Type={seat.Type}
                 color={getColorKey(seat)}
-                bookedByOther={seat.bookedByOther}
+                BookedByOther={seat.BookedByOther}
               />
             {/key}
           </button>
-        {:else if seat.type === "empty"}
+        {:else if seat.Type === "empty"}
           <div class="w-full h-full"></div>
         {/if}
       {/each}

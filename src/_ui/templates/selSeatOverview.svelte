@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let selectedSeats: { type: string; id: number }[] = [];
+  export let selectedSeats: any[] = [];
   let distinctSeatsWithCount = new Map<string, number>();
 
   $: selectedSeats = selectedSeats;
@@ -8,15 +8,15 @@
 
     selectedSeats
       .sort((e, e2) => {
-        return e.type < e2.type ? 1 : 0;
+        return e.Type < e2.Type ? 1 : 0;
       })
       .forEach((seat) => {
-        if (distinctSeatsWithCount.has(seat.type)) {
+        if (distinctSeatsWithCount.has(seat.Type)) {
           const currentValue: number =
-            distinctSeatsWithCount.get(seat.type) || 0;
-          distinctSeatsWithCount.set(seat.type, currentValue + 1);
+            distinctSeatsWithCount.get(seat.Type) || 0;
+          distinctSeatsWithCount.set(seat.Type, currentValue + 1);
         } else {
-          distinctSeatsWithCount.set(seat.type, 1);
+          distinctSeatsWithCount.set(seat.Type, 1);
         }
       });
   }
