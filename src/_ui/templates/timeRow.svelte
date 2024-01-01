@@ -3,7 +3,7 @@
   import PlusButton from "./plusButton.svelte";
   export let times: any[] = [];
   export let date = "1999-12-09";
-  export let hallname = "";
+  export let hallname = "Select a hall";
   $: {
     times = times;
     hallname = hallname;
@@ -28,15 +28,11 @@
   />
 
   <div
-    class="w-[80%] h-full flex flex-row gap-x-3 items-center overflow-x-hidden hover:overflow-x-auto overflow-y-hidden py-[0.4rem] px-1"
+    class="w-[80%] h-full flex flex-row gap-x-3 items-center overflow-x-auto overflow-y-hidden py-[0.4rem] px-1"
   >
     {#each times as time, thisTime}
-      <div class="relative flex-none h-full">
-        <input
-          class="w-full h-full rounded-md text-[90%]"
-          type="time"
-          bind:value={time}
-        />
+      <div class="relative w-[21%] flex h-[90%]">
+        <input class="w-full h-auto rounded-md" type="time" bind:value={time} />
         <button
           class="absolute z-10 w-[16%] h-[30%] top-0 right-0 translate-x-[55%] -translate-y-[50%] rounded-full"
           on:click={() => {

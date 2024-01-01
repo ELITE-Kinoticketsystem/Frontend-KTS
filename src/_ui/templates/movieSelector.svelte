@@ -14,7 +14,10 @@
   $: {
     selectedMovies = selectedMovies;
     moviesEligibleToBeAdded = allDbMovies.filter((movie) => {
-      return movie.Title.toLowerCase().startsWith(inputValue.toLowerCase());
+      return (
+        movie.Title.toLowerCase().startsWith(inputValue.toLowerCase()) &&
+        !selectedMovies.includes(movie)
+      );
     });
   }
 </script>
@@ -23,7 +26,7 @@
   class="w-full h-full flex flex-col items-center justify-between ring-1 ring-white bg-tileBlue rounded-md pb-3 px-3"
 >
   <div
-    class="flex flex-row w-full h-[88%] items-center overflow-hidden snap-center hover:overflow-x-auto pt-5 pb-1"
+    class="flex flex-row w-full h-[88%] items-center overflow-x-auto pt-5 pb-1"
   >
     {#if selectedMovies.length === 0}
       <div class="w-full h-full flex flex-col place-content-evenly">
@@ -38,7 +41,7 @@
           element={{ src: movie.CoverPicURL, undertitle: movie.Title }}
         />
         <button
-          class="absolute w-[18%] h-[9%] top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full"
+          class="absolute aspect-1 w-[14%] top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full"
           on:click={() => {
             selectedMovies.splice(thisMovie, 1);
             selectedMovies = selectedMovies;
@@ -47,7 +50,7 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="#ffffff"
-            viewBox="7 3 9 18"
+            viewBox="4 2 16 20"
             stroke-width="1.5"
             stroke="#000000"
             class="w-full h-full"
@@ -84,7 +87,7 @@
     />
     <div
       class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[140%] max-h-[420%]
-      overflow-hidden hover:overflow-y-auto ring-1 ring-slate-50 rounded-md
+      overflow-y-auto ring-1 ring-slate-50 rounded-md
       {eligibleMoviePreviewIsVisible ? 'flex' : 'hidden'}"
     >
       {#if moviesEligibleToBeAdded.length == 0}

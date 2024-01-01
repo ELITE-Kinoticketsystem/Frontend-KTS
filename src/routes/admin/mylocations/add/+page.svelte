@@ -129,5 +129,3 @@
     />
   </div>
 </div>
-
-<!-- https://www.bildagentur-rath.de/fileadmin/_processed_/2/8/csm_2010-05-22__803_D_571klein_ee669368c1.jpg -->

@@ -1,17 +1,17 @@
 <script lang="ts">
+  import Swal from "sweetalert2";
   import DescrInput from "../../../../_ui/templates/descrInput.svelte";
   import EventPreview from "../../../../_ui/templates/eventPreview.svelte";
   import MovieSelector from "../../../../_ui/templates/movieSelector.svelte";
+  import PlusButton from "../../../../_ui/templates/plusButton.svelte";
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
 
   export let data: { movies: any };
-  console.log(data.movies);
 
-  let src =
-    "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg";
-
-  let allShowings: any[] = [{ date: "1999-12-09", times: ["12:00"] }];
+  let allShowings: any[] = [
+    { hallname: "Select a hall", date: "1999-12-09", times: ["12:00"] },
+  ];
   let allDbMovies: any[] = data.movies;
   let selectedMovies: any[] = [];
   let prices = { regular: 10, vip: 5, loge: 3 };
@@ -22,6 +22,7 @@
   let nrOfShowings = 0;
   let movieNames: any[] = [];
   let descriptionLength = 0;
+  let url = "";
 
   $: {
     allShowings = allShowings;
@@ -29,6 +30,7 @@
     prices = prices;
     is3D = is3D;
     description = description;
+    url = url;
     eventType = selectedMovies.length > 1 ? "special" : "regular";
 
     nrOfShowings = 0;
@@ -52,6 +54,21 @@
       eventType,
     };
   }
+
+  function addPicture() {
+    Swal.fire({
+      title: "Enter url",
+      input: "text",
+    }).then((input) => {
+      if (input.value === "") {
+        Swal.fire({ title: "You have to enter a non empty url" });
+        return;
+      }
+
+      url = input.value;
+    });
+  }
+
   let mouseIsOverCheckbox = false;
 </script>
 
@@ -72,7 +89,7 @@
   </div>
 
   <div class="flex flex-row gap-x-10 w-full h-[40vh] mb-6">
-    <div class="flex-none w-[17%] h-full rounded-md">
+    <div class="flex-none w-[21%] h-full rounded-md">
       <MovieSelector bind:allDbMovies bind:selectedMovies />
     </div>
     <div class="flex flex-col justify-between w-[20%] h-full">
@@ -83,11 +100,11 @@
         class="flex flex-row w-full items-center justify-between p-2 bg-tileBlue ring-1 ring-white rounded-lg"
       >
         <p
-          class="w-[66%] text-center text-textWhite font-bold text-[100%] rounded-md bg-slate-500 p-[0.5rem]"
+          class="w-[70%] text-center text-textWhite font-bold text-[100%] rounded-md bg-slate-500 p-[0.5rem]"
         >
           Supports 3D
         </p>
-        <div class="h-[95%] w-[25%] my-auto">
+        <div class="flex flex-row items-center h-[95%] w-[24%] my-auto">
           <input
             on:mouseenter={() => {
               mouseIsOverCheckbox = true;
@@ -103,10 +120,10 @@
         </div>
       </div>
     </div>
-    <div class="w-[36%] h-full">
+    <div class="w-[26%] h-full">
       <DescrInput bind:description />
     </div>
-    <div class="w-[20%] h-full">
+    <div class="w-[22%] h-full">
       <EventPreview
         bind:movieNames
         bind:nrOfShowings
@@ -120,11 +137,31 @@
   <div
     class="flex flex-row justify-between  gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
   >
-    <img
-      class="w-[14%] my-2 h-auto object-cover aspect-auto rounded-md"
-      {src}
-      alt="Movie of showing"
-    />
+    {#key url}
+      <button
+        on:click={addPicture}
+        class="flex flex-col w-[17%] h-full items-center justify-center hover:bg-blue-400 bg-buttonBlue rounded-md"
+      >
+        {#if url === ""}
+          <div
+            class="flex flex-col items-center justify-center w-[80%] h-[80%] mx-auto my-auto"
+          >
+            <div class="w-[20%] mx-auto rounded-full mb-4">
+              <PlusButton />
+            </div>
+            <p class="text-textWhite text-[100%] font-semibold">
+              Add url for picture
+            </p>
+          </div>
+        {:else}
+          <img
+            class="h-full w-auto object-cover aspect-auto rounded-md"
+            src={url}
+            alt="Movie of showing"
+          />
+        {/if}
+      </button>
+    {/key}
 
     <div class="w-[85%] h-full overflow-hidden">
       <div class="h-[10%] flex flex-row gap-x-5 mb-2">
@@ -141,4 +178,5 @@
 
 <!-- Title: string, start: Date:isoString, end: Date:isoString, description: string, eventType: string, cinemaHallId: uuid, array[movies: uuid],
      array[eventSeatCategories{seatCategoryId: uuid, price: int}], is3D
+     https://imageio.forbes.com/specials-images/imageserve/627bdaec36beab21cd23ad21/0x0.jpg
      -->
