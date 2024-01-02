@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
   import { useLazyImage as lazyImage } from "svelte-lazy-image";
 
   export let data;
