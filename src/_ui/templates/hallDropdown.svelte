@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let hallname = "";
-  hallname = "Select a hall";
+  export let hallname = "Select a hall";
   let eligibleHallsAreVisible = 1;
   let hallnames: string[] = [
     "Cineplex",
