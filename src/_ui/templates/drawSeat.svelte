@@ -1,12 +1,10 @@
 <script lang="ts">
   export let color = "#cccccc";
-  export let type = "regular";
-  export let bookedByOther = false;
-
-  const bookedColor = "#777777";
+  export let Type = "regular";
+  export let BookedByOther = false;
 </script>
 
-{#if type === "regular"}
+{#if Type === "regular"}
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
@@ -20,7 +18,7 @@
       y="45"
       x="5"
       stroke-width="0"
-      fill={bookedByOther ? bookedColor : color}
+      fill={color}
     />
     <rect
       height="30"
@@ -28,7 +26,7 @@
       y="65"
       x="5"
       stroke-width="0"
-      fill={bookedByOther ? bookedColor : color}
+      fill={color}
     />
     <rect
       rx="20"
@@ -37,10 +35,42 @@
       y="19"
       x="16"
       stroke-width="0"
-      fill={bookedByOther ? bookedColor : color}
+      fill={color}
     />
+    {#if BookedByOther}
+      <ellipse
+        ry="13"
+        rx="13"
+        id="svg_1"
+        cy="37.23404"
+        cx="50"
+        stroke-width="0"
+        stroke="#000"
+        fill="#BBBBBB"
+      />
+      <rect
+        stroke="#000"
+        id="svg_2"
+        height="21.06383"
+        width="56"
+        y="70"
+        x="22"
+        stroke-width="0"
+        fill="#BBBBBB"
+      />
+      <ellipse
+        stroke="#000"
+        ry="18"
+        rx="28"
+        id="svg_3"
+        cy="70"
+        cx="50"
+        stroke-width="0"
+        fill="#BBBBBB"
+      />
+    {/if}
   </svg>
-{:else if type === "double"}
+{:else if Type === "double"}
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 200 100"
@@ -55,7 +85,7 @@
       y="45"
       x="5"
       stroke-width="0"
-      fill={bookedByOther ? bookedColor : color}
+      fill={color}
     />
     <rect
       stroke="#000"
@@ -64,7 +94,7 @@
       y="65"
       x="5"
       stroke-width="0"
-      fill={bookedByOther ? bookedColor : color}
+      fill={color}
     />
     <rect
       rx="20"
@@ -74,7 +104,39 @@
       x="22"
       stroke-width="0"
       stroke="#000"
-      fill={bookedByOther ? bookedColor : color}
+      fill={color}
     />
+    {#if BookedByOther}
+      <ellipse
+        ry="13"
+        rx="13"
+        id="svg_1"
+        cy="37.23404"
+        cx="100"
+        stroke-width="0"
+        stroke="#000"
+        fill="#BBBBBB"
+      />
+      <rect
+        stroke="#000"
+        id="svg_2"
+        height="21.06383"
+        width="56"
+        y="70"
+        x="72"
+        stroke-width="0"
+        fill="#BBBBBB"
+      />
+      <ellipse
+        stroke="#000"
+        ry="18"
+        rx="28"
+        id="svg_3"
+        cy="70"
+        cx="100"
+        stroke-width="0"
+        fill="#BBBBBB"
+      />
+    {/if}
   </svg>
 {/if}

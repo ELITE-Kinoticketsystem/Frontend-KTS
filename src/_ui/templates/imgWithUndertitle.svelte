@@ -2,7 +2,7 @@
   export let element: { src: string; undertitle: string };
 </script>
 
-<div class="flex flex-col w-full h-full justify-between items-center">
+<div class="flex flex-col w-full h-full items-center">
   <div class="flex-none h-[85%] overflow-hidden">
     <img
       class="object-cover aspect-auto rounded-md"

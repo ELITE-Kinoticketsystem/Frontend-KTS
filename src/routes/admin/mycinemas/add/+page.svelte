@@ -2,27 +2,58 @@
   import Swal from "sweetalert2";
   import HallCreator from "../../../../_ui/templates/hallCreator.svelte";
   import TypeSelector from "../../../../_ui/templates/typeSelector.svelte";
+  import { onMount } from "svelte";
 
   let seatCategories = ["regular", "loge", "vip"];
   let seatTypes = ["regular", "double", "eraser"];
   let clearAllSeatsSignal = 0;
+  let theatreNames: string[] = ["Cineplex", "Cinestar", "Casablanca", "Elias"];
+  // onMount(async () => {
+  //   const data = fetch("", {
+  //     method: "GET",
+  //     mode: "cors",
+  //     credentials: "include",
+  //   });
+  //   data
+  //     .then((response) => {
+  //       return response.json();
+  //     })
+  //     .then((halls) => {
+  //       halls.forEach((element: any) => {
+  //         theatreNames = [...theatreNames, element.name];
+  //       });
+  //     });
+  // });
 
   let seatTypeToPlace = seatTypes.at(0);
   let curSeatCategory = seatCategories.at(0);
-  let X = 23;
-  let Y = 15;
+  let hallWidth = 23;
+  let hallHeight = 15;
   let seats: any[] = [];
   $: seats = seats;
   $: seatTypeToPlace = seatTypeToPlace;
   $: curSeatCategory = curSeatCategory;
-  $: X = X;
-  $: Y = Y;
+  $: hallWidth = hallWidth;
+  $: hallHeight = hallHeight;
+
+  function postHall(name: string) {
+    fetch(`${name}`, {
+      method: "POST",
+      mode: "cors",
+      credentials: "include",
+      body: JSON.stringify({ seats }),
+    }).then((response) => {
+      return response.ok;
+    });
+
+    return false;
+  }
 
   function hallIsEmpty() {
     let nonEmptySeatFound = false;
-    for (let i = 0; i < Y; ++i) {
-      for (let j = 0; j < X; ++j) {
-        if (seats.at(i).at(j).type !== "empty") {
+    for (let i = 0; i < hallHeight; ++i) {
+      for (let j = 0; j < hallWidth; ++j) {
+        if (seats.at(i).at(j).Type !== "empty") {
           nonEmptySeatFound = true;
           break;
         }
@@ -51,48 +82,40 @@
       preConfirm: (hallName) => {
         let nameIsValid = true;
         if (!nameIsValid) {
-          Swal.showValidationMessage(
-            '<i class="fa fa-info-circle"></i> Hall name is already in use, enter a different name.'
-          );
+          Swal.fire({
+            title: "The name is invalid! Please enter a different name",
+            confirmButtonColor: "#89a3be",
+            customClass: {
+              popup: "bg-backgroundBlue text-textWhite text-[100%]",
+            },
+          });
         } else {
-          let halls = {
-            cinestar: "Cinestar",
-            cineplex: "Cineplex",
-            elias: "Elias",
-            istDerBeste: "istDerBeste",
-          };
           Swal.fire({
             title: `In which of your theatres is ${hallName}?`,
             input: "select",
-            inputOptions: halls,
+            inputOptions: theatreNames,
             showCancelButton: true,
-            confirmButtonColor: "#d888888",
+            confirmButtonColor: "#89a3be",
             customClass: {
-              input: "rounded-md text-backgroundBlue bg-textWhite",
-              title: "text-textWhite bg-backgroundBlue",
-              popup: "bg-backgroundBlue",
-              confirmButton: "bg-buttonBlue",
+              popup: "bg-backgroundBlue text-textWhite text-[100%]",
             },
           }).then((selectedHall) => {
-            let creationWasSuccessfull = !true;
-            if (creationWasSuccessfull) {
+            if (postHall(selectedHall.value)) {
               Swal.fire({
                 title: `${hallName} was created succesfully!`,
                 timer: 1500,
+                confirmButtonColor: "#89a3be",
                 customClass: {
-                  input: "rounded-md text-backgroundBlue",
-                  title: "text-textWhite bg-backgroundBlue",
-                  popup: "bg-backgroundBlue",
+                  popup: "bg-backgroundBlue text-textWhite text-[100%]",
                 },
               });
             } else {
               Swal.fire({
                 title: `${hallName} could not be created due to internal problems!`,
                 timer: 1500,
+                confirmButtonColor: "#89a3be",
                 customClass: {
-                  input: "rounded-md text-backgroundBlue",
-                  title: "text-textWhite bg-backgroundBlue",
-                  popup: "bg-backgroundBlue",
+                  popup: "bg-backgroundBlue text-textWhite text-[100%]",
                 },
               });
             }
@@ -116,7 +139,7 @@
       class="bg-backgroundBlue ring-1 ring-white rounded-lg my-4 py-2 w-[60%] mx-auto"
     >
       <p class="text-center text-textWhite font-semibold sm:text-xl px-2">
-        Width: {X} Length: {Y}
+        Width: {hallWidth} Length: {hallHeight}
       </p>
     </div>
 
@@ -158,13 +181,11 @@
               title: "Do you want to remove all placed seats?",
               showDenyButton: true,
               confirmButtonText: "Delete",
-              confirmButtonColor: "#ff0000",
               denyButtonColor: "#888888",
               denyButtonText: "Cancel",
+              confirmButtonColor: "#89a3be",
               customClass: {
-                input: "rounded-md text-backgroundBlue",
-                title: "text-textWhite bg-backgroundBlue",
-                popup: "bg-backgroundBlue",
+                popup: "bg-backgroundBlue text-textWhite text-[100%]",
               },
             }).then((result) => {
               if (result.isConfirmed) {
@@ -186,10 +207,10 @@
       bind:curSeatCategory
       bind:clearAllSeatsSignal
       on:xDimChanged={(e) => {
-        X = e.detail;
+        hallWidth = e.detail;
       }}
       on:yDimChanged={(e) => {
-        Y = e.detail;
+        hallHeight = e.detail;
       }}
     />
   </div>

@@ -12,10 +12,13 @@
   export let curSeatCategory = "regular";
   export let clearAllSeatsSignal = 0;
   export let seats: any[] = [];
-  
+
   let seatrowforFill = [];
   const xStartDim = 23;
   const yStartDim = 15;
+  let mouseDown = false;
+  $: mouseDown = mouseDown;
+  // $: console.log(seats);
 
   function fireNotEnoughCols() {
     Swal.fire({
@@ -28,6 +31,7 @@
       background: "#1a1f25",
       text: "Add a column first!",
     });
+    mouseDown = false;
   }
   function fireNotEnoughRows() {
     Swal.fire({
@@ -40,6 +44,7 @@
       background: "#1a1f25",
       text: "Add a row first!",
     });
+    mouseDown = false;
   }
   function fireDoubleSeatHasNoSpace() {
     Swal.fire({
@@ -53,10 +58,11 @@
       background: "#1a1f25",
       text: "Select a grid cell where itself and its right neighbor is empty!",
     });
+    mouseDown = false;
   }
 
-  function getColorFromCategory(category: string) {
-    switch (category) {
+  function getColorFromCategory(Category: string) {
+    switch (Category) {
       case "regular":
         return "#ff0000";
       case "vip":
@@ -69,8 +75,13 @@
     }
   }
 
-  function getSeat(category: string, type: string, x: number, y: number) {
-    return { category, type, x, y };
+  function getSeat(
+    Category: string,
+    Type: string,
+    ColumnNr: number,
+    RowNr: number
+  ) {
+    return { Category, Type, ColumnNr, RowNr };
   }
 
   for (let y = 0; y < yStartDim; ++y) {
@@ -81,55 +92,25 @@
     seatrowforFill = [];
   }
 
-  let X = seats.at(0).length;
-  let Y = seats.length;
-
-  function check() {
-    let nextX = 0;
-    let nextY = 0;
-    for (let i = 0; i < seats.length; ++i) {
-      for (let j = 0; j < seats.at(0).length; ++j) {
-        if (i !== nextY || j !== nextX) {
-          console.log(
-            "Error at: " +
-              i +
-              "," +
-              j +
-              " should have been: " +
-              nextX +
-              "," +
-              nextY
-          );
-        }
-        ++nextX;
-      }
-      nextX = 0;
-      ++nextY;
-    }
-  }
+  let hallWidth = seats.at(0).length;
+  let hallHeight = seats.length;
 
   $: {
     seats = seats;
-    X = seats.length > 0 ? seats.at(0).length : 0;
-    check();
-    dispatch("xDimChanged", X);
-  }
-  $: {
+    hallWidth = seats.length > 0 ? seats.at(0).length : 0;
+    dispatch("xDimChanged", hallWidth);
     seats = seats;
-    Y = seats.length > 0 ? seats.length : 0;
-    dispatch("yDimChanged", Y);
-  }
-  $: {
+    hallHeight = seats.length > 0 ? seats.length : 0;
+    dispatch("yDimChanged", hallHeight);
     seatTypeToPlace = seatTypeToPlace;
-  }
-  $: {
     curSeatCategory = curSeatCategory;
   }
+
   $: if (clearAllSeatsSignal === 1) {
-    for (let y = 0; y < Y; ++y) {
-      for (let x = 0; x < X; ++x) {
-        seats.at(y).at(x).type = "empty";
-        seats.at(y).at(x).category = "regular";
+    for (let y = 0; y < hallHeight; ++y) {
+      for (let x = 0; x < hallWidth; ++x) {
+        seats.at(y).at(x).Type = "empty";
+        seats.at(y).at(x).Category = "regular";
       }
     }
     seats = seats;
@@ -139,84 +120,98 @@
   function eraseSeatAt(seatType: string, x: number, y: number) {
     //clicked left part of doubleSeat
     if (seatType === "double") {
-      seats.at(y).at(x + 1).type = "empty";
-      seats.at(y).at(x + 1).category = "regular";
+      seats.at(y).at(x + 1).Type = "empty";
+      seats.at(y).at(x + 1).Category = "regular";
     }
 
     //clicked right part of doubleSeat
     if (seatType === "emptyDouble") {
-      seats.at(y).at(x - 1).type = "empty";
-      seats.at(y).at(x - 1).category = "regular";
+      seats.at(y).at(x - 1).Type = "empty";
+      seats.at(y).at(x - 1).Category = "regular";
     }
 
-    seats.at(y).at(x).type = "empty";
-    seats.at(y).at(x).category = "regular";
+    seats.at(y).at(x).Type = "empty";
+    seats.at(y).at(x).Category = "regular";
+    seats = seats;
   }
 
   function seatWasClicked(x: number, y: number) {
-    let clickedType = seats.at(y).at(x).type;
-    //check if unnecessary update
-    if (
-      seatTypeToPlace === clickedType &&
-      seats.at(y).at(x).category === curSeatCategory
-    ) {
-      return;
-    }
-    //eraser is selected
-    if (seatTypeToPlace === "empty") {
-      eraseSeatAt(clickedType, x, y);
-      return;
-    }
-
-    //regular or double is selected
-    eraseSeatAt(clickedType, x, y);
-    emptyCellWasClicked(x, y);
-
-    seats = seats;
-  }
-
-  function emptyCellWasClicked(x: number, y: number) {
     switch (seatTypeToPlace) {
+      //eraser is selected
+      case "empty":
+        eraseSeatAt(seatTypeToPlace, x, y);
+        break;
       case "regular":
-        seats.at(y).at(x).type = "regular";
-        seats.at(y).at(x).category = curSeatCategory;
-        seats = seats;
+        let previousType = seats.at(y).at(x).Type;
+        if (previousType === "double") {
+          seats.at(y).at(x + 1).Type = "empty";
+        }
+        if (previousType === "emptyDouble") {
+          seats.at(y).at(x - 1).Type = "empty";
+        }
+        seats.at(y).at(x).Type = "regular";
+        seats.at(y).at(x).Category = curSeatCategory;
         break;
       case "double":
-        if (x + 1 === X) {
+        if (x + 1 === hallWidth) {
           fireDoubleSeatHasNoSpace();
           break;
         }
-        if (seats.at(y).at(x + 1).type !== "empty") {
+        let rightNeighbourType = seats.at(y).at(x + 1).Type;
+        if (rightNeighbourType === "regular") {
           fireDoubleSeatHasNoSpace();
           break;
         }
-        seats.at(y).at(x).type = "double";
-        seats.at(y).at(x).category = curSeatCategory;
-        seats.at(y).at(x + 1).type = "doubleEmpty";
-        seats.at(y).at(x + 1).category = curSeatCategory;
-        seats = seats;
+        if (rightNeighbourType === "double") {
+          if (seats.at(y).at(x - 1).Type === "empty" && x - 1 >= 0) {
+            seats.at(y).at(x - 1).Type = "double";
+            seats.at(y).at(x - 1).Category = curSeatCategory;
+            seats.at(y).at(x).Type = "emptyDouble";
+            seats.at(y).at(x).Category = curSeatCategory;
+            return;
+          } else {
+            fireDoubleSeatHasNoSpace();
+            return;
+          }
+        }
+        seats.at(y).at(x).Type = "double";
+        seats.at(y).at(x).Category = curSeatCategory;
+        seats.at(y).at(x + 1).Type = "emptyDouble";
+        seats.at(y).at(x + 1).Category = curSeatCategory;
         break;
     }
-
     seats = seats;
   }
-  let mouseDown = false;
-  $: mouseDown = mouseDown;
+
+  async function placeSeat(x: number, y: number) {}
+  function cleanHalfDoubleSeatsRight() {
+    for (let y = 0; y < hallHeight; ++y) {
+      if (seats.at(y).at(hallWidth - 1).Type === "double") {
+        seats[y][hallWidth - 1].Type = "empty";
+      }
+    }
+  }
+  function cleanHalfDoubleSeatsLeft() {
+    for (let y = 0; y < hallHeight; ++y) {
+      if (seats.at(y).at(0).Type === "emptyDouble") {
+        seats[y][0].Type = "empty";
+      }
+    }
+  }
 
   function addRowToTop() {
     let curRow: any = [];
-    for (let x = 0; x < X; ++x) {
+    for (let x = 0; x < hallWidth; ++x) {
       curRow.push(getSeat("regular", "empty", x, 0));
     }
 
     let newSeats: any[] = [curRow];
     let curSeat = getSeat("regular", "empty", 0, 0);
     curRow = [];
-    for (let y = 0; y < Y; ++y) {
-      for (let x = 0; x < X; ++x) {
+    for (let y = 0; y < hallHeight; ++y) {
+      for (let x = 0; x < hallWidth; ++x) {
         curSeat = seats.at(y).at(x);
-        ++curSeat.y;
+        ++curSeat.RowNr;
 
         curRow.push(curSeat);
       }
@@ -224,88 +219,92 @@
       curRow = [];
     }
     seats = newSeats;
-    ++Y;
+    ++hallHeight;
   }
   function addRowToBottom() {
     let newRow: any = [];
-    for (let x = 0; x < X; ++x) {
-      newRow.push(getSeat("regular", "empty", x, Y));
+    for (let x = 0; x < hallWidth; ++x) {
+      newRow.push(getSeat("regular", "empty", x, hallHeight));
     }
     seats = [...seats, newRow];
-    ++Y;
+    ++hallHeight;
   }
   function addColToLeft() {
     let newSeats: any[] = [];
     let curSeat = getSeat("regular", "empty", 0, 0);
     let curRow = [getSeat("regular", "empty", 0, 0)];
 
-    for (let y = 0; y < Y; ++y) {
-      for (let x = 0; x < X; ++x) {
+    for (let y = 0; y < hallHeight; ++y) {
+      for (let x = 0; x < hallWidth; ++x) {
         curSeat = seats.at(y).at(x);
-        ++curSeat.x;
+        ++curSeat.ColumnNr;
         curRow.push(curSeat);
       }
       newSeats.push(curRow);
       curRow = [getSeat("regular", "empty", y + 1, 0)]; //start nextrow with additional seat
     }
     seats = newSeats;
-    ++X;
+    ++hallWidth;
+    cleanHalfDoubleSeatsLeft();
   }
   function addColToRight() {
-    if (Y === 0) {
+    if (hallHeight === 0) {
       fireNotEnoughRows();
       return;
     }
-    for (let y = 0; y < Y; ++y) {
-      seats.at(y).push(getSeat("regular", "empty", X, y));
+    for (let y = 0; y < hallHeight; ++y) {
+      seats.at(y).push(getSeat("regular", "empty", hallWidth, y));
     }
     seats = seats;
-    ++X;
+    ++hallWidth;
+    cleanHalfDoubleSeatsRight();
   }
 
   function removeTopRow() {
-    if (Y === 0) {
+    if (hallHeight === 0) {
       fireNotEnoughRows();
       return;
     }
     seats = seats.slice(1, seats.length);
-    --Y;
+    --hallHeight;
   }
   function removeLeftCol() {
-    if (X === 0) {
+    if (hallWidth === 0) {
       fireNotEnoughCols();
       return;
     }
-    for (let y = 0; y < Y; ++y) {
-      seats[y] = seats.at(y).slice(1, X);
+    for (let y = 0; y < hallHeight; ++y) {
+      seats[y] = seats.at(y).slice(1, hallWidth);
     }
-    --X;
+    --hallWidth;
+    cleanHalfDoubleSeatsLeft();
   }
   function removeRightCol() {
-    if (X === 0) {
+    if (hallWidth === 0) {
       fireNotEnoughCols();
       return;
     }
-    for (let y = 0; y < Y; ++y) {
-      seats[y] = seats.at(y).slice(0, X - 1);
+    for (let y = 0; y < hallHeight; ++y) {
+      seats[y] = seats.at(y).slice(0, hallWidth - 1);
     }
-    --X;
+    --hallWidth;
+    cleanHalfDoubleSeatsRight();
   }
   function removeBottomRow() {
-    if (Y === 0) {
+    if (hallHeight === 0) {
       fireNotEnoughRows();
       return;
     }
     seats = seats.slice(0, seats.length - 1);
-    --Y;
+    --hallHeight;
   }
   function setRowsFromTop(newYDim: number) {
-    if (newYDim > Y) {
+    if (newYDim > hallHeight) {
       let newSeats: any[] = [];
-      let additionalRows = newYDim - Y;
+      let additionalRows = newYDim - hallHeight;
       let curRow: any = [];
       for (let y = 0; y < additionalRows; ++y) {
-        for (let x = 0; x < X; ++x) {
+        for (let x = 0; x < hallWidth; ++x) {
           curRow.push(getSeat("regular", "empty", x, y));
         }
         newSeats.push(curRow);
@@ -315,9 +314,9 @@
       let curSeat = getSeat("regular", "empty", 0, 0);
       curRow = [];
       for (let y = additionalRows; y < newYDim; ++y) {
-        for (let x = 0; x < X; ++x) {
+        for (let x = 0; x < hallWidth; ++x) {
           curSeat = seats.at(y - additionalRows).at(x);
-          curSeat.y += additionalRows;
+          curSeat.RowNr += additionalRows;
 
           curRow.push(curSeat);
         }
@@ -326,18 +325,18 @@
       }
       seats = newSeats;
     } else {
-      seats = seats.slice(Y - newYDim, seats.length);
+      seats = seats.slice(hallHeight - newYDim, seats.length);
     }
 
-    Y = newYDim;
+    hallHeight = newYDim;
   }
   function setRowsFromBottom(newYDim: number) {
-    if (newYDim > Y) {
-      let additionalRows = newYDim - Y;
+    if (newYDim > hallHeight) {
+      let additionalRows = newYDim - hallHeight;
       let curRow: any = [];
       for (let y = 0; y < additionalRows; ++y) {
-        for (let x = 0; x < X; ++x) {
-          curRow.push(getSeat("regular", "empty", x, y + Y));
+        for (let x = 0; x < hallWidth; ++x) {
+          curRow.push(getSeat("regular", "empty", x, y + hallHeight));
         }
         seats.push(curRow);
         curRow = [];
@@ -346,47 +345,48 @@
       seats = seats.slice(0, newYDim);
     }
 
-    Y = newYDim;
+    hallHeight = newYDim;
   }
-  function setColsFromLeft(newXDim: number) {
-    if (newXDim > X) {
-      let additionalColumns = newXDim - X;
+  function setColsFromLeft(newHallWidth: number) {
+    if (newHallWidth > hallWidth) {
+      let additionalColumns = newHallWidth - hallWidth;
       let curSeat: any;
       let curAdditionalPartOfRow = [];
-      for (let y = 0; y < Y; ++y) {
+      for (let y = 0; y < hallHeight; ++y) {
         for (let i = 0; i < additionalColumns; ++i) {
           curSeat = getSeat("regular", "empty", i, y);
           curAdditionalPartOfRow.push(curSeat);
         }
         seats[y] = [...curAdditionalPartOfRow, ...seats.at(y)];
         curAdditionalPartOfRow = [];
-        for (let x = additionalColumns; x < newXDim; ++x) {
-          seats.at(y).at(x).x += additionalColumns;
+        for (let x = additionalColumns; x < newHallWidth; ++x) {
+          seats.at(y).at(x).ColumnNr += additionalColumns;
         }
       }
     } else {
-      for (let y = 0; y < Y; ++y) {
-        seats[y] = seats.at(y).slice(X - newXDim, X);
+      for (let y = 0; y < hallHeight; ++y) {
+        seats[y] = seats.at(y).slice(hallWidth - newHallWidth, hallWidth);
       }
     }
 
-    X = newXDim;
+    hallWidth = newHallWidth;
+    cleanHalfDoubleSeatsLeft();
   }
 
-  function setColsFromRight(newXDim: number) {
-    if (newXDim > X) {
-      for (let y = 0; y < Y; ++y) {
-        for (let i = X; i < newXDim; ++i) {
+  function setColsFromRight(newHallWidth: number) {
+    if (newHallWidth > hallWidth) {
+      for (let y = 0; y < hallHeight; ++y) {
+        for (let i = hallWidth; i < newHallWidth; ++i) {
           seats.at(y).push(getSeat("regular", "empty", i, y));
         }
       }
     } else {
-      for (let y = 0; y < Y; ++y) {
-        seats[y] = seats.at(y).slice(0, newXDim);
+      for (let y = 0; y < hallHeight; ++y) {
+        seats[y] = seats.at(y).slice(0, newHallWidth);
       }
     }
-
-    X = newXDim;
+    hallWidth = newHallWidth;
+    cleanHalfDoubleSeatsRight();
   }
 
   let sizesForPlusButton = "h-5 w-5 sm:h-8 sm:w-8 xl:h-10 xl:w-10";
@@ -398,20 +398,18 @@
       mouseDown = false;
     }}
     class=" grid max-w-full max-h-full mx-auto"
-    style="aspect-ratio: {X}/{Y}; grid-template-columns: repeat({X}, minmax(0, 1fr)); grid-template-rows: repeat({Y}, minmax(0, 1fr));"
+    style="aspect-ratio: {hallWidth}/{hallHeight}; grid-template-columns: repeat({hallWidth}, minmax(0, 1fr)); grid-template-rows: repeat({hallHeight}, minmax(0, 1fr));"
   >
     {#each seats as seatrow, y}
       {#each seatrow as seat, x}
-        {#if seat.type === "regular" || seat.type === "double"}
+        {#if seat.Type === "regular" || seat.Type === "double"}
           <button
             on:dblclick={() => {
-              eraseSeatAt(seat.type, x, y);
-              seats = seats;
+              eraseSeatAt(seat.Type, x, y);
             }}
             on:mousedown={() => {
               mouseDown = true;
               seatWasClicked(x, y);
-              seats = seats;
             }}
             on:mouseup={() => {
               mouseDown = false;
@@ -419,23 +417,21 @@
             on:mouseenter={() => {
               if (!mouseDown) return;
               seatWasClicked(x, y);
-              seats = seats;
             }}
-            class="{seat.type === 'double'
+            class="{seat.Type === 'double'
               ? 'col-span-2'
               : ''} hover:bg-blue-400"
           >
             <DrawSeat
-              type={seat.type}
-              color={getColorFromCategory(seat.category)}
+              Type={seat.Type}
+              color={getColorFromCategory(seat.Category)}
             />
           </button>
-        {:else if seat.type === "empty"}
+        {:else if seat.Type === "empty"}
           <button
             on:mousedown={() => {
               mouseDown = true;
               seatWasClicked(x, y);
-              seats = seats;
             }}
             on:mouseup={() => {
               mouseDown = false;
@@ -443,7 +439,6 @@
             on:mouseenter={() => {
               if (!mouseDown) return;
               seatWasClicked(x, y);
-              seats = seats;
             }}
             class="ring-1 ring-inset ring-white hover:bg-blue-400 w-full h-full"
           >
@@ -471,7 +466,7 @@
     >
       <SizeInput
         placeholder={"X:"}
-        bind:updateSize={X}
+        bind:updateSize={hallWidth}
         on:sizeChanged={(e) => {
           setColsFromRight(e.detail);
         }}
@@ -493,7 +488,7 @@
     >
       <SizeInput
         placeholder={"X:"}
-        bind:updateSize={X}
+        bind:updateSize={hallWidth}
         on:sizeChanged={(e) => {
           setColsFromLeft(e.detail);
         }}
@@ -515,7 +510,7 @@
     >
       <SizeInput
         placeholder={"Y:"}
-        bind:updateSize={Y}
+        bind:updateSize={hallHeight}
         on:sizeChanged={(e) => {
           setRowsFromBottom(e.detail);
         }}
@@ -537,7 +532,7 @@
     >
       <SizeInput
         placeholder={"Y:"}
-        bind:updateSize={Y}
+        bind:updateSize={hallHeight}
         on:sizeChanged={(e) => {
           setRowsFromTop(e.detail);
         }}

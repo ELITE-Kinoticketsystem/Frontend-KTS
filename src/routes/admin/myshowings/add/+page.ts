@@ -4,9 +4,11 @@ export const load = async ({ fetch, params }) => {
   async function fetchFirst() {
     const movieData = await fetch(`${url}/movies`, {
       mode: "cors",
+      credentials: "include",
+      method: "GET",
     });
     return movieData.json();
   }
 
-  return { first: await fetchFirst() };
+  return { movies: await fetchFirst() };
 };

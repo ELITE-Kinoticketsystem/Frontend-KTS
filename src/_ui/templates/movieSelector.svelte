@@ -10,22 +10,11 @@
   let inputValue = "";
   let eligibleMoviePreviewIsVisible = false;
   let moviesEligibleToBeAdded: any[] = [];
-  let hoveredMovieSize = "h-[100%]";
-
-  $: {
-    moviesEligibleToBeAdded = moviesEligibleToBeAdded;
-    hoveredMovieSize = hoveredMovieSize;
-    console.log(hoveredMovieSize);
-  }
 
   $: {
     selectedMovies = selectedMovies;
     moviesEligibleToBeAdded = allDbMovies.filter((movie) => {
-      if (movie.Title.toLowerCase().includes(inputValue.toLowerCase())) {
-        return true;
-      } else {
-        return false;
-      }
+      return movie.Title.toLowerCase().startsWith(inputValue.toLowerCase());
     });
   }
 </script>
@@ -34,7 +23,7 @@
   class="w-full h-full flex flex-col items-center justify-between ring-1 ring-white bg-tileBlue rounded-md pb-3 px-3"
 >
   <div
-    class="flex flex-row w-full h-[88%] overflow-y-hidden overflow-x-scroll pt-5 pb-1"
+    class="flex flex-row w-full h-[88%] items-center overflow-hidden snap-center hover:overflow-x-auto pt-5 pb-1"
   >
     {#if selectedMovies.length === 0}
       <div class="w-full h-full flex flex-col place-content-evenly">
@@ -95,7 +84,7 @@
     />
     <div
       class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[140%] max-h-[420%]
-      overflow-y-scroll ring-1 ring-slate-50 rounded-md
+      overflow-hidden hover:overflow-y-auto ring-1 ring-slate-50 rounded-md
       {eligibleMoviePreviewIsVisible ? 'flex' : 'hidden'}"
     >
       {#if moviesEligibleToBeAdded.length == 0}
@@ -120,14 +109,29 @@
             alt="movie preview"
           />
           <p
-            class="w-[75%] h-[80%] mx-auto my-auto text-center font-semibold text-[100%] leading-tight text-textWhite"
+            class="w-[75%] h-[80%] mx-auto my-auto text-center font-semibold text-[100%] line-clamp-2 leading-tight text-textWhite"
           >
-            {movie.Title.length > maxNrOfChar
-              ? movie.Title.slice(0, maxNrOfChar) + ".."
-              : movie.Title}
+            {movie.Title}
           </p>
         </button>
       {/each}
     </div>
   </div>
 </div>
+
+<style>
+  /* Custom scrollbar styling */
+  .overflow-x-scroll::-webkit-scrollbar {
+    width: 8px; /* Set the width of the scrollbar */
+  }
+
+  /* Track */
+  .overflow-x-scroll::-webkit-scrollbar-track {
+    background: #cbd5e0; /* Set the color of the scrollbar track */
+  }
+
+  /* Handle */
+  .overflow-x-scroll::-webkit-scrollbar-thumb {
+    background: #4b5563; /* Set the color of the scrollbar thumb */
+  }
+</style>
