@@ -20,7 +20,7 @@
   let movie: any = data.movie;
 
   let reviewAmount = 0;
-  if (movie.reviews !== null) reviewAmount = movie.Reviews.length;
+  if (movie.Reviews != undefined) reviewAmount = movie.Reviews.length;
 
   const reviews = data.movie.Reviews || [];
 
@@ -381,7 +381,7 @@
                 </button>
               </div>
               <div
-                class="flex items-center mt-4 space-x-4 {!review.isSpoiler
+                class="flex items-center mt-4 space-x-4 {!review.IsSpoiler
                   ? 'hidden'
                   : ''} "
               >
