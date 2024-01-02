@@ -8,8 +8,8 @@
   let postCode = "";
   let country = "";
 
-  let url = "";
-  $: url = url;
+  let pictureUrl = "";
+  $: pictureUrl = pictureUrl;
 
   async function createLocation() {
     let location = {
@@ -17,7 +17,7 @@
       city,
       postCode,
       country,
-      url,
+      pictureUrl,
     };
     fetch("", {
       method: "PUT",
@@ -30,13 +30,22 @@
     Swal.fire({
       title: "Enter url",
       input: "text",
+      confirmButtonColor: "#89a3be",
+      customClass: {
+        popup: "bg-backgroundBlue text-textWhite text-[100%]",
+      },
     }).then((input) => {
       if (input.value === "") {
-        Swal.fire({ title: "You have to enter a non empty url" });
+        Swal.fire({
+          title: "You have to enter a non empty url",
+          confirmButtonColor: "#89a3be",
+          customClass: {
+            popup: "bg-backgroundBlue text-textWhite text-[100%]",
+          },
+        });
         return;
       }
-
-      url = input.value;
+      pictureUrl = input.value;
     });
   }
 </script>
@@ -60,12 +69,12 @@
   <div
     class="flex flex-col w-[50%] gap-y-3 bg-backgroundBlue items-center rounded-md p-2"
   >
-    {#key url}
+    {#key pictureUrl}
       <button
         on:click={addPicture}
         class="flex flex-col w-full h-[20vh] items-center justify-center hover:bg-blue-400 bg-buttonBlue rounded-md"
       >
-        {#if url === ""}
+        {#if pictureUrl === ""}
           <div
             class="flex flex-col items-center justify-center w-[80%] h-[80%] mx-auto my-auto"
           >
@@ -78,7 +87,7 @@
           </div>
         {:else}
           <img
-            src={url}
+            src={pictureUrl}
             class="w-full h-full overflow-hidden rounded-md object-cover aspect-auto"
             alt="Cinema Theatre"
           />

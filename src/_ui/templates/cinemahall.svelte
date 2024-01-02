@@ -3,6 +3,7 @@
   import Swal from "sweetalert2";
 
   import { createEventDispatcher } from "svelte";
+  import { apiUrl } from "$lib/_services/authService";
 
   const dispatch = createEventDispatcher();
 
@@ -18,6 +19,34 @@
 
   $: seats = seats;
   $: selectedSeats = selectedSeats;
+
+  function blockSeat(seat: any) {
+    console.log(
+      `${apiUrl}/events/11EE9FED864A27B3B3880242AC120002/seats/${
+        seats.at(seat.RowNr).at(seat.ColumnNr).ID
+      }`
+    );
+    fetch(
+      `${apiUrl}/events/11ee9fed-864a-27b3-b388-0242ac120002/seats/${
+        seats.at(seat.RowNr).at(seat.ColumnNr).ID
+      }/block`,
+      {
+        method: "PATCH",
+        mode: "cors",
+        credentials: "include",
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          console.log(response);
+        } else {
+        }
+        return response.json();
+      })
+      .then((details) => {
+        console.log(details);
+      });
+  }
 
   function isNeighborSeat(x: number, y: number) {
     //all selected seats share y coordinate
@@ -74,8 +103,7 @@
         title: "Oops...",
         color: "#FAFAFA",
         timer: 25000,
-        customClass:
-          "rounded-lg w-[70%] sm:w-[15%] sm:h-[15%]",
+        customClass: "rounded-lg w-[70%] sm:w-[15%] sm:h-[15%]",
         timerProgressBar: true,
         background: "#354A5F",
         text: "This seat is already booked!\nPlease select another seat!",
@@ -85,7 +113,7 @@
 
     //case: no selected seats yet
     if (selectedSeats.length === 0) {
-      seats.at(seat.RowNr).at(seat.ColumnNr).Available = false;
+      blockSeat(seat);
       selectedSeats = [
         {
           Type: seat.Type,
