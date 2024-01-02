@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
+  import { apiUrl } from "$lib/_services/authService";
   import { createEventDispatcher } from "svelte";
 
   export let cinema: any;
@@ -8,82 +8,41 @@
 
   const dispatcher = createEventDispatcher();
 
+  async function reOrganizeShowings() {
+    return new Promise(async (resolve, reject) => {
+      await getShowings()
+        .then((data: any) => {
+          let showings = new Map();
+          data.forEach((showing: any) => {
+            let date = getDate(showing.Start);
+            if (showings.has(date)) {
+              showings.get(date).push(showing);
+            } else {
+              showings.set(date, [showing]);
+            }
+          });
+          resolve(showings);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
+  function getTime(dateTime: string) {
+    let date = new Date(dateTime);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
   async function getShowings() {
-    return new Promise((resolve, reject) => {
-      resolve([
-        {
-          id: 1,
-          day: "2023-11-30",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 2,
-          day: "2023-12-01",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 3,
-          day: "2023-12-02",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 4,
-          day: "2023-12-03",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 5,
-          day: "2023-12-09",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 6,
-          day: "2023-12-10",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 7,
-          day: "2023-12-12",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-        {
-          id: 8,
-          day: "2023-12-30",
-          times: [
-            { time: "14:00", type: "2D" },
-            { time: "15:00", type: "3D" },
-            { time: "16:00", type: "2D" },
-          ],
-        },
-      ]);
+    return new Promise(async (resolve, reject) => {
+      await fetch(apiUrl + "/movies/" + movie.ID + "/events").then((res) => {
+        if (res.ok) {
+          resolve(res.json());
+        } else {
+          reject(res);
+        }
+      });
     });
   }
 
@@ -122,14 +81,14 @@
       >Change cinema</button
     >
   </div>
-  {#await getShowings() then showings}
+  {#await reOrganizeShowings() then showings}
     <div class="grid grid-cols-4 gap-x-4 gap-y-10">
-      {#each showings as showing}
+      {#each [...showings] as [key, value]}
         <div class="flex flex-col bg-tileBlue text-textWhite rounded-md py-2">
           <div
             class="flex flex-row text-lg font-semibold mx-3 items-center justify-between"
           >
-            {getDate(showing.day)}
+            {key}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -146,12 +105,14 @@
               />
             </svg>
           </div>
-          {#each showing.times as time}
+          {#each value as showing}
             <div
               class="grid grid-cols-1 gap-x-4 bg-[#1a1f26] rounded-md mt-2 mx-2"
             >
               <div class="grid grid-cols-2 gap-y-2 px-2 py-1">
-                <div class="grid">{time.time} ({time.type})</div>
+                <div class="grid">
+                  {getTime(showing.Start)} ({showing.Is3D ? "3D" : "2D"})
+                </div>
                 <div class="grid">
                   <button
                     class="hover:scale-110 duration-300"

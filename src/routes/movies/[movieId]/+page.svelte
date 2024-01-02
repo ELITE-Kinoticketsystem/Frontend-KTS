@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AuthService } from "$lib/_services/authService";
+  import { AuthService, apiUrl } from "$lib/_services/authService";
   import { Rating } from "flowbite-svelte";
   import Swal from "sweetalert2";
   import { fly } from "svelte/transition";
@@ -43,9 +43,42 @@
 
   $: textAreaValue = "";
 
-  function submitReview() {
+  function submitReview(hasSpoiler: boolean) {
     if (isUserLoggedIn && textAreaValue.length > 0) {
-      textAreaValue = "";
+      fetch(apiUrl + "/reviews", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          Comment: textAreaValue,
+          MovieID: movie.MovieID,
+          Rating: rating,
+          IsSpoiler: hasSpoiler,
+        }),
+      }).then((res) => {
+        if (res.status === 200) {
+          invalidateAll();
+          textAreaValue = "";
+          rating = 0;
+          if (hasSpoiler) {
+            Swal.fire({
+              title: "Your review has been posted!",
+              icon: "success",
+              footer:
+                "Your review was marked with containing spoilers, thank you for your honesty!",
+            });
+          } else {
+            Swal.fire({
+              title: "Your review has been posted!",
+              icon: "success",
+            });
+          }
+        } else {
+          Swal.fire({
+            title: "Something went wrong!",
+            icon: "error",
+          });
+        }
+      });
     } else {
       if (!isUserLoggedIn) {
         Swal.fire({
@@ -202,7 +235,6 @@
           >
             {#if cinema == "Not selected"}
               <Cinemas
-                {data}
                 on:dataLoaded={(e) => {
                   cinema = e.detail.cinema;
                   direction = 1;
@@ -265,20 +297,7 @@
                     Continue&nbsp;<i class="fa fa-arrow-right"></i>
                   `,
                   });
-                  if (accept) {
-                    Swal.fire({
-                      title: "Your review has been posted!",
-                      icon: "success",
-                      footer:
-                        "Your review was marked with containing spoilers, thank you for your honesty!",
-                    });
-                  } else {
-                    Swal.fire({
-                      title: "Your review has been posted!",
-                      icon: "success",
-                    });
-                  }
-                  submitReview();
+                  submitReview(accept);
                 }}
                 disabled={textAreaValue.length === 0 ||
                   !isUserLoggedIn ||
