@@ -75,8 +75,7 @@
         color: "#FAFAFA",
         timer: 25000,
         customClass:
-          "rounded-lg w-[70%] sm:w-[15%] sm:h-[15%] absolute top-0 right-0 -translate-x-[300%]",
-
+          "rounded-lg w-[70%] sm:w-[15%] sm:h-[15%]",
         timerProgressBar: true,
         background: "#354A5F",
         text: "This seat is already booked!\nPlease select another seat!",

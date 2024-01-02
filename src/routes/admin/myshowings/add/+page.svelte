@@ -59,9 +59,20 @@
     Swal.fire({
       title: "Enter url",
       input: "text",
+      confirmButtonColor: "#89a3be",
+      customClass: {
+        popup: "bg-backgroundBlue text-textWhite text-[100%]",
+        input: "rounded-md",
+      },
     }).then((input) => {
       if (input.value === "") {
-        Swal.fire({ title: "You have to enter a non empty url" });
+        Swal.fire({
+          title: "You have to enter a non empty url",
+          confirmButtonColor: "#89a3be",
+          customClass: {
+            popup: "bg-backgroundBlue text-textWhite text-[100%]",
+          },
+        });
         return;
       }
 
@@ -135,7 +146,7 @@
   </div>
 
   <div
-    class="flex flex-row justify-between  gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
+    class="flex flex-row justify-between gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
   >
     {#key url}
       <button

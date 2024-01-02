@@ -86,7 +86,7 @@
       }}
     />
     <div
-      class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-10 w-[100%] min-h-[140%] max-h-[420%]
+      class="absolute flex flex-col bottom-0 translate-y-[100.7%] left-0 z-20 w-[100%] min-h-[140%] max-h-[420%]
       overflow-y-auto ring-1 ring-slate-50 rounded-md
       {eligibleMoviePreviewIsVisible ? 'flex' : 'hidden'}"
     >
