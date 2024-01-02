@@ -1,7 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { Rating } from "flowbite-svelte";
-  import { onMount } from "svelte";
 
   export let data;
   const specialEvent = data.specialEvent;
@@ -31,6 +30,15 @@
     return newDateObj.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
+    });
+  }
+  function getDate() {
+    let date = new Date(specialEvent.Start);
+    return date.toLocaleDateString([], {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   }
 </script>
@@ -81,6 +89,24 @@
           </svg>
           <span class="ml-1">{getTotalTimeInMin()}min</span>
         </p>
+        <p class="flex text-sm">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+            />
+          </svg>
+
+          <span class="ml-1">{getDate()}</span>
+        </p>
       </div>
       <div
         class=" text-textWhite my-5 mx-5 sm:text-sm md:text-md xl:text-xl 2xl:text-2xl break-words text-justify"
@@ -92,7 +118,9 @@
     <ol class="relative border-s border-textWhite">
       {#each specialEvent.Movies as movie, index}
         <li
-          class="{index !== specialEvent.Movies.length - 1 ? 'mb-10' : ''} ms-4"
+          class="{index !== specialEvent.Movies.length - 1
+            ? 'mb-7'
+            : 'mb-3'} ms-4"
         >
           <div
             class="absolute w-3 h-3 bg-darkTextWhite rounded-full mt-1.5 -start-1.5 border border-textWhite"
@@ -138,12 +166,18 @@
               class="absolute w-3 h-3 bg-darkTextWhite rounded-full mt-1.5 -start-1.5 border border-textWhite"
             ></div>
             <time class="mb-1 text-sm font-normal leading-none text-textWhite"
-              >End: {getShowingTime(2)}</time
+              >End: {getShowingTime(specialEvent.Movies.length)}</time
             >
           </li>
         {/if}
       {/each}
     </ol>
+    <button
+      class="bg-buttonBlue my-10 px-4 py-2 rounded-md shadow-xl text-white hover:bg-headerBlue duration-300"
+      on:click={() => {
+        goto(`/seatselection/${specialEvent.ID}`);
+      }}>Book now</button
+    >
   </div>
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
