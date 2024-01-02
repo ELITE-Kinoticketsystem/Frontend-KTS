@@ -19,16 +19,17 @@
 
   let movie: any = data.movie;
 
-  const reviewAmount = data.reviews.amount;
+  let reviewAmount = 0;
+  if (movie.reviews !== null) reviewAmount = movie.Reviews.length;
 
-  const reviews = data.reviews.reviews;
+  const reviews = data.movie.Reviews || [];
 
   movie.genre = ["Action", "Adventure", "Comedy", "Drama", "Fantasy"];
 
-  reviews.forEach((review) => {
-    const date = new Date(review.datetime);
-    review.datetime = date.toLocaleString();
-    review.datetime = review.datetime.split(" ")[0].slice(0, -1);
+  reviews.forEach((review: any) => {
+    const date = new Date(review.Datetime);
+    review.Datetime = date.toLocaleString();
+    review.Datetime = review.Datetime.split(" ")[0].slice(0, -1);
   });
 
   let cinema = "";
@@ -315,25 +316,35 @@
                   <p
                     class="inline-flex items-center mr-3 text-sm text-textWhite font-bold"
                   >
-                    <img
-                      class="mr-2 w-6 h-6 rounded-full"
-                      src={review.userPic}
-                      alt={review.username}
-                    />{review.username}
-                    <Rating id="ratingLab" total={5} rating={review.rating} />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6 text-darkTextWhite mr-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                      />
+                    </svg>
+                    {review.UserID}
+                    <Rating id="ratingLab" total={5} rating={review.Rating} />
                   </p>
                 </div>
                 <p class="inline-flex ml-0 text-sm text-textWhite font-bold">
-                  {review.datetime}
+                  {review.Datetime}
                 </p>
               </footer>
               <div class="relative">
                 <p
-                  class="text-textWhite {!review.showSpoiler && review.isSpoiler
+                  class="text-textWhite {!review.showSpoiler && review.IsSpoiler
                     ? 'blur-sm select-none'
                     : ''} duration-300"
                 >
-                  {review.comment}
+                  {review.Comment}
                 </p>
                 <button
                   on:click={() => {
@@ -347,7 +358,7 @@
                       icon: "warning",
                     });
                   }}
-                  class="{review.isSpoiler
+                  class="{review.IsSpoiler
                     ? !review.showSpoiler
                       ? ''
                       : 'hidden'
