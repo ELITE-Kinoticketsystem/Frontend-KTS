@@ -235,7 +235,6 @@
           >
             {#if cinema == "Not selected"}
               <Cinemas
-                {data}
                 on:dataLoaded={(e) => {
                   cinema = e.detail.cinema;
                   direction = 1;

@@ -5,9 +5,7 @@
   import { browser } from "$app/environment";
   import { createEventDispatcher } from "svelte";
 
-  export let data: any;
-
-  let theatres: any = data.theatres;
+  let theatres: any = [];
 
   let displayedTheatres = JSON.parse(JSON.stringify(theatres));
 
