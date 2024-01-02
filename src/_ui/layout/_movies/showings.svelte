@@ -156,7 +156,7 @@
                   <button
                     class="hover:scale-110 duration-300"
                     on:click={() => {
-                      goto("/seatselection");
+                      goto("/seatselection/11EE9FED864A27B3B3880242AC120002");
                     }}>Book</button
                   >
                 </div>

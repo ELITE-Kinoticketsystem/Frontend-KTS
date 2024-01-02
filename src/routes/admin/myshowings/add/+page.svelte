@@ -22,7 +22,7 @@
   let nrOfShowings = 0;
   let movieNames: any[] = [];
   let descriptionLength = 0;
-  let url = "";
+  let pictureUrl = "";
 
   $: {
     allShowings = allShowings;
@@ -30,7 +30,7 @@
     prices = prices;
     is3D = is3D;
     description = description;
-    url = url;
+    pictureUrl = pictureUrl;
     eventType = selectedMovies.length > 1 ? "special" : "regular";
 
     nrOfShowings = 0;
@@ -76,7 +76,7 @@
         return;
       }
 
-      url = input.value;
+      pictureUrl = input.value;
     });
   }
 
@@ -148,12 +148,12 @@
   <div
     class="flex flex-row justify-between gap-x-5 w-full h-[35vh] ring-1 ring-white rounded-lg bg-tileBlue px-4 py-3"
   >
-    {#key url}
+    {#key pictureUrl}
       <button
         on:click={addPicture}
         class="flex flex-col w-[17%] h-full items-center justify-center hover:bg-blue-400 bg-buttonBlue rounded-md"
       >
-        {#if url === ""}
+        {#if pictureUrl === ""}
           <div
             class="flex flex-col items-center justify-center w-[80%] h-[80%] mx-auto my-auto"
           >
@@ -167,7 +167,7 @@
         {:else}
           <img
             class="h-full w-auto object-cover aspect-auto rounded-md"
-            src={url}
+            src={pictureUrl}
             alt="Movie of showing"
           />
         {/if}

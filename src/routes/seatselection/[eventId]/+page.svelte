@@ -1,9 +1,9 @@
 <script lang="ts">
   import Swal from "sweetalert2";
-  import Cinemahall from "../../_ui/templates/cinemahall.svelte";
-  import SelSeatOverview from "../../_ui/templates/selSeatOverview.svelte";
-  import Timer from "../../_ui/templates/timer.svelte";
-  import SeatLegend from "../../_ui/templates/seatLegend.svelte";
+  import Cinemahall from "../../../_ui/templates/cinemahall.svelte";
+  import SelSeatOverview from "../../../_ui/templates/selSeatOverview.svelte";
+  import Timer from "../../../_ui/templates/timer.svelte";
+  import SeatLegend from "../../../_ui/templates/seatLegend.svelte";
   import { onMount } from "svelte";
 
   export let data: { first: any };
@@ -11,11 +11,13 @@
   let seats: any[] = data.first.seat_rows;
 
   let selectedSeats: any[] = [];
-  let startTime = 900;
+  let timerSignal = 0;
+  const startTime = 40;
 
-  $: selectedSeats = selectedSeats;
-  $: seats = seats;
-  $: signal = selectedSeats.length > 0 ? 1 : 0;
+  $: {
+    selectedSeats = selectedSeats;
+    seats = seats;
+  }
 
   const seatColors = {
     regular: "#86BBD8",
@@ -33,13 +35,17 @@
     }
     seats = seats;
     selectedSeats = [];
-    signal = signal;
+
     Swal.fire({
       icon: "warning",
       title: "Timer ran out!",
       color: "#FAFAFA",
       timer: 5000,
-      customClass: "rounded-lg w-[70%] sm:w-1/3",
+      confirmButtonColor: "#89a3be",
+      customClass: {
+        popup:
+          "bg-backgroundBlue rounded-lg w-[70%] sm:w-1/3 text-textWhite text-[100%]",
+      },
       timerProgressBar: true,
       background: "#354A5F",
       text: "Be quicker!",
@@ -66,14 +72,20 @@
       on:seatWasSelected={(e) => {
         selectedSeats = e.detail.selectedSeats;
         seats = seats;
-        signal = signal;
+        timerSignal = 1;
       }}
     />
   </div>
   <div class="flex flex-col w-1/3">
     <div class="flex flex-col h-[60vh] gap-y-5 bg-tileBlue sm:rounded-md">
       <div class="mx-auto h-[15%] w-[60%] xl:mb-4">
-        <Timer {startTime} {signal} on:timerFinished={timerFinished} />
+        {#key timerSignal}
+          <Timer
+            {startTime}
+            bind:timerSignal
+            on:timerFinished={timerFinished}
+          />
+        {/key}
       </div>
       {#key selectedSeats}
         <div class="mx-auto w-full h-full">

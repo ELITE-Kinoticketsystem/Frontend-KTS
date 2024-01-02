@@ -1,25 +1,27 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy } from "svelte";
 
   export let startTime: number;
   let currentTime = startTime;
-  export let signal: number;
+  export let timerSignal: number;
 
   const dispatch = createEventDispatcher();
 
-  $: startTimer(signal);
+  $: startTimer(timerSignal);
+  $: console.log(timerSignal);
 
   $: minutes = Math.floor(currentTime / 60);
   $: higherDigitSeconds = Math.floor((currentTime % 60) / 10);
   $: lowerDigitSeconds = currentTime % 10;
 
   function startTimer(signal: number) {
-    if (signal === 1) {
+    if (signal > 0) {
+      currentTime = startTime;
       decreaseTimer();
     }
   }
   function decreaseTimer() {
-    if (signal == 0) {
+    if (timerSignal === 0) {
       currentTime = startTime;
       return;
     }
@@ -35,6 +37,9 @@
       decreaseTimer();
     }, 100);
   }
+  onDestroy(() => {
+    timerSignal = 0;
+  });
 </script>
 
 <div
