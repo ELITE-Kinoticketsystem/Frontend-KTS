@@ -27,6 +27,7 @@
     checkedGenres.push(false);
   }
   onMount(() => {
+    console.log(allMovies);
     filter();
     invalidateAll();
   });

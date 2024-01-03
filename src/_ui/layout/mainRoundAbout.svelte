@@ -1,13 +1,16 @@
 <script lang="ts">
   import { Splide, SplideSlide, SplideTrack } from "@splidejs/svelte-splide";
   import "@splidejs/svelte-splide/css";
+  import { onMount } from "svelte";
   import { useLazyImage as lazyImage } from "svelte-lazy-image";
 
   export let moviesToDisplay: any[] = [];
 
   const maxLength = 500;
 
-  moviesToDisplay.forEach((movies) => {
+  let copiedMovies = [...moviesToDisplay];
+
+  copiedMovies.forEach((movies) => {
     if (movies.Description.length > maxLength) {
       movies.Description =
         movies.Description.substring(0, maxLength) +
@@ -31,7 +34,7 @@
   class="relative w-full group"
 >
   <SplideTrack class="rounded-xl group">
-    {#each moviesToDisplay as movie}
+    {#each copiedMovies.splice(Math.floor(Math.random() * copiedMovies.length), copiedMovies.length) as movie}
       <SplideSlide>
         <a href="/movies/{movie.ID}">
           <img
@@ -51,7 +54,7 @@
                   class="w-min h-full max-h-[80%] mx-auto rounded-md"
                 />
               </div>
-              <div class="text-textWhite text-center mx-auto pr-10">
+              <div class="text-textWhite text-center mx-auto pr-16">
                 <p class="text-3xl mb-2">{movie.Title}</p>
                 <p class="flex text-md">
                   <svg
