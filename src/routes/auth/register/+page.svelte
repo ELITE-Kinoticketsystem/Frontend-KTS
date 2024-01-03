@@ -94,7 +94,7 @@
     </h2>
   </div>
   <div class="flex">
-    <div class="g-signin2 mx-auto" data-onsuccess="onSignIn" />
+    <div class="g-signin2 mx-auto rounded-lg" data-onsuccess="onSignIn" />
     <button class="mx-auto">Register with Apple</button>
   </div>
   <hr class="h-px my-8 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm" />

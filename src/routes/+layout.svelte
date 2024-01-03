@@ -5,6 +5,7 @@
   import "../app.css";
   import { invalidateAll } from "$app/navigation";
   import Cookies from "../_ui/layout/cookies.svelte";
+  import Chatbot from "../_ui/layout/chatbot.svelte";
   onMount(() => {
     invalidateAll();
   });
@@ -16,6 +17,7 @@
     class="flex-1 overflow-hidden w-screen h-full py-4 bg-gradient-to-r from-slate-700 from-1% via-backgroundBlue via-50% to bg-slate-700 to-100%"
   >
     <slot />
+    <Chatbot />
     <Cookies />
   </div>
   <div class="flex min-w-screen h-full"><Footer /></div>
