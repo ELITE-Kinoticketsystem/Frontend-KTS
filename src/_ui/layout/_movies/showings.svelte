@@ -2,7 +2,7 @@
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { apiUrl } from "$lib/_services/authService";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let cinema: any;
   export let movie: any;
@@ -77,7 +77,7 @@
     ];
     let currentDate = new Date(Date.now());
     let showingDate = new Date(datetime);
-    if (new Date(datetime).getDate() === currentDate.getDate())
+    if (new Date(datetime) === currentDate)
       return "Today, " + showingDate.toLocaleDateString();
     else {
       return (
