@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { apiUrl } from "$lib/_services/authService";
   import { createEventDispatcher } from "svelte";
@@ -12,6 +13,7 @@
     return new Promise(async (resolve, reject) => {
       await getShowings()
         .then((data: any) => {
+          console.warn(data);
           if (data === null || data === undefined)
             reject("There are currently no showings");
           let showings = new Map();
@@ -37,14 +39,29 @@
   }
 
   async function getShowings() {
+    let tId = await new Promise((resolve, reject) => {
+      if (browser) {
+        if (localStorage.getItem("cinemaId") === null) {
+          dispatcher("changeCinema");
+          reject("No cinema selected");
+        } else resolve(localStorage.getItem("cinemaId"));
+      } else {
+        dispatcher("changeCinema");
+        reject("No cinema selected");
+      }
+    });
     return new Promise(async (resolve, reject) => {
-      await fetch(apiUrl + "/movies/" + movie.ID + "/events").then((res) => {
-        if (res.ok) {
-          resolve(res.json());
-        } else {
-          reject(res);
+      await fetch(apiUrl + "/movies/" + movie.ID + "/events/" + tId).then(
+        (res) => {
+          if (res.ok) {
+            resolve(res.json());
+          } else {
+            reject(res);
+          }
         }
-      });
+      );
+    }).catch((err) => {
+      return err;
     });
   }
 

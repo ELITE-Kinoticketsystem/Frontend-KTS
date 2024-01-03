@@ -81,7 +81,7 @@
       Login
     </h2>
   </div>
-  <!--<div class="g-signin2" data-onsuccess="onSignIn" />-->
+  <div class="g-signin2" data-onsuccess="onSignIn" />
   <button>Login with Google</button>
   <button>Login with Apple</button>
   <hr class="h-px my-8 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm" />
@@ -99,6 +99,12 @@
             name="username"
             bind:value={username}
             on:input={validateButton}
+            on:keydown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                login();
+              }
+            }}
             type="text"
             autocomplete="username"
             required
@@ -130,6 +136,12 @@
             type="password"
             bind:value={password}
             on:input={validateButton}
+            on:keydown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                login();
+              }
+            }}
             autocomplete="current-password"
             required
             class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-textWhite bg-inputBlue focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -159,7 +171,9 @@
     <p class="mt-10 text-center text-sm text-textWhite">
       Not a member?
       <a
-        href="/auth/register"
+        href={redirect == null
+          ? "/auth/register"
+          : "/auth/register?redirect=" + redirect}
         class="font-semibold leading-6 text-inputBlue duration-300 hover:text-textWhite"
         >Register for free</a
       >
