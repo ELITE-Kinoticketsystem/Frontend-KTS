@@ -81,6 +81,10 @@
             on:click={() => {
               if (browser) {
                 localStorage.setItem("cinema", location.city);
+                localStorage.setItem(
+                  "cinemaId",
+                  "CD452F0C99F84176B5BE5FCCB19C0B33"
+                );
                 goto("/");
               }
             }}

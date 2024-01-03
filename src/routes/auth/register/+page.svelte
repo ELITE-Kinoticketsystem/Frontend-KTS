@@ -3,12 +3,21 @@
   import Swal from "sweetalert2";
   import { RegisterStatus } from "$lib/statusEnums";
   import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
+  import { page } from "$app/stores";
+  import { browser } from "$app/environment";
+
+  let redirect: string | null = null;
 
   $: firstname = "";
   $: lastname = "";
   $: username = "";
   $: email = "";
   $: password = "";
+
+  onMount(() => {
+    redirect = $page.url.searchParams.get("redirect");
+  });
 
   function validateButton() {
     const erroMsg = document.getElementById("erroMsg")!;
@@ -27,9 +36,18 @@
       password.length > 0 &&
       password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
     );
+    return !submitButton.disabled;
   }
 
   async function register() {
+    if (!validateButton()) {
+      const errorMsg = document.getElementById("erroMsg")!;
+      const submitButton = document.getElementById("submitButton")!;
+      errorMsg.innerHTML = "Please fill out all forms!";
+
+      errorMsg.hidden = false;
+      return;
+    }
     const registerRequest = await AuthService.register(
       firstname,
       lastname,
@@ -37,15 +55,19 @@
       email,
       password
     );
-    const registerData = registerRequest.json();
-    console.log(registerData);
 
     if (registerRequest.ok) {
-      goto("/?registerStatus=" + RegisterStatus.REGISTERED.toString());
+      if (browser) {
+        if (redirect) {
+          goto(redirect);
+        } else {
+          goto("/dashboard");
+        }
+      }
     } else {
       Swal.fire({
         title: "Error",
-        text: "Something went wrong!",
+        text: "Something went wrong, please try again later!",
         icon: "error",
       });
     }
@@ -71,8 +93,7 @@
       Register
     </h2>
   </div>
-  <!--<div class="g-signin2" data-onsuccess="onSignIn" />-->
-  <button>Login with Google</button>
+  <div class="g-signin2" data-onsuccess="onSignIn" />
   <button>Login with Apple</button>
   <hr class="h-px my-8 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm" />
   <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -90,11 +111,17 @@
               name="firstname"
               bind:value={firstname}
               on:input={validateButton}
+              on:keydown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  register();
+                }
+              }}
               type="text"
               autocomplete="given-name"
               required
               class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-textWhite focus:ring-2 bg-inputBlue focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 duration-300"
-              placeholder="Enter a firstname"
+              placeholder="Firstname"
             />
           </div>
         </div>
@@ -110,11 +137,17 @@
               name="lastname"
               bind:value={lastname}
               on:input={validateButton}
+              on:keydown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  register();
+                }
+              }}
               type="text"
               autocomplete="family-name"
               required
               class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-textWhite focus:ring-2 bg-inputBlue focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 duration-300"
-              placeholder="Enter a lastname"
+              placeholder="Lastname"
             />
           </div>
         </div>
@@ -132,11 +165,17 @@
             name="username"
             bind:value={username}
             on:input={validateButton}
+            on:keydown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                register();
+              }
+            }}
             type="text"
             autocomplete="username"
             required
             class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-textWhite focus:ring-2 bg-inputBlue focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 duration-300"
-            placeholder="Enter an username"
+            placeholder="Username"
           />
         </div>
       </div>
@@ -152,11 +191,17 @@
             name="email"
             bind:value={email}
             on:input={validateButton}
+            on:keydown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                register();
+              }
+            }}
             type="email"
             autocomplete="email"
             required
             class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-textWhite focus:ring-2 bg-inputBlue focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 duration-300"
-            placeholder="Enter an e-mail"
+            placeholder="E-Mail"
           />
         </div>
       </div>
@@ -189,10 +234,16 @@
             type="password"
             bind:value={password}
             on:input={validateButton}
+            on:keydown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                register();
+              }
+            }}
             autocomplete="current-password"
             required
             class="block w-full rounded-md border-0 py-1.5 text-textWhite shadow-lg ring-1 ring-inset ring-gray-300 placeholder:text-textWhite bg-inputBlue focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 duration-300"
-            placeholder="Enter a password"
+            placeholder="Password"
           />
         </div>
       </div>
@@ -218,7 +269,9 @@
     <p class="mt-10 text-center text-sm text-textWhite">
       Already a member?
       <a
-        href="/auth/login"
+        href={redirect == null
+          ? "/auth/login"
+          : "/auth/login?redirect=" + redirect}
         class="font-semibold leading-6 text-inputBlue duration-300 hover:text-green-400"
         >Login</a
       >

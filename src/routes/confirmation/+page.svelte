@@ -165,7 +165,7 @@
       >
     </div>
     <button
-      class="mx-auto text-textWhite hover:text-blue-400 duration-300"
+      class="mx-auto text-textWhite hover:text-blue-400 duration-300 mt-5"
       on:click={() => {
         Swal.fire({
           title: "Booking vs Reserving tickets",
