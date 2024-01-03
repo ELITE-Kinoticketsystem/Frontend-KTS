@@ -12,6 +12,8 @@
     return new Promise(async (resolve, reject) => {
       await getShowings()
         .then((data: any) => {
+          if (data === null || data === undefined)
+            reject("There are currently no showings");
           let showings = new Map();
           data.forEach((showing: any) => {
             let date = getDate(showing.Start);
@@ -111,13 +113,13 @@
             >
               <div class="grid grid-cols-2 gap-y-2 px-2 py-1">
                 <div class="grid">
-                  {getTime(showing.Start)} ({showing.Is3D ? "3D" : "2D"})
+                  {getTime(showing.Start)} ({showing.Is3d ? "3D" : "2D"})
                 </div>
                 <div class="grid">
                   <button
                     class="hover:scale-110 duration-300"
                     on:click={() => {
-                      goto("/seatselection/11EE9FED864A27B3B3880242AC120002");
+                      goto("/seatselection/" + showing.ID);
                     }}>Book</button
                   >
                 </div>
@@ -126,6 +128,10 @@
           {/each}
         </div>
       {/each}
+    </div>
+  {:catch error}
+    <div class="text-textWhite text-2xl font-bold mb-6">
+      {error}
     </div>
   {/await}
 </div>
