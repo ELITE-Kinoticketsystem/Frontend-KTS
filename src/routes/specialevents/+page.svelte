@@ -20,7 +20,7 @@
     checkedGenres.push(false);
   }
   onMount(() => {
-    filter();
+    //filter();
     invalidateAll();
   });
 
@@ -31,7 +31,7 @@
   map.set("75", 16);
   map.set("100", 18);
 
-  function filter() {
+  /* function filter() {
     displayedMovies = [];
     let age = map.get(ratingRange.toString());
     ratingText = "0 - " + age;
@@ -66,7 +66,7 @@
         return movie.Title.toLowerCase().includes(key.toLowerCase());
       });
     }
-  }
+  }*/
 
   $: ratingRange = 100;
   $: key = "";
@@ -96,7 +96,7 @@
           input={key}
           on:inputChange={(event) => {
             key = event.detail.toLowerCase().trim();
-            filter();
+            //filter();
           }}
         />
       </div>
@@ -165,7 +165,7 @@
                     max="100"
                     bind:value={ratingRange}
                     on:change={() => {
-                      filter();
+                      //filter();
                     }}
                     class="w-full h-2 rounded-lg cursor-pointer"
                     step="25"
@@ -250,7 +250,7 @@
                         type="checkbox"
                         on:change={() => {
                           checkedGenres[index] = !checkedGenres[index];
-                          filter();
+                          //filter();
                         }}
                         class="w-4 h-4 text-tileBlue bg-gray-100 border-gray-300 rounded focus:ring-black focus:ring-2"
                       />
