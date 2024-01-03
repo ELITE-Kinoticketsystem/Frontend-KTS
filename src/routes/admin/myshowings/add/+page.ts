@@ -1,8 +1,8 @@
-let url = "https://cinemika.westeurope.cloudapp.azure.com:8080";
+import { apiUrl } from "$lib/_services/authService";
 
 export const load = async ({ fetch, params }) => {
   async function fetchFirst() {
-    const movieData = await fetch(`${url}/movies`, {
+    const movieData = await fetch(`${apiUrl}/movies`, {
       mode: "cors",
       credentials: "include",
       method: "GET",
