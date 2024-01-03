@@ -1,19 +1,29 @@
 <script>
     import { Html5Qrcode } from 'html5-qrcode'
     import { onMount } from 'svelte'
+    import Invalid from "./invalid.svelte"
+    import Valid from "./valid.svelte"
 
     let scanning = false;
 
     let html5Qrcode;
-    let cameraId;
-    let maualInput = false;
     let ticketQrcodeMaually;
+    let isValid="";
+    let manualInput;
+    let backCamera = 1;
+    let frontCamera = 0;
+    let isTicketPayed;
+    let isTicketNotPayed;
 
-    $: movieTitle = "";
-    $: theater = "";
-    $: showTime = "";
-    $: payed = "";
-    $: amount = ""
+    $: codeNotFound = false;
+    $: isUsed = "";
+    $: ticketAlreadyUsed = false;
+    $: isNotFound = "";
+
+
+    // $: ticketDetailsInput = "";
+    // $: ticketDetailsScanned = "";
+    $: ticketDetails = "";
 
     onMount(init);
 
@@ -25,13 +35,15 @@
     function getCameras(){
         html5Qrcode.getCameras().then(devices => {
             if(devices && devices.length){
-                cameraId = devices[1].id;
+                cameraId = devices[backCamera].id;
             }
         }).catch(error => {
             alert(error);
         })
     }
     function start() {
+        isValid = "";
+        ticketDetails = "";
         html5Qrcode.start(
             {facingMode: 'environment'},
             {
@@ -45,6 +57,8 @@
     }
 
     async function stop() {
+        isValid = "";
+        ticketDetails = "";
         html5Qrcode.stop();
         scanning = false;
     }
@@ -54,87 +68,75 @@
     }
 
     function manual(event){
-        maualInput = true;
+        manualInput = true;
         ticketQrcodeMaually = event.target.value;
     }
 
     function onScanSuccess(decodedText, decodedResult) {
         //alert(`Code matched = ${decodedText}`)
-        if(maualInput){
-            showData();
-        }else{
-            fetchData(decodedText);
-        }
+        showData(decodedText);
         console.log(decodedResult);
         html5Qrcode.pause()
     }
 
     function onScanFailure(error) {
-       console.warn(`Code scan error = ${error}`);
+        console.warn(`Code scan error = ${error}`);
     }
 
     async function getTicket(){
         const ticketData = await fetch("https://657cb0cd853beeefdb99d741.mockapi.io/tickets", { mode : "cors"});
         return ticketData.json();
     }
-    async function fetchData(decodedText){
 
-        const url = new URL('https://657cb0cd853beeefdb99d741.mockapi.io/tickets');
-        const decodedTextToString = decodedText.toString();
-        // url.searchParams.append('qrcode', decodedTextToString);
-        //console.log("URL", url);
-        //console.log("DecodedText", decodedText);
-        //console.log("DecodedToString", decodedTextToString);
+    async function showData(decodedText){
         let ticket;
+        codeNotFound = true;
 
         await getTicket().then((tickets) =>{
             for(let i=0; i<tickets.length; i++){
-                if(tickets[i].qrcode === decodedTextToString){
+                if((tickets[i].qrcode === ticketQrcodeMaually) || (tickets[i].qrcode === decodedText)){
                     ticket = tickets[i];
+                    codeNotFound = false;
+                    break;
                 }
             }
 
-                    movieTitle = `<div>MovieTitle: ${ticket.movieTitle}</div>`;
-                    theater = `<div>Theater: ${ticket.theater}</div>`;
-                    showTime = `<div>ShowTime: ${ticket.showtime}</div>`;
-                    payed = `<div>Payed: ${ticket.payed}</div>`;
-                    amount = `<div>Amount: ${ticket.amount}</div>`;
+            ticketAlreadyUsed = ticket.isused;
+            const color = ticket.payed ? "green" : "red";
+            isTicketPayed = ticket.payed ? true : false;
+            isTicketNotPayed = ticket.payed ? false : true;
 
-            /*
-            const qrCodeTicket = ticketArray.filter((ticket) =>{
-                ticket.qrcode = decodedText
-            })
-            console.log(qrCodeTicket.movieTitle);
-            console.log(qrCodeTicket.theater);
-            console.log(qrCodeTicket.qrcode);
-*/
-        })
-    }
+            if(!codeNotFound && (!ticketAlreadyUsed || manualInput)) {
 
-   async function showData(){
-        let ticket;
+                ticketDetails = `
+                      <div style="display: flex; flex-direction: column;">
+                        <div style="display: flex; justify-content: space-between;">
+                          <span>MovieTitle:</span>
+                          <span>${ticket.movieTitle}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                          <span>Theater:</span>
+                          <span>${ticket.theater}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                          <span>ShowTime:</span>
+                          <span>${ticket.showtime}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                          <span>Payed:</span>
+                          <span style="color: ${color}">${ticket.payed}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                          <span>Amount:</span>
+                          <span>${ticket.amount}</span>
+                        </div>
+                      </div>
+                    `;
 
-        await getTicket().then((tickets) =>{
-            for(let i=0; i<tickets.length; i++){
-                if(tickets[i].qrcode === ticketQrcodeMaually){
-                    ticket = tickets[i];
-                }
+            } else {
+                ticketDetails = "";
             }
 
-            movieTitle = `<div>MovieTitle: ${ticket.movieTitle}</div>`;
-            theater = `<div>Theater: ${ticket.theater}</div>`;
-            showTime = `<div>ShowTime: ${ticket.showtime}</div>`;
-            payed = `<div>Payed: ${ticket.payed}</div>`;
-            amount = `<div>Amount: ${ticket.amount}</div>`;
-
-            /*
-            const qrCodeTicket = ticketArray.filter((ticket) =>{
-                ticket.qrcode = decodedText
-            })
-            console.log(qrCodeTicket.movieTitle);
-            console.log(qrCodeTicket.theater);
-            console.log(qrCodeTicket.qrcode);
-*/
         })
     }
 
@@ -142,11 +144,16 @@
 
 <style>
     main {
+        background-color: #2A313A;
+        width: 800px;
+        height: 90%;
+        text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 20px;
+        margin-left: 33%;
     }
     reader {
         background-color: black;
@@ -166,32 +173,53 @@
     div{
         color: white;
     }
+
 </style>
 
 <main>
-        <reader id="reader" />
-
-    {#if scanning}
-        <div id="container1">
-            {@html movieTitle}
-            {@html theater}
-            {@html showTime}
-            {@html payed}
-            {@html amount}
-        </div>
-
-        <button on:click={stop}>Stop Scanning</button>
-        <button on:click={nextTicket}>Next Ticket</button>
-
+    <reader id="reader" />
+    {#if codeNotFound}
+        <h1 style="color: white">Error</h1>
+        <h3 style="color: white">The given Code was NOT found.</h3>
+        <Invalid />
+        <button     action="action"
+                    onclick="window.history.go(0); return false;"
+                    type="submit">Try again </button>
+    {:else if ticketAlreadyUsed}
+        <h1 style="color: white">Error</h1>
+        <h3 style="color: white">The given Code was ALREADY used.</h3>
+        <Invalid />
+        <button     action="action"
+                    onclick="window.history.go(0); return false;"
+                    type="submit">Try again </button>
     {:else}
-        <button on:click={start}>Start Scanning</button>
-        <label for="manual"> <input placeholder="Type QRCode manually..." id = "manual" type = 'text' on:input={manual} style="width: 210px"> <button id="manual" on:click={showData}>Check</button></label>
-        <div id="container2">
-            {@html movieTitle}
-            {@html theater}
-            {@html showTime}
-            {@html payed}
-            {@html amount}
-        </div>
+        {#if scanning}
+            <div id="container">
+                <div style="font-size: 20px"> Ticket Information </div>
+                {@html ticketDetails}
+                {#if isTicketPayed}
+                <Valid />
+                {:else if isTicketNotPayed}
+                    <Invalid />
+                {/if}
+
+            </div>
+
+            <button on:click={stop}>Stop Scanning</button>
+            <button on:click={nextTicket}>Next Ticket</button>
+
+        {:else}
+            <button on:click={start}>Start Scanning</button>
+            <label for="manual"> <input placeholder="Type QRCode manually..." id = "manual" type = 'text' on:input={manual} style="width: 210px"> <button id="manual" on:click={showData}>Check</button></label>
+            <div id="container">
+                <div style="font-size: 20px"> Ticket Information </div>
+                {@html ticketDetails}
+                {#if isTicketPayed}
+                    <Valid />
+                {:else if isTicketNotPayed}
+                    <Invalid />
+                {/if}
+            </div>
+        {/if}
     {/if}
 </main>
