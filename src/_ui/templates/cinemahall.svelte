@@ -32,26 +32,15 @@
     seatRowLength = seats.length > 0 ? seats.at(0).length : 0;
   }
 
-  function getSeat(
-    Type: string,
-    ColumnNr: number,
-    RowNr: number,
-    ID: string,
-    Category: string,
-    BlockedByOther: boolean,
-    Available: boolean,
-    Price: number
-  ) {
-    return {
-      Type,
-      ColumnNr,
-      RowNr,
-      ID,
-      Category,
-      BlockedByOther,
-      Available,
-      Price,
-    };
+  function getSeatToUnblock(seat: any) {
+    if (
+      seat.ColumnNr <
+      selectedSeats.at(Math.floor(selectedSeats.length / 2)).ColumnNr
+    ) {
+      return selectedSeats.at(0);
+    } else {
+      return selectedSeats.at(selectedSeats.length - 1);
+    }
   }
 
   function unblockSeat(seat: any) {
@@ -92,6 +81,18 @@
   }
 
   function blockSeat(seat: any) {
+    console.log(
+      "X: " +
+        JSON.stringify(
+          seats
+            .at(seat.RowNr - 1)
+            .at(
+              seat.Type === "emptyDouble"
+                ? seat.ColumnNr - 2
+                : seat.ColumnNr - 1
+            )
+        )
+    );
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
         seats
@@ -194,7 +195,7 @@
     }
     //case: already selected seat was clicked
     if (!seat.Available) {
-      unblockSeat(seat);
+      unblockSeat(getSeatToUnblock(seat));
       return;
     }
     //case: not-selected seat was clicked
