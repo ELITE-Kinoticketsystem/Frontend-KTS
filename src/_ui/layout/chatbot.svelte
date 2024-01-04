@@ -28,6 +28,10 @@
       sender: "server",
       text: "Currently, I can just correct movie titles for you.",
     },
+    {
+      sender: "server",
+      text: "Just give me the title and I will try to find it for you.",
+    },
   ];
 
   $: openChat = () => {
@@ -97,7 +101,7 @@
           },
         ];
       }
-    }, 5000);
+    }, 1000);
   };
 
   const calculateMatchingScore = (input: any, movie: any) => {
@@ -107,6 +111,7 @@
 
     for (let i = 0; i < lowercasedInput.length; i++) {
       for (let j = 0; j < lowercasedMovie.length; j++) {
+        if (lowercasedInput[i] === " ") continue;
         if (lowercasedInput[i] === lowercasedMovie[j]) {
           score++;
         }

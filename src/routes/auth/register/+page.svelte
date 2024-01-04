@@ -58,6 +58,9 @@
 
     if (registerRequest.ok) {
       if (browser) {
+        registerRequest.json().then((data) => {
+          sessionStorage.setItem("user", JSON.stringify(data));
+        });
         if (redirect) {
           goto(redirect);
         } else {
