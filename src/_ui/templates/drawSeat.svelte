@@ -1,7 +1,7 @@
 <script lang="ts">
   export let color = "#cccccc";
   export let Type = "regular";
-  export let BookedByOther = false;
+  export let Booked = false;
 </script>
 
 {#if Type === "regular"}
@@ -20,14 +20,7 @@
       stroke-width="0"
       fill={color}
     />
-    <rect
-      height="30"
-      width="90"
-      y="65"
-      x="5"
-      stroke-width="0"
-      fill={color}
-    />
+    <rect height="30" width="90" y="65" x="5" stroke-width="0" fill={color} />
     <rect
       rx="20"
       height="70"
@@ -37,7 +30,7 @@
       stroke-width="0"
       fill={color}
     />
-    {#if BookedByOther}
+    {#if Booked}
       <ellipse
         ry="13"
         rx="13"
@@ -106,7 +99,7 @@
       stroke="#000"
       fill={color}
     />
-    {#if BookedByOther}
+    {#if Booked}
       <ellipse
         ry="13"
         rx="13"

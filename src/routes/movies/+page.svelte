@@ -323,20 +323,21 @@
       </div>
     </div>
     <hr class="h-px bg-textWhite border-0 w-full mt-2" />
-    <div class="max-w-xs md:max-w-none mx-9">
-      <div
-        class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mt-5 gap-5 gap-y-5 md:gap-y-10"
-      >
-        {#key forNow}
-          {#if displayedMovies.length > 0}
-            {#each displayedMovies as movie}
-              <div class="relative hover:scale-105 duration-300">
-                <MainCard {movie} />
-              </div>
-            {/each}
-          {/if}
-        {/key}
-      </div>
+
+    <div
+      class="w-[100%] flex flex-row flex-wrap place-content-evenly items-center mt-5 gap-y-4 gap-x-6"
+    >
+      {#key forNow}
+        {#if displayedMovies.length > 0}
+          {#each displayedMovies as movie}
+            <div
+              class="flex-none w-[18%] h-[41vh] relative hover:scale-105 duration-300"
+            >
+              <MainCard {movie} />
+            </div>
+          {/each}
+        {/if}
+      {/key}
     </div>
     <div class="flex" class:hidden={displayedMovies.length != 0}>
       <p class="text-textWhite text-xl mt-4">

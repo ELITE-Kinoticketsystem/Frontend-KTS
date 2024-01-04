@@ -168,7 +168,7 @@
       <div class="flex flex-row my-5 w-full place-content-evenly">
         <button
           on:click={createHall}
-          class="rounded-md bg-tileBlue ring-1 ring-white text-textWhite py-1 px-4 hover:bg-blue-500"
+          class="rounded-md bg-tileBlue ring-1 ring-white text-textWhite py-1 px-4 hover:bg-blue-500 duration-300"
           >Create</button
         >
         <button
@@ -193,7 +193,7 @@
               }
             });
           }}
-          class="rounded-md bg-tileBlue ring-1 ring-white text-textWhite py-1 px-4 hover:bg-blue-500"
+          class="rounded-md bg-tileBlue ring-1 ring-white text-textWhite py-1 px-4 hover:bg-blue-500 duration-300"
           >Clear all</button
         >
       </div>

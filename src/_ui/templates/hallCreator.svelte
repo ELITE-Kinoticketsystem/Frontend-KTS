@@ -397,7 +397,7 @@
     on:mouseleave={() => {
       mouseDown = false;
     }}
-    class=" grid max-w-full max-h-full mx-auto"
+    class="grid max-w-full max-h-full mx-auto"
     style="aspect-ratio: {hallWidth}/{hallHeight}; grid-template-columns: repeat({hallWidth}, minmax(0, 1fr)); grid-template-rows: repeat({hallHeight}, minmax(0, 1fr));"
   >
     {#each seats as seatrow, y}
