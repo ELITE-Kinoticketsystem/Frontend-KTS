@@ -6,18 +6,24 @@
   import PlusButton from "../../../../_ui/templates/plusButton.svelte";
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
+  import { apiUrl } from "$lib/_services/authService";
 
   export let data: { movies: any };
 
   let allShowings: any[] = [
-    { hallname: "Select a hall", date: "1999-12-09", times: ["12:00"] },
+    {
+      hall: { hallname: "Select a hall", hallId: "" },
+      date: new Date().toISOString().substr(0, 10),
+      times: ["12:00"],
+    },
   ];
   let allDbMovies: any[] = data.movies;
   let selectedMovies: any[] = [];
+  let eventName = "";
   let prices = { regular: 10, vip: 5, loge: 3 };
-  let is3D = false;
-  let description = "";
-  let eventType = "regular";
+  let is3d = false;
+  let Description = "";
+  let EventType = "regular";
 
   let nrOfShowings = 0;
   let movieNames: any[] = [];
@@ -27,11 +33,12 @@
   $: {
     allShowings = allShowings;
     selectedMovies = selectedMovies;
+    eventName = eventName;
     prices = prices;
-    is3D = is3D;
-    description = description;
+    is3d = is3d;
+    Description = Description;
     pictureUrl = pictureUrl;
-    eventType = selectedMovies.length > 1 ? "special" : "regular";
+    EventType = selectedMovies.length > 1 ? "special" : "showing";
 
     nrOfShowings = 0;
     for (let i = 0; i < allShowings.length; ++i) {
@@ -41,7 +48,7 @@
     for (let i = 0; i < selectedMovies.length; ++i) {
       movieNames.push(selectedMovies.at(i).Title);
     }
-    descriptionLength = description.length;
+    descriptionLength = Description.length;
   }
 
   function fire(content: string) {
@@ -69,11 +76,61 @@
           "Are you sure you want to create the event with no title picture?",
         confirmButtonColor: "#89a3be",
         cancelButtonColor: "#222222",
+        showCancelButton: true,
         customClass: {
           popup: "bg-backgroundBlue text-textWhite text-[100%]",
         },
       }).then((result) => {
-        return result.isConfirmed;
+        if (!result.isConfirmed) {
+          return;
+        }
+
+        allShowings.forEach((showing) => {
+          let Start = `${showing.date}T${
+            showing.times.sort((a: string, b: string) => {
+              return a > b ? 1 : -1;
+            })[0]
+          }:00.00Z`;
+
+          let accumulatedMovieLength = 0;
+          selectedMovies.forEach((element: any) => {
+            accumulatedMovieLength += element.TimeInMin;
+          });
+          let End = new Date(
+            new Date(Start).getTime() + accumulatedMovieLength * 60000
+          ).toISOString();
+          console.log(End);
+          fetch(`${apiUrl}/events`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              CinemaHallID: showing.hall.hallId,
+              Description,
+              End,
+              EventSeatCategories: [
+                {
+                  Price: prices.regular,
+                  SeatCategoryId: "11EEAA3879BC5F4D81D30242AC120002",
+                },
+                {
+                  Price: prices.vip,
+                  SeatCategory: "11EEAA388565BA7281D30242AC120002",
+                },
+                {
+                  Price: prices.loge,
+                  SeatCategoryId: "11EEAA388201A99F81D30242AC120002",
+                },
+              ],
+              EventType,
+              is3d,
+              Movies: selectedMovies,
+              Start,
+              Title: eventName,
+            }),
+            mode: "cors",
+            credentials: "include",
+          });
+        });
       });
     }
   }
@@ -84,9 +141,9 @@
       allShowings,
       selectedMovies,
       prices,
-      is3D,
-      description,
-      eventType,
+      is3d,
+      description: Description,
+      eventType: EventType,
     };
   }
 
@@ -138,6 +195,19 @@
     <div class="flex-none w-[21%] h-full rounded-md">
       <MovieSelector bind:allDbMovies bind:selectedMovies />
     </div>
+    <div class="flex flex-col gap-y-5 w-[26%] h-full">
+      <div class="h-[20%] p-2 rounded-lg bg-tileBlue ring-1 ring-white">
+        <input
+          class="w-full h-full rounded-lg p-2 duration-300 text-sm text-textWhite
+      border border-gray-300 bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
+          type="text"
+          maxlength="24"
+          placeholder="Name of the event"
+          bind:value={eventName}
+        />
+      </div>
+      <DescrInput bind:Description />
+    </div>
     <div class="flex flex-col justify-between w-[20%] h-full">
       <div class="w-full h-[77%] bg-tileBlue ring-1 ring-white rounded-lg">
         <PriceForCatSetter bind:prices />
@@ -158,7 +228,7 @@
             on:mouseleave={() => {
               mouseIsOverCheckbox = false;
             }}
-            bind:checked={is3D}
+            bind:checked={is3d}
             type="checkbox"
             class="w-auto mx-auto h-full aspect-1 rounded-md ring-1 ring-slate-500"
             style={mouseIsOverCheckbox ? "cursor: pointer" : "cursor: grabbing"}
@@ -166,15 +236,14 @@
         </div>
       </div>
     </div>
-    <div class="w-[26%] h-full">
-      <DescrInput bind:description />
-    </div>
+
     <div class="w-[22%] h-full">
       <EventPreview
+        bind:eventName
         bind:movieNames
         bind:nrOfShowings
         bind:descriptionLength
-        bind:is3D
+        bind:is3d
         bind:prices
       />
     </div>

@@ -1,8 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from "svelte";
 
-  export let blockedUntil: number;
-  let currentTime = Math.floor((blockedUntil - Date.now()) / 1000);
+  export let blockedUntil: number = 0;
+
+  let currentTime =
+    blockedUntil === 0 ? 900 : Math.floor((blockedUntil - Date.now()) / 1000);
+
   export let timerSignal: number;
 
   const dispatch = createEventDispatcher();
@@ -11,6 +14,7 @@
   $: minutes = Math.floor(currentTime / 60);
   $: higherDigitSeconds = Math.floor((currentTime % 60) / 10);
   $: lowerDigitSeconds = currentTime % 10;
+  $: blockedUntil = blockedUntil;
 
   function startTimer(signal: number) {
     if (signal > 0) {

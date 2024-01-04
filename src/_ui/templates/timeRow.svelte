@@ -2,7 +2,7 @@
   import HallDropdown from "./hallDropdown.svelte";
   import PlusButton from "./plusButton.svelte";
   export let times: any[] = [];
-  export let date = "1999-12-09";
+  export let date: string;
   export let hallname = "Select a hall";
   $: {
     times = times;

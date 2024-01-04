@@ -5,7 +5,6 @@
 
   export let allDbMovies: any[] = [];
   export let selectedMovies: any[] = [];
-  const maxNrOfChar = 15;
 
   let inputValue = "";
   let eligibleMoviePreviewIsVisible = false;
