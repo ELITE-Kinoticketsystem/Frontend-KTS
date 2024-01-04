@@ -325,7 +325,7 @@
     <hr class="h-px bg-textWhite border-0 w-full mt-2" />
 
     <div
-      class="w-[100%] flex flex-row flex-wrap place-content-evenly items-center mt-5 gap-y-4 gap-x-6"
+      class="w-[100%] flex flex-row flex-wrap items-center mt-5 gap-y-4 gap-x-6"
     >
       {#key forNow}
         {#if displayedMovies.length > 0}
