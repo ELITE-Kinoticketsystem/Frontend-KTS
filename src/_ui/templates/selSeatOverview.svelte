@@ -33,7 +33,8 @@
       <p
         class="text-xs sm:text-sm md:text-sm lg:text-lg xl:text-4xl xl:mb-2 text-white"
       >
-        {seatWithCount[1]}x {seatWithCount[0]}
+        {seatWithCount[1]}x {seatWithCount[0][0].toUpperCase() +
+          seatWithCount[0].slice(1)}
       </p>
     </div>
   {/each}

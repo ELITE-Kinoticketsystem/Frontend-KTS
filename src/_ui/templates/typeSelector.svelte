@@ -10,7 +10,9 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div class="flex flex-col items-center w-full bg-backgroundBlue rounded-lg ring-1 ring-white">
+<div
+  class="flex flex-col items-center w-full bg-backgroundBlue rounded-lg ring-1 ring-white"
+>
   <div class="w-full mt-2 mb-3">
     <p
       class="text-center font-semibold xl:font-bold text-textWhite text-sm sm:text-xl xl:text-2xl"
@@ -29,8 +31,10 @@
           ? 'bg-blue-500'
           : 'bg-backgroundBlue'} rounded-lg mb-5 ring-white ring-1 hover:bg-blue-400 w-full"
       >
-        <p class="m-1 sm:m-2 text-textWhite text-center text-xs sm:text-sm md:text-lg xl:text-xl">
-          {item}
+        <p
+          class="m-1 sm:m-2 text-textWhite text-center text-xs sm:text-sm md:text-lg xl:text-xl"
+        >
+          {item[0].toUpperCase() + item.slice(1)}
         </p>
       </button>
     </div>

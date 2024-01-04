@@ -16,7 +16,7 @@
       <rect width="100" height="50" rx="20" fill={seatColors.regular} />
     </svg>
     <div class="col-span-4">
-      <p class="c text-center text-textWhite text-lg font-semibold">regular</p>
+      <p class="c text-center text-textWhite text-lg font-semibold">Regular</p>
     </div>
   </div>
 
@@ -33,7 +33,7 @@
       <rect width="100" height="50" rx="20" fill={seatColors.vip} />
     </svg>
     <div class="col-span-4">
-      <p class="c text-center text-textWhite text-lg font-semibold">vip</p>
+      <p class="c text-center text-textWhite text-lg font-semibold">Vip</p>
     </div>
   </div>
   <div
@@ -46,10 +46,10 @@
       height="100%"
       viewBox="0 0 100 50"
     >
-      <rect width="100" height="50" rx="20" fill={seatColors.loge} />
+      <rect width="100" height="50" rx="20" fill={seatColors.Loge} />
     </svg>
     <div class="col-span-4">
-      <p class="c text-center text-textWhite text-lg font-semibold">loge</p>
+      <p class="c text-center text-textWhite text-lg font-semibold">Loge</p>
     </div>
   </div>
   <div
@@ -65,7 +65,7 @@
       <rect width="100" height="50" rx="20" fill={seatColors.selected} />
     </svg>
     <div class="col-span-4">
-      <p class="c text-center text-textWhite text-lg font-semibold">selected</p>
+      <p class="c text-center text-textWhite text-lg font-semibold">Selected</p>
     </div>
   </div>
 </div>
