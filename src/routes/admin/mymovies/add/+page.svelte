@@ -2,6 +2,7 @@
   import { browser, dev } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import { apiUrl } from "$lib/_services/authService";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
 
@@ -145,8 +146,54 @@
 
   function create() {
     if (browser) {
-      window.localStorage.removeItem("draft-" + uniqueReviewId);
-      goto("/admin/mymovies");
+      /*      console.log(
+        JSON.stringify({
+          title: title,
+          description: description,
+          fsk: fskMap.get(fsk),
+          trailerURL: trailerId,
+          timeInMin: durationInMinutes,
+          bannerPicURL: wallpaperUrl,
+          coverPicURL: coverUrl,
+          genres: null,
+          releaseYear: releaseYear,
+          rating: 0,
+        })
+      );*/
+
+      fetch(apiUrl + "/movies", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          Title: title,
+          Description: description,
+          Fsk: fskMap.get(fsk),
+          TrailerURL: trailerId,
+          TimeInMin: durationInMinutes,
+          BannerPicURL: wallpaperUrl,
+          CoverPicURL: coverUrl,
+          ReleaseDate: new Date(releaseYear).toISOString(),
+          Rating: 0,
+        }),
+      }).then((res) => {
+        if (res.status === 201) {
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Movie created successfully",
+          });
+          if (browser) {
+            window.localStorage.removeItem("draft-" + uniqueReviewId);
+            goto("/admin/mymovies");
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Something went wrong, please try again later",
+          });
+        }
+      });
     }
   }
 
@@ -362,7 +409,7 @@
           <div class="flex flex-col w-full">
             <p class="my-auto text-xl text-textWhite">Release year:</p>
             <input
-              type="number"
+              type="date"
               bind:value={releaseYear}
               name=""
               on:change={saveDraft}

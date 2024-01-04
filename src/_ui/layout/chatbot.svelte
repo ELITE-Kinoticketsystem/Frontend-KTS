@@ -17,6 +17,9 @@
         data.forEach((movie: any) => {
           allMovieTitles.push(movie.Title);
         });
+      })
+      .catch((err) => {
+        allMovieTitles = ["Godfather", "Fight Club", "Movie 3"];
       });
   });
 
@@ -62,7 +65,7 @@
       messages = [
         {
           sender: "server",
-          text: "JAN IS THE GOAT",
+          text: "CURRY IS THE GOAT",
         },
       ];
       return;
@@ -97,38 +100,35 @@
     }, 5000);
   };
 
-  // Function to calculate matching score
   const calculateMatchingScore = (input: any, movie: any) => {
     let score = 0;
     const lowercasedInput = input.toLowerCase();
     const lowercasedMovie = movie.toLowerCase();
 
     for (let i = 0; i < lowercasedInput.length; i++) {
-      if (lowercasedMovie.includes(lowercasedInput.substring(0, i + 1))) {
-        score = i + 1; // Increment score for each matching character
-      } else {
-        break; // Break if no more matches
+      for (let j = 0; j < lowercasedMovie.length; j++) {
+        if (lowercasedInput[i] === lowercasedMovie[j]) {
+          score++;
+        }
       }
     }
 
     return score;
   };
 
-  // Autocorrect function
   const autocorrectMovie = (input: any) => {
     let bestMatch = "";
     let bestScore = 0;
 
     for (const movie of allMovieTitles) {
       const score = calculateMatchingScore(input, movie);
-
       if (score > bestScore) {
         bestScore = score;
         bestMatch = movie;
       }
     }
 
-    return bestMatch || "ERROR"; // Return the best matching movie or original input
+    return bestMatch || "ERROR";
   };
 </script>
 

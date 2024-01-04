@@ -52,14 +52,6 @@
       submitButton.disabled = true;
     }
   }
-
-  function onSignIn(googleUser: any) {
-    var profile = googleUser.getBasicProfile();
-    console.log("ID: " + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log("Name: " + profile.getName());
-    console.log("Image URL: " + profile.getImageUrl());
-    console.log("Email: " + profile.getEmail()); // This is null if the 'email' scope is not present.
-  }
 </script>
 
 <svelte:head>
@@ -80,10 +72,6 @@
     >
       Login
     </h2>
-  </div>
-  <div class="flex">
-    <div class="g-signin2 mx-auto" data-onsuccess="onSignIn" />
-    <button class="mx-auto">Login with Apple</button>
   </div>
   <hr class="h-px my-8 bg-gray-200 border-0 sm:mx-auto sm:w-full sm:max-w-sm" />
   <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
