@@ -13,9 +13,11 @@
         fetch(apiUrl + "/auth/logout", {
           method: "POST",
           credentials: "include",
+        }).then((res) => {
+          if (res.status === 200) {
+            sessionStorage.removeItem("user");
+          }
         });
-        //window.location.href =
-        //"/?loginStatus=" + LoginStatus.SUCCESSFUL_LOGOUT.toString();
       } else {
         goto("/auth/login");
       }

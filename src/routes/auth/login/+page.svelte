@@ -33,10 +33,13 @@
   }
 
   async function login() {
-    const userIsLoggedIn = await AuthService.login(username, password);
+    const loginRequest = await AuthService.login(username, password);
 
-    if (userIsLoggedIn.status === 200) {
+    if (loginRequest.status === 200) {
       if (browser) {
+        loginRequest.json().then((data) => {
+          sessionStorage.setItem("user", JSON.stringify(data));
+        });
         if (redirect) {
           goto(redirect);
         } else {
