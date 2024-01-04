@@ -46,8 +46,7 @@
 
   let showDropdown = false;
 
-  const username =
-    "<span class='font-semibold text-red-600'>Admin</span> John Doe";
+  let username = "";
 
   function getGreetings() {
     const time = new Date();
@@ -58,6 +57,9 @@
 
   onMount(() => {
     localStorage.getItem("cinema") || "All";
+    username =
+      "<span class='font-semibold text-red-600'>Admin</span> " +
+      JSON.parse(sessionStorage.getItem("user")!).Username;
     rerunLoadFunction();
   });
 
