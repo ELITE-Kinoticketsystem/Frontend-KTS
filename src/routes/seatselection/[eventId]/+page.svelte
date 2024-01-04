@@ -52,7 +52,6 @@
         seats = seatData.seat_rows;
         console.log(seatData);
         selectedSeats = seatData.currentUserSeats;
-        console.log(selectedSeats);
         blockedUntil =
           seatData.blockedUntil === null
             ? 0
@@ -82,7 +81,6 @@
   onMount(async () => {
     getDBSeats();
   });
-  $: console.log(seats);
 </script>
 
 <div class="flex flex-row justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4">

@@ -16,13 +16,7 @@
 
   export let blockedUntil: number;
   export let seats: any[] = [];
-  export let seatColors: {
-    regular: string;
-    vip: string;
-    loge: string;
-    selected: string;
-    blocked: string;
-  };
+  export let seatColors: any;
   export let selectedSeats: any[] = []; //used as an ordered list
 
   let seatsLength = 0;
@@ -81,18 +75,7 @@
   }
 
   function blockSeat(seat: any) {
-    console.log(
-      "X: " +
-        JSON.stringify(
-          seats
-            .at(seat.RowNr - 1)
-            .at(
-              seat.Type === "emptyDouble"
-                ? seat.ColumnNr - 2
-                : seat.ColumnNr - 1
-            )
-        )
-    );
+    let thereWasAConflict = false;
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
         seats
@@ -109,6 +92,11 @@
     )
       .then((response) => {
         if (!response.ok) {
+          if (response.status === 409) {
+            dispatch("seatSelectionChanged", { wasBlock: false });
+            thereWasAConflict = true;
+            return;
+          }
           Swal.fire({
             title: "A database error occured!",
             confirmButtonColor: "#89a3be",
@@ -121,6 +109,9 @@
         return response.json();
       })
       .then((blockedUnt) => {
+        if (thereWasAConflict) {
+          return;
+        }
         blockedUntil =
           blockedUnt.blockedUntil === null
             ? 0
@@ -173,7 +164,7 @@
   }
 
   function seatWasSelected(seat: any) {
-    if (seat.Booked) {
+    if (seat.BlockedByOther) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -226,7 +217,7 @@
       }
     }
 
-    if (seat.Booked) {
+    if (seat.BlockedByOther) {
       return seatColors.blocked;
     }
 
@@ -268,7 +259,7 @@
               <DrawSeat
                 Type={seat.Type}
                 color={getColorKey(seat)}
-                Booked={seat.Booked}
+                BlockedByOther={seat.BlockedByOther}
               />
             {/key}
           </button>

@@ -1,7 +1,7 @@
 <script lang="ts">
   export let color = "#cccccc";
   export let Type = "regular";
-  export let Booked = false;
+  export let BlockedByOther = false;
 </script>
 
 {#if Type === "regular"}
@@ -30,7 +30,7 @@
       stroke-width="0"
       fill={color}
     />
-    {#if Booked}
+    {#if BlockedByOther}
       <ellipse
         ry="13"
         rx="13"
@@ -99,7 +99,7 @@
       stroke="#000"
       fill={color}
     />
-    {#if Booked}
+    {#if BlockedByOther}
       <ellipse
         ry="13"
         rx="13"
