@@ -22,8 +22,8 @@
 
   export let data;
   let ticketHistory = data.tickets || [];
-  const username = "John Doe";
-  const email = "john.doe@cinemika.com";
+  let username = "";
+  let email = "";
 
   function getGreetings() {
     const time = new Date();
@@ -62,19 +62,22 @@
     window.requestAnimationFrame(step);
   }
   onMount(() => {
-    if (browser)
+    if (browser) {
       animateValue(
         document.getElementById("visitedMovies"),
         0,
         visitedMovies,
         1750
       );
-    animateValue(
-      document.getElementById("totalAmountSpend"),
-      0,
-      totalSpend,
-      2000
-    );
+      animateValue(
+        document.getElementById("totalAmountSpend"),
+        0,
+        totalSpend,
+        2000
+      );
+      username = JSON.parse(sessionStorage.getItem("user")!).Username;
+      email = JSON.parse(sessionStorage.getItem("user")!).Email;
+    }
   });
 
   $: sorted = 0;
