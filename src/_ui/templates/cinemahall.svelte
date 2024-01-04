@@ -2,10 +2,17 @@
   import DrawSeat from "./drawSeat.svelte";
   import Swal from "sweetalert2";
 
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
   import { apiUrl } from "$lib/_services/authService";
+  import { page } from "$app/stores";
 
   const dispatch = createEventDispatcher();
+
+  let eventId: any;
+  onMount(() => {
+    eventId = $page.params.eventId;
+    selectedSeats = selectedSeats;
+  });
 
   export let seats: any[] = [];
   export let seatColors: {
@@ -15,19 +22,19 @@
     selected: string;
     blocked: string;
   };
-  export let selectedSeats = seats.filter((seat) => seat.Available); //used as an ordered list
+  export let selectedSeats: any[] = []; //used as an ordered list
 
-  $: seats = seats;
-  $: selectedSeats = selectedSeats;
+  let seatsLength = 0;
+  let seatRowLength = 0;
+  $: {
+    seatsLength = seats.length;
+    seatRowLength = seats.length > 0 ? seats.at(0).length : 0;
+    selectedSeats = selectedSeats;
+  }
 
   function blockSeat(seat: any) {
-    console.log(
-      `${apiUrl}/events/11EE9FED864A27B3B3880242AC120002/seats/${
-        seats.at(seat.RowNr).at(seat.ColumnNr).ID
-      }`
-    );
     fetch(
-      `${apiUrl}/events/11ee9fed-864a-27b3-b388-0242ac120002/seats/${
+      `${apiUrl}/events/${eventId}/seats/${
         seats.at(seat.RowNr).at(seat.ColumnNr).ID
       }/block`,
       {
@@ -37,7 +44,14 @@
       }
     )
       .then((response) => {
-        if (response.ok) {
+        if (!response.ok) {
+          Swal.fire({
+            title: "A database error occured!",
+            confirmButtonColor: "#89a3be",
+            customClass: {
+              popup: "bg-backgroundBlue text-textWhite text-[100%]",
+            },
+          });
           console.log(response);
         } else {
         }
@@ -94,16 +108,17 @@
     ColumnNr: number;
     RowNr: number;
     Available: boolean;
-    BookedByOther: boolean;
+    Booked: boolean;
     Category: string;
   }) {
-    if (seat.BookedByOther) {
+    if (seat.Booked) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         color: "#FAFAFA",
-        timer: 25000,
-        customClass: "rounded-lg w-[70%] sm:w-[15%] sm:h-[15%]",
+        timer: 2500,
+        confirmButtonColor: "#89a3be",
+        customClass: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
         timerProgressBar: true,
         background: "#354A5F",
         text: "This seat is already booked!\nPlease select another seat!",
@@ -121,7 +136,7 @@
             seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr,
           RowNr: seat.RowNr,
           Category: seat.Category,
-          BookedByOther: false,
+          Booked: false,
           Available: false,
         },
       ];
@@ -151,7 +166,8 @@
         title: "Oops...",
         color: "#FAFAFA",
         timer: 5000,
-        customClass: "rounded-lg w-[70%] sm:w-1/3",
+        confirmButtonColor: "#89a3be",
+        customClass: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
         timerProgressBar: true,
         background: "#354A5F",
         text: "Please select seats next to each other!",
@@ -170,7 +186,7 @@
           RowNr: seat.RowNr,
           Category: seat.Category,
           Available: false,
-          BookedByOther: false,
+          Booked: false,
         },
       ];
     } else {
@@ -181,7 +197,7 @@
           RowNr: seat.RowNr,
           Category: seat.Category,
           Available: false,
-          BookedByOther: false,
+          Booked: false,
         },
         ...selectedSeats,
       ];
@@ -203,7 +219,7 @@
     if (found) {
       return seatColors.selected; //user selected color
     }
-    if (seat.BookedByOther) {
+    if (seat.Booked) {
       return seatColors.blocked;
     }
 
@@ -227,8 +243,7 @@
 
   <div
     class="row-span-5 w-full p-3 rounded-md bg-tileBlue grid"
-    style="grid-template-columns: repeat({seats.at(0)
-      .length}, minmax(0, 1fr)); grid-template-rows: repeat({seats.length}, minmax(0, 1fr));"
+    style="grid-template-columns: repeat({seatRowLength}, minmax(0, 1fr)); grid-template-rows: repeat({seatsLength}, minmax(0, 1fr));"
   >
     {#each seats as seatrow}
       {#each seatrow as seat}
@@ -246,7 +261,7 @@
               <DrawSeat
                 Type={seat.Type}
                 color={getColorKey(seat)}
-                BookedByOther={seat.BookedByOther}
+                Booked={seat.Booked}
               />
             {/key}
           </button>

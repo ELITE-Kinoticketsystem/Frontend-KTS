@@ -1,41 +1,33 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from "svelte";
 
-  export let startTime: number;
-  let currentTime = startTime;
+  export let blockedUntil: number;
+  let currentTime = Math.floor((blockedUntil - Date.now()) / 1000);
   export let timerSignal: number;
 
   const dispatch = createEventDispatcher();
 
   $: startTimer(timerSignal);
-  $: console.log(timerSignal);
-
   $: minutes = Math.floor(currentTime / 60);
   $: higherDigitSeconds = Math.floor((currentTime % 60) / 10);
   $: lowerDigitSeconds = currentTime % 10;
 
   function startTimer(signal: number) {
     if (signal > 0) {
-      currentTime = startTime;
       decreaseTimer();
     }
   }
   function decreaseTimer() {
-    if (timerSignal === 0) {
-      currentTime = startTime;
-      return;
-    }
-
     if (currentTime === 0) {
-      currentTime = startTime;
+      currentTime = blockedUntil;
       dispatch("timerFinished");
       return;
     }
 
     setTimeout(() => {
-      --currentTime;
+      currentTime = Math.floor((blockedUntil - Date.now()) / 1000);
       decreaseTimer();
-    }, 100);
+    }, 1000);
   }
   onDestroy(() => {
     timerSignal = 0;

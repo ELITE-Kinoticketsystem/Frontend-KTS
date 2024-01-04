@@ -44,7 +44,42 @@
     descriptionLength = description.length;
   }
 
+  function fire(content: string) {
+    Swal.fire({
+      title: content,
+      confirmButtonColor: "#89a3be",
+      customClass: {
+        popup: "bg-backgroundBlue text-textWhite text-[100%]",
+      },
+    });
+  }
+
+  function checkEntries() {
+    if (nrOfShowings === 0) {
+      fire("You can not create an event with no showings");
+      return false;
+    }
+    if (movieNames.length === 0) {
+      fire("You can not create an event with no movies");
+      return false;
+    }
+    if (pictureUrl === "") {
+      Swal.fire({
+        title:
+          "Are you sure you want to create the event with no title picture?",
+        confirmButtonColor: "#89a3be",
+        cancelButtonColor: "#222222",
+        customClass: {
+          popup: "bg-backgroundBlue text-textWhite text-[100%]",
+        },
+      }).then((result) => {
+        return result.isConfirmed;
+      });
+    }
+  }
+
   function createEvent() {
+    checkEntries();
     let obj = {
       allShowings,
       selectedMovies,
@@ -93,7 +128,7 @@
 
     <button
       on:click={createEvent}
-      class=" bg-tileBlue ring-1 ring-white rounded-lg hover:bg-blue-400 px-3 text-textWhite text-xl font-semibold"
+      class=" bg-tileBlue ring-1 ring-white rounded-lg hover:bg-blue-400 px-3 text-textWhite text-xl font-semibold duration-300"
     >
       Publish now
     </button>
@@ -151,7 +186,7 @@
     {#key pictureUrl}
       <button
         on:click={addPicture}
-        class="flex flex-col w-[17%] h-full items-center justify-center hover:bg-blue-400 bg-buttonBlue rounded-md"
+        class="flex flex-col w-[17%] h-full items-center justify-center hover:bg-blue-400 bg-buttonBlue rounded-md duration-300"
       >
         {#if pictureUrl === ""}
           <div

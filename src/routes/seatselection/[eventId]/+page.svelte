@@ -5,18 +5,22 @@
   import Timer from "../../../_ui/templates/timer.svelte";
   import SeatLegend from "../../../_ui/templates/seatLegend.svelte";
   import { onMount } from "svelte";
+  import { apiUrl } from "$lib/_services/authService";
+  import { page } from "$app/stores";
 
-  export let data: { first: any };
-
-  let seats: any[] = data.first.seat_rows;
+  let seats: any[] = [];
 
   let selectedSeats: any[] = [];
   let timerSignal = 0;
-  const startTime = 40;
+  let blockedUntil = 900;
 
   $: {
     selectedSeats = selectedSeats;
     seats = seats;
+    aspectRatio = aspectRatio;
+    blockedUntil = blockedUntil;
+    console.log(seats);
+    console.log(selectedSeats);
   }
 
   const seatColors = {
@@ -43,20 +47,43 @@
       timer: 5000,
       confirmButtonColor: "#89a3be",
       customClass: {
-        popup:
-          "bg-backgroundBlue rounded-lg w-[70%] sm:w-1/3 text-textWhite text-[100%]",
+        popup: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
       },
       timerProgressBar: true,
       background: "#354A5F",
       text: "Be quicker!",
     });
   }
-  function bookSelectedSeats() {
-    Swal.fire({ title: "Booking seats..." });
-  }
+
   let aspectRatio = "";
   onMount(async () => {
-    aspectRatio = `aspect-ratio: ${seats.at(0).length}/${seats.length};`;
+    fetch(`${apiUrl}/events/${$page.params.eventId}/seats`, {
+      mode: "cors",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          Swal.fire({
+            title: "A database error occured!",
+            confirmButtonColor: "#89a3be",
+            customClass: {
+              popup: "bg-backgroundBlue text-textWhite text-[100%]",
+            },
+          });
+          return;
+        }
+        return response.json();
+      })
+      .then((seatData) => {
+        seats = seatData.seat_rows;
+        selectedSeats = seatData.currentUserSeats;
+        console.log(seatData);
+        blockedUntil = Date.parse(seatData.blockedUntil);
+        timerSignal = selectedSeats.length > 0 ? 1 : 0;
+        aspectRatio = `aspect-ratio: ${
+          seats.length > 0 ? seats.at(0).length : 0
+        }/${seats.length};`;
+      });
   });
 </script>
 
@@ -81,7 +108,7 @@
       <div class="mx-auto h-[15%] w-[60%] xl:mb-4">
         {#key timerSignal}
           <Timer
-            {startTime}
+            {blockedUntil}
             bind:timerSignal
             on:timerFinished={timerFinished}
           />
@@ -94,8 +121,8 @@
       {/key}
     </div>
     <a
-      href="confirmation"
-      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-12 hover:bg-blue-400"
+      href="/confirmation"
+      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-12 hover:bg-blue-400 duration-300"
     >
       <p class="bg-rd-50 mt-[0.6rem] text-center text-textWhite text-xl">
         Book now

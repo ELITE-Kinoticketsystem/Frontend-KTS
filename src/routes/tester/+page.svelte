@@ -1,21 +1,20 @@
 <script lang="ts">
-  let names = [
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-    "Elias",
-  ];
+  import { apiUrl } from "$lib/_services/authService";
+
+  let content = ""
+
+  fetch(`${apiUrl}/events/58717D59AA3B11EEA77A0242AC120003`, {
+    mode: "cors",
+    credentials: "include",
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      content += data.Description
+      content += data.Title
+    });
 </script>
 
 <!-- {#each names as name}
@@ -33,11 +32,9 @@
       style="width: calc(100% + 16px); scrollbar-width: none; -webkit-scrollbar-width: none;"
     >
       <!-- Your content here -->
-      {#each names as name}
-        <p class="text-black text-[100%] ring-inset ring-2 ring-white">
-          {name}
-        </p>
-      {/each}
+      <p class="text-textWhite text-xl">
+        {content}
+      </p>
       <!-- Add enough content to cause scrolling -->
     </div>
   </div>

@@ -121,7 +121,8 @@
 
     <button
       on:click={createGenre}
-      class=" bg-buttonBlue ring-1 ring-white rounded-lg hover:bg-headerBlue px-3 text-textWhite text-xl font-semibold"
+      class=" bg-buttonBlue ring-1 ring-white rounded-lg hover:bg-headerBlue px-3 text-textWhite text-xl
+      font-semibold duration-300"
     >
       Create now
     </button>

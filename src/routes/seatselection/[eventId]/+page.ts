@@ -10,5 +10,5 @@ export const load = async ({ fetch, params }) => {
     return await seatData.json();
   }
 
-  return { first: await getSeats() };
+  return { seats: await getSeats() };
 };
