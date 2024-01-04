@@ -14,7 +14,7 @@
     Select prices
   </p>
   <div class={divClass}>
-    <p class={pClass}>regular</p>
+    <p class={pClass}>Regular</p>
     <form class="w-[25%]">
       <input
         class={inptClass}
@@ -28,7 +28,7 @@
     </form>
   </div>
   <div class={divClass}>
-    <p class={pClass}>vip</p>
+    <p class={pClass}>Vip</p>
     <form class="w-[25%]">
       <input
         class={inptClass}
@@ -42,7 +42,7 @@
     </form>
   </div>
   <div class={divClass}>
-    <p class={pClass}>loge</p>
+    <p class={pClass}>Loge</p>
     <form class="w-[25%]">
       <input
         class={inptClass}
