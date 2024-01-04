@@ -10,9 +10,11 @@
   import { invalidateAll } from "$app/navigation";
 
   let isUserLoggedIn = false;
+  let userID = "";
   onMount(async () => {
     await AuthService.isUserLoggedIn().then((res) => {
       isUserLoggedIn = res;
+      userID = JSON.parse(sessionStorage.getItem("user")!).ID;
     });
   });
   export let data;
@@ -22,7 +24,8 @@
   let reviewAmount = 0;
   if (movie.Reviews != undefined) reviewAmount = movie.Reviews.length;
 
-  const reviews = data.movie.Reviews || [];
+  let reviews = data.movie.Reviews || [];
+  $: reviews = reviews;
 
   movie.genre = ["Action", "Adventure", "Comedy", "Drama", "Fantasy"];
 
@@ -72,6 +75,7 @@
               icon: "success",
             });
           }
+          invalidateAll();
         } else {
           Swal.fire({
             title: "Something went wrong!",
@@ -103,6 +107,27 @@
   function getYear(dateTime: string): string {
     const date = new Date(dateTime);
     return date.getFullYear().toString();
+  }
+
+  function deleteReview(reviewID: number) {
+    fetch(apiUrl + "/reviews/" + reviewID, {
+      method: "DELETE",
+      credentials: "include",
+    }).then((res) => {
+      if (res.status === 200) {
+        Swal.fire({
+          title: "Your review has been deleted!",
+          icon: "success",
+        });
+        reviews = reviews.filter((review: any) => review.ID !== reviewID);
+        invalidateAll();
+      } else {
+        Swal.fire({
+          title: "Something went wrong!",
+          icon: "error",
+        });
+      }
+    });
   }
 </script>
 
@@ -329,7 +354,31 @@
             </div>
           </form>
           {#each reviews as review, index}
-            <article class="p-6 text-base bg-inputBlue rounded-lg">
+            <article class="relative p-6 text-base bg-inputBlue rounded-lg">
+              {#if review.UserID === userID}
+                <div class="absolute top-0 right-0">
+                  <button
+                    class="rounded-full"
+                    on:click={() => {
+                      deleteReview(review.ID);
+                    }}
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6 hover:text-red-700 duration-300"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              {/if}
               <footer class="flex justify-between items-center mb-2">
                 <div class="flex items-center">
                   <p
