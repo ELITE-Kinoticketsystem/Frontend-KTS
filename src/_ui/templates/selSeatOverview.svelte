@@ -2,7 +2,6 @@
   export let selectedSeats: any[] = [];
   let distinctSeatsWithCount = new Map<string, number>();
 
-  $: selectedSeats = selectedSeats;
   $: {
     distinctSeatsWithCount = distinctSeatsWithCount;
 

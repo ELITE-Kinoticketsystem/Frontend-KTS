@@ -14,6 +14,7 @@
     selectedSeats = selectedSeats;
   });
 
+  export let blockedUntil: number;
   export let seats: any[] = [];
   export let seatColors: {
     regular: string;
@@ -29,13 +30,75 @@
   $: {
     seatsLength = seats.length;
     seatRowLength = seats.length > 0 ? seats.at(0).length : 0;
-    selectedSeats = selectedSeats;
+  }
+
+  function getSeat(
+    Type: string,
+    ColumnNr: number,
+    RowNr: number,
+    ID: string,
+    Category: string,
+    BlockedByOther: boolean,
+    Available: boolean,
+    Price: number
+  ) {
+    return {
+      Type,
+      ColumnNr,
+      RowNr,
+      ID,
+      Category,
+      BlockedByOther,
+      Available,
+      Price,
+    };
+  }
+
+  function unblockSeat(seat: any) {
+    fetch(
+      `${apiUrl}/events/${eventId}/seats/${
+        seats
+          .at(seat.RowNr - 1)
+          .at(
+            seat.Type === "emptyDouble" ? seat.ColumnNr - 2 : seat.ColumnNr - 1
+          ).ID
+      }/unblock`,
+      {
+        method: "PATCH",
+        mode: "cors",
+        credentials: "include",
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          Swal.fire({
+            title: "A database error occured!",
+            confirmButtonColor: "#89a3be",
+            customClass: {
+              popup: "bg-backgroundBlue text-textWhite text-[100%]",
+            },
+          });
+          console.log(response);
+        }
+        return response.json();
+      })
+      .then((blockedUnt) => {
+        blockedUntil =
+          blockedUnt.blockedUntil === null
+            ? 0
+            : new Date(Date.parse(blockedUnt.blockedUntil)).getTime();
+        dispatch("seatSelectionChanged", { wasBlock: false });
+      });
   }
 
   function blockSeat(seat: any) {
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
-        seats.at(seat.RowNr).at(seat.ColumnNr).ID
+        seats
+          .at(seat.RowNr - 1)
+          .at(
+            seat.Type === "emptyDouble" ? seat.ColumnNr - 2 : seat.ColumnNr - 1
+          ).ID
       }/block`,
       {
         method: "PATCH",
@@ -53,18 +116,23 @@
             },
           });
           console.log(response);
-        } else {
         }
         return response.json();
       })
-      .then((details) => {
-        console.log(details);
+      .then((blockedUnt) => {
+        blockedUntil =
+          blockedUnt.blockedUntil === null
+            ? 0
+            : new Date(Date.parse(blockedUnt.blockedUntil)).getTime();
+        dispatch("seatSelectionChanged", { wasBlock: true });
       });
   }
 
-  function isNeighborSeat(x: number, y: number) {
+  function isNeighborSeat(seat: any) {
+    let x = seat.ColumnNr - 1;
+    let y = seat.RowNr - 1;
     //all selected seats share y coordinate
-    if (selectedSeats.at(0).RowNr != y) {
+    if (selectedSeats.at(0).RowNr != seat.RowNr) {
       return false;
     }
     let leftOffset = 1;
@@ -81,7 +149,7 @@
       break;
     }
     if (
-      selectedSeats.at(selectedSeats.length - 1).ColumnNr ===
+      selectedSeats.at(selectedSeats.length - 1).ColumnNr - 1 ===
       x - leftOffset
     ) {
       return true;
@@ -97,20 +165,13 @@
       }
       break;
     }
-    if (x + rightOffset === selectedSeats.at(0).ColumnNr) {
+    if (x + rightOffset === selectedSeats.at(0).ColumnNr - 1) {
       return true;
     }
     return false;
   }
 
-  function seatWasSelected(seat: {
-    Type: string;
-    ColumnNr: number;
-    RowNr: number;
-    Available: boolean;
-    Booked: boolean;
-    Category: string;
-  }) {
+  function seatWasSelected(seat: any) {
     if (seat.Booked) {
       Swal.fire({
         icon: "error",
@@ -129,38 +190,15 @@
     //case: no selected seats yet
     if (selectedSeats.length === 0) {
       blockSeat(seat);
-      selectedSeats = [
-        {
-          Type: seat.Type,
-          ColumnNr:
-            seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr,
-          RowNr: seat.RowNr,
-          Category: seat.Category,
-          Booked: false,
-          Available: false,
-        },
-      ];
       return;
     }
     //case: already selected seat was clicked
     if (!seat.Available) {
-      const index =
-        selectedSeats.at(Math.floor(selectedSeats.length / 2)).ColumnNr >
-        seat.ColumnNr
-          ? 0
-          : selectedSeats.length - 1;
-      seats
-        .at(selectedSeats.at(index).RowNr)
-        .at(selectedSeats.at(index).ColumnNr).Available = true;
-      if (index === 0) {
-        selectedSeats = selectedSeats.slice(1, selectedSeats.length);
-      } else {
-        selectedSeats = selectedSeats.slice(0, selectedSeats.length - 1);
-      }
+      unblockSeat(seat);
       return;
     }
     //case: not-selected seat was clicked
-    if (!isNeighborSeat(seat.ColumnNr, seat.RowNr)) {
+    if (!isNeighborSeat(seat)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -174,51 +212,19 @@
       });
       return;
     }
-
-    let ColumnNr =
-      seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr;
-    if (selectedSeats.at(selectedSeats.length - 1).ColumnNr < seat.ColumnNr) {
-      selectedSeats = [
-        ...selectedSeats,
-        {
-          Type: seat.Type,
-          ColumnNr,
-          RowNr: seat.RowNr,
-          Category: seat.Category,
-          Available: false,
-          Booked: false,
-        },
-      ];
-    } else {
-      selectedSeats = [
-        {
-          Type: seat.Type,
-          ColumnNr,
-          RowNr: seat.RowNr,
-          Category: seat.Category,
-          Available: false,
-          Booked: false,
-        },
-        ...selectedSeats,
-      ];
-    }
-    seats.at(seat.RowNr).at(seat.ColumnNr).Available = false;
+    blockSeat(seat);
   }
 
   function getColorKey(seat: any) {
-    let found = false;
     for (let i = 0; i < selectedSeats.length; ++i) {
       if (
         selectedSeats[i].ColumnNr === seat.ColumnNr &&
         selectedSeats[i].RowNr === seat.RowNr
       ) {
-        found = true;
-        break;
+        return seatColors.selected;
       }
     }
-    if (found) {
-      return seatColors.selected; //user selected color
-    }
+
     if (seat.Booked) {
       return seatColors.blocked;
     }

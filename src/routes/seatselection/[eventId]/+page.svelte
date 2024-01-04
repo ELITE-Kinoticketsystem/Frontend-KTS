@@ -12,15 +12,12 @@
 
   let selectedSeats: any[] = [];
   let timerSignal = 0;
-  let blockedUntil = 900;
+  let blockedUntil = 0;
 
   $: {
-    selectedSeats = selectedSeats;
     seats = seats;
     aspectRatio = aspectRatio;
     blockedUntil = blockedUntil;
-    console.log(seats);
-    console.log(selectedSeats);
   }
 
   const seatColors = {
@@ -31,32 +28,9 @@
     blocked: "#777777",
   };
 
-  function timerFinished() {
-    for (let i = 0; i < selectedSeats.length; ++i) {
-      seats
-        .at(selectedSeats.at(i).RowNr)
-        .at(selectedSeats.at(i).ColumnNr).available = true;
-    }
-    seats = seats;
-    selectedSeats = [];
-
-    Swal.fire({
-      icon: "warning",
-      title: "Timer ran out!",
-      color: "#FAFAFA",
-      timer: 5000,
-      confirmButtonColor: "#89a3be",
-      customClass: {
-        popup: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
-      },
-      timerProgressBar: true,
-      background: "#354A5F",
-      text: "Be quicker!",
-    });
-  }
-
   let aspectRatio = "";
-  onMount(async () => {
+
+  async function getDBSeats() {
     fetch(`${apiUrl}/events/${$page.params.eventId}/seats`, {
       mode: "cors",
       credentials: "include",
@@ -76,15 +50,39 @@
       })
       .then((seatData) => {
         seats = seatData.seat_rows;
-        selectedSeats = seatData.currentUserSeats;
         console.log(seatData);
-        blockedUntil = Date.parse(seatData.blockedUntil);
+        selectedSeats = seatData.currentUserSeats;
+        console.log(selectedSeats);
+        blockedUntil =
+          seatData.blockedUntil === null
+            ? 0
+            : new Date(Date.parse(seatData.blockedUntil)).getTime();
         timerSignal = selectedSeats.length > 0 ? 1 : 0;
         aspectRatio = `aspect-ratio: ${
           seats.length > 0 ? seats.at(0).length : 0
         }/${seats.length};`;
       });
+  }
+  function timerFinished() {
+    getDBSeats();
+    Swal.fire({
+      icon: "warning",
+      title: "Timer ran out!",
+      color: "#FAFAFA",
+      timer: 5000,
+      confirmButtonColor: "#89a3be",
+      customClass: {
+        popup: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
+      },
+      timerProgressBar: true,
+      background: "#354A5F",
+      text: "Be quicker!",
+    });
+  }
+  onMount(async () => {
+    getDBSeats();
   });
+  $: console.log(seats);
 </script>
 
 <div class="flex flex-row justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4">
@@ -93,13 +91,14 @@
     style={aspectRatio}
   >
     <Cinemahall
-      {seats}
+      bind:seats
+      bind:blockedUntil
       {seatColors}
-      {selectedSeats}
-      on:seatWasSelected={(e) => {
-        selectedSeats = e.detail.selectedSeats;
-        seats = seats;
-        timerSignal = 1;
+      bind:selectedSeats
+      on:seatSelectionChanged={(e) => {
+        getDBSeats();
+        selectedSeats = selectedSeats;
+        timerSignal = e.detail.wasBlock ? 1 : 0;
       }}
     />
   </div>
@@ -108,7 +107,7 @@
       <div class="mx-auto h-[15%] w-[60%] xl:mb-4">
         {#key timerSignal}
           <Timer
-            {blockedUntil}
+            bind:blockedUntil
             bind:timerSignal
             on:timerFinished={timerFinished}
           />

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { apiUrl } from "$lib/_services/authService";
 
-  let content = ""
+  let content = "";
 
   fetch(`${apiUrl}/events/58717D59AA3B11EEA77A0242AC120003`, {
     mode: "cors",
@@ -12,8 +12,8 @@
     })
     .then((data) => {
       console.log(data);
-      content += data.Description
-      content += data.Title
+      content += data.Description;
+      content += data.Title;
     });
 </script>
 
@@ -34,6 +34,9 @@
       <!-- Your content here -->
       <p class="text-textWhite text-xl">
         {content}
+        {["12:00", "20:00", "20:01", "21:00"].sort((a, b) => {
+          return a > b ? 1 : -1;
+        })[0]}
       </p>
       <!-- Add enough content to cause scrolling -->
     </div>

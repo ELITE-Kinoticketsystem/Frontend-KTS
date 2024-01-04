@@ -4,16 +4,18 @@
 
   export let allShowings = [
     {
-      hallname: "Select a hall",
-      date: "1999-12-09",
-      times: ["12:00", "08:00"],
+      hall: { hallname: "Select a hall", hallId: "0" },
+      date: new Date().toISOString(),
+      times: ["12:00"],
     },
   ];
-  export let date = "1999-12-09";
-  let hallname = "Select a hall";
+
+  let hall = { hallname: "Select a hall", hallId: "" };
+  let date: string =
+    allShowings.length > 0 ? allShowings.at(0)!.date : new Date().toISOString();
   $: {
     date = date;
-    hallname = hallname;
+    hall = hall;
     allShowings = allShowings;
   }
 </script>
@@ -24,8 +26,8 @@
       <div class="relative flex-none h-[27%] w-full">
         <TimeRow
           bind:times={showing.times}
-          bind:date
-          bind:hallname={showing.hallname}
+          bind:date={showing.date}
+          bind:hallname={showing.hall.hallname}
         />
         <button
           class="z-10 w-[3%] aspect-1 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2"
@@ -54,7 +56,7 @@
   </div>
   <button
     on:click={() => {
-      allShowings = [...allShowings, { hallname, date, times: ["12:00"] }];
+      allShowings = [...allShowings, { hall, date, times: ["12:00"] }];
     }}
     class="flex mx-auto w-[3%] my-3 hover:bg-blue-400 rounded-full"
   >
