@@ -146,21 +146,6 @@
 
   function create() {
     if (browser) {
-      /*      console.log(
-        JSON.stringify({
-          title: title,
-          description: description,
-          fsk: fskMap.get(fsk),
-          trailerURL: trailerId,
-          timeInMin: durationInMinutes,
-          bannerPicURL: wallpaperUrl,
-          coverPicURL: coverUrl,
-          genres: null,
-          releaseYear: releaseYear,
-          rating: 0,
-        })
-      );*/
-
       fetch(apiUrl + "/movies", {
         method: "POST",
         credentials: "include",
@@ -176,7 +161,7 @@
           Rating: 0,
         }),
       }).then((res) => {
-        if (res.status === 201) {
+        if (res.status === 200) {
           Swal.fire({
             icon: "success",
             title: "Success",
