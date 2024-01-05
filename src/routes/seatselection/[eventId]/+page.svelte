@@ -118,7 +118,7 @@
       {/key}
     </div>
     <a
-      href="/confirmation"
+      href="/confirmation/{$page.params.eventId}"
       class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-12 hover:bg-blue-400 duration-300"
     >
       <p class="bg-rd-50 mt-[0.6rem] text-center text-textWhite text-xl">
