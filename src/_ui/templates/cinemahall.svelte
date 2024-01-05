@@ -42,10 +42,9 @@
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
         seats
-          .at(seat.RowNr - 1)
-          .at(
-            seat.Type === "emptyDouble" ? seat.ColumnNr - 2 : seat.ColumnNr - 1
-          ).ID
+          .at(seat.RowNr)
+          .at(seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr)
+          .ID
       }/unblock`,
       {
         method: "PATCH",
@@ -74,10 +73,9 @@
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
         seats
-          .at(seat.RowNr - 1)
-          .at(
-            seat.Type === "emptyDouble" ? seat.ColumnNr - 2 : seat.ColumnNr - 1
-          ).ID
+          .at(seat.RowNr)
+          .at(seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr)
+          .ID
       }/block`,
       {
         method: "PATCH",
@@ -111,8 +109,8 @@
   }
 
   function isNeighborSeat(seat: any) {
-    let x = seat.ColumnNr - 1;
-    let y = seat.RowNr - 1;
+    let x = seat.ColumnNr;
+    let y = seat.RowNr;
     //all selected seats share y coordinate
     if (selectedSeats.at(0).RowNr != seat.RowNr) {
       return false;
@@ -131,7 +129,7 @@
       break;
     }
     if (
-      selectedSeats.at(selectedSeats.length - 1).ColumnNr - 1 ===
+      selectedSeats.at(selectedSeats.length - 1).ColumnNr ===
       x - leftOffset
     ) {
       return true;
@@ -147,7 +145,7 @@
       }
       break;
     }
-    if (x + rightOffset === selectedSeats.at(0).ColumnNr - 1) {
+    if (x + rightOffset === selectedSeats.at(0).ColumnNr) {
       return true;
     }
     return false;
@@ -204,7 +202,9 @@
   }
 </script>
 
-<div class="grid grid-cols-1 grid-rows-6 gap-y-12 h-full justify-between">
+<div
+  class="grid grid-cols-1 grid-rows-6 gap-y-1 sm:gap-y-12 h-full justify-between"
+>
   <svg class="row-span-1 w-full pt-4 px-2 bg-tileBlue rounded-lg">
     <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff" />
   </svg>

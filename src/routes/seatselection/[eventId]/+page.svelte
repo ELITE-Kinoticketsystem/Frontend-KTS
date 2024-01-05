@@ -25,6 +25,7 @@
     blockedUntil = blockedUntil;
   }
 
+  $: console.log(aspectRatio);
   const seatColors = {
     regular: "#86BBD8",
     vip: "#F6AE2D",
@@ -76,9 +77,11 @@
   });
 </script>
 
-<div class="flex flex-row justify-center w-[80%] sm:w-[80%] mx-auto sm:mt-4">
+<div
+  class="flex sm:flex-row flex-col gap-y-5 sm:gap-y-0 items-center w-[80%] mx-auto mt-4"
+>
   <div
-    class="flex-col max-h-[80vh] w-auto max-w-[60%] sm:mr-12 sm:ml-24"
+    class=" max-w-full sm:max-h-[80vh] sm:max-w-[60%] mx-auto"
     style={aspectRatio}
   >
     <Cinemahall
@@ -93,9 +96,11 @@
       }}
     />
   </div>
-  <div class="flex flex-col w-1/3">
-    <div class="flex flex-col h-[60vh] gap-y-5 bg-tileBlue sm:rounded-md">
-      <div class="mx-auto h-[15%] w-[60%] xl:mb-4">
+  <div class="flex flex-col w-[90%] sm:w-1/3">
+    <div
+      class="flex flex-col h-[30vh] sm:h-[60vh] gap-y-5 bg-tileBlue rounded-md"
+    >
+      <div class="mx-auto h-[15%] w-[50%] sm:w-[60%] mb-4">
         {#key timerSignal}
           <Timer
             bind:blockedUntil
@@ -115,7 +120,7 @@
       on:click={() => {
         goto(`/confirmation/${$page.params.eventId}`);
       }}
-      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-[6vh] enabled:hover:bg-blue-400 duration-300
+      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
       disabled:bg-slate-400 disabled:opacity-40 disabled:cursor-not-allowed"
     >
       <div class="flex flex-row items-center place-content-evenly h-full">
