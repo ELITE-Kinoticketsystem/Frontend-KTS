@@ -1,24 +1,93 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
-  import { AuthService } from "$lib/_services/authService";
+  import { AuthService, apiUrl } from "$lib/_services/authService";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
-
-  let isUserLoggedIn = false;
 
   export let data;
 
   let eventInformation: any = data.eventInformation;
-  let seats: any = data.eventTickets.selectedSeats;
+  let seats: any[] = [];
   let priceCategories: any = data.priceCategories;
 
+  let showDropdown: boolean[] = [];
+  let types: string[] = [];
+
   let title: string;
-  if (eventInformation.Movies.length > 1) {
+  if (eventInformation.Movies.length === 1) {
     title = eventInformation.Movies[0].Title;
   } else {
     title = eventInformation.Title;
   }
+
+  let isUserLoggedIn = false;
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+    if (!isUserLoggedIn) {
+      goto("/auth/login?redirect=/confirmation/" + $page.params.eventId);
+    }
+    await getEventTickets().then((data) => {
+      seats = data.selectedSeats;
+      for (let i = 0; i < seats.length; i++) {
+        if (
+          localStorage.getItem("selectedSeats-" + seats[i].EventSeat.ID) !==
+          null
+        ) {
+          seats[i].type = localStorage.getItem(
+            "selectedSeats-" + seats[i].EventSeat.ID
+          );
+        } else {
+          seats[i].type = "adult";
+          localStorage.setItem(
+            "selectedSeats-" + seats[i].EventSeat.ID,
+            "adult"
+          );
+        }
+      }
+    });
+    priceCategories.forEach((category: any) => {
+      types.push(category.CategoryName);
+    });
+
+    for (let i = 0; i < seats.length; i++) {
+      showDropdown.push(false);
+    }
+  });
+
+  function calulatePrice(price: number, discount: number): number {
+    return price * (1 - discount / 100);
+  }
+  function priceOfType(type: string): number {
+    let price = 0;
+    priceCategories.forEach((category: any) => {
+      if (category.CategoryName === type) {
+        price = category.Price;
+      }
+    });
+    return price;
+  }
+
+  async function getEventTickets() {
+    const ticketsResponse = await fetch(
+      apiUrl + "/events/" + $page.params.eventId + "/user-seats",
+      {
+        credentials: "include",
+      }
+    );
+
+    if (!ticketsResponse.ok) {
+      goto("/seatselection/" + $page.params.eventId);
+    } else return await ticketsResponse.json();
+  }
+
+  $: totalCost = seats.reduce((acc, seat) => {
+    return (
+      acc + calulatePrice(seat.EventSeatCategory.Price, priceOfType(seat.type))
+    );
+  }, 0);
 </script>
 
 <svelte:head>
@@ -104,6 +173,10 @@
                                 on:click={() => {
                                   seat.type = type;
                                   showDropdown[index] = false;
+                                  localStorage.setItem(
+                                    "selectedSeats-" + seat.EventSeat.ID,
+                                    type
+                                  );
                                 }}
                                 class="w-full"
                               >
