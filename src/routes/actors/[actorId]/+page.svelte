@@ -13,7 +13,6 @@
 
   onMount(() => {
     invalidateAll();
-    console.log(actorData.Pictures);
     for (let i = 0; i < actorData.Pictures.length; i++) {
       imgs = [...imgs, actorData.Pictures[i].PicURL];
     }

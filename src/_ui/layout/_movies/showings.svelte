@@ -13,7 +13,6 @@
     return new Promise(async (resolve, reject) => {
       await getShowings()
         .then((data: any) => {
-          console.warn(data);
           if (data === null || data === undefined)
             reject("There are currently no showings");
           let showings = new Map();
