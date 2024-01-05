@@ -8,18 +8,18 @@
 
   let waitingForResponse = false;
 
-  let allMovieTitles: string[] = [];
+  let allMovies: any[] = [];
 
   onMount(async () => {
     await fetch(apiUrl + "/movies")
       .then((res) => res.json())
       .then((data) => {
         data.forEach((movie: any) => {
-          allMovieTitles.push(movie.Title);
+          allMovies.push(movie);
         });
       })
       .catch((err) => {
-        allMovieTitles = ["Godfather", "Fight Club", "Movie 3"];
+        allMovies = [];
       });
   });
 
@@ -92,7 +92,7 @@
         let response =
           autocorrectMovie(copiedInput) === "ERROR"
             ? "Unabled to find a movie"
-            : "Here is the movie: " + autocorrectMovie(copiedInput);
+            : "Here is the movie:" + autocorrectMovie(copiedInput);
         messages = [
           ...messages,
           {
@@ -125,15 +125,29 @@
     let bestMatch = "";
     let bestScore = 0;
 
-    for (const movie of allMovieTitles) {
-      const score = calculateMatchingScore(input, movie);
+    for (const movie of allMovies) {
+      const score = calculateMatchingScore(input, movie.Title);
       if (score > bestScore) {
         bestScore = score;
-        bestMatch = movie;
+        bestMatch = movie.Title;
       }
     }
 
-    return bestMatch || "ERROR";
+    let movieId = "";
+    allMovies.forEach((movie) => {
+      if (movie.Title === bestMatch) {
+        movieId = movie.ID;
+      }
+    });
+
+    let returnString =
+      "&nbsp<a href='/movies/" +
+      movieId +
+      "' class='hover:text-tileBlue font-semibold duration-300'>" +
+      bestMatch +
+      "</a>";
+
+    return returnString || "ERROR";
   };
 </script>
 
@@ -197,7 +211,7 @@
             <div class="space-y-4">
               {#each messages as { sender, text }}
                 {#if sender === "server"}
-                  <div class="flex justify-start">
+                  <div class="flex justify-start w-5/6">
                     <div
                       class="my-auto mx-1 bg-buttonBlue rounded-full px-1 py-1"
                     >
@@ -219,14 +233,12 @@
                     <div
                       class="bg-buttonBlue text-white flex p-2 rounded-md max-w-2/3"
                     >
-                      {text}
+                      {@html text}
                     </div>
                   </div>
                 {:else}
                   <div class="flex justify-end">
-                    <div
-                      class="bg-blue-500 text-white flex p-2 rounded-md max-w-2/3"
-                    >
+                    <div class="bg-blue-500 text-white flex p-2 rounded-md">
                       {text}
                     </div>
                     <div
