@@ -97,7 +97,7 @@
   </div>
   {#await reOrganizeShowings() then showings}
     <div class="grid grid-cols-4 gap-x-4 gap-y-10">
-      {#each [...showings] as [key, value]}
+      {#each [...showings].splice(0, 8) as [key, value]}
         <div class="flex flex-col bg-tileBlue text-textWhite rounded-md py-2">
           <div
             class="flex flex-row text-lg font-bold mx-3 items-center justify-between"
