@@ -9,22 +9,22 @@
 >
   <div class="mx-10">
     <img
-      src={theatre.logo}
-      alt={theatre.name}
+      src={theatre.Logo}
+      alt={theatre.Name}
       class="group-hover:scale-110 duration-300"
       use:lazyImage
     />
   </div>
   <div class="mt-20">
     <p
-      class="font-bold text-xl text-textWhite text-center group-hover:scale-110 duration-300"
+      class="font-bold text-xl text-textWhite text-center group-hover:scale-110 duration-300 break-words"
     >
-      {theatre.name}
+      {theatre.Name}
     </p>
     <p
       class="font-bold text-md text-textWhite text-center group-hover:scale-110 duration-300 mt-3"
     >
-      {theatre.location}
+      {theatre.ID}
     </p>
   </div>
 </div>

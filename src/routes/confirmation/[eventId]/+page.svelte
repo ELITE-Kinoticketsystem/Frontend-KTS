@@ -57,8 +57,12 @@
     }
   });
 
-  function calulatePrice(price: number, discount: number): number {
-    return price * (1 - discount / 100);
+  function calculatePrice(
+    price: number,
+    discount: number,
+    seatType: string
+  ): number {
+    return price * (1 - discount / 100) * (seatType === "double" ? 2 : 1);
   }
   function priceOfType(type: string): number {
     let price = 0;
@@ -74,6 +78,8 @@
     const ticketsResponse = await fetch(
       apiUrl + "/events/" + $page.params.eventId + "/user-seats",
       {
+        method: "GET",
+        mode: "cors",
         credentials: "include",
       }
     );
@@ -85,7 +91,12 @@
 
   $: totalCost = seats.reduce((acc, seat) => {
     return (
-      acc + calulatePrice(seat.EventSeatCategory.Price, priceOfType(seat.type))
+      acc +
+      calculatePrice(
+        seat.EventSeatCategory.Price,
+        priceOfType(seat.type),
+        seat.Seat.Type
+      )
     );
   }, 0);
 </script>
@@ -198,9 +209,10 @@
                 </td>
                 <td class="px-6 py-2">
                   {(
-                    calulatePrice(
+                    calculatePrice(
                       seat.EventSeatCategory.Price,
-                      priceOfType(seat.type)
+                      priceOfType(seat.type),
+                      seat.Seat.Type
                     ) / 100
                   ).toFixed(2)} €
                 </td>

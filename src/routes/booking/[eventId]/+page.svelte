@@ -71,12 +71,21 @@
 
   $: totalPrice = seats.reduce((acc, seat) => {
     return (
-      acc + calulatePrice(seat.EventSeatCategory.Price, priceOfType(seat.type))
+      acc +
+      calculatePrice(
+        seat.EventSeatCategory.Price,
+        priceOfType(seat.type),
+w
+      )
     );
   }, 0);
 
-  function calulatePrice(price: number, discount: number): number {
-    return price * (1 - discount / 100);
+  function calculatePrice(
+    price: number,
+    discount: number,
+    seatType: string
+  ): number {
+    return price * (1 - discount / 100) * (seatType === "double" ? 2 : 1);
   }
   function priceOfType(type: string): number {
     let price = 0;

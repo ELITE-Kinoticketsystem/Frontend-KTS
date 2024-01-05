@@ -11,7 +11,7 @@
   let displayedLocations: any[] = JSON.parse(JSON.stringify(allLocations));
 
   displayedLocations.sort((a: any, b: any) => {
-    return a.city.localeCompare(b.city);
+    return a.Name.localeCompare(b.Name);
   });
 
   function filterLocations(key: string) {
@@ -20,7 +20,7 @@
       return;
     }
     displayedLocations = allLocations.filter((location: any) => {
-      return location.city.toLowerCase().includes(key);
+      return location.Name.toLowerCase().includes(key);
     });
   }
 
@@ -68,23 +68,20 @@
       >
         <img
           class="h-48 w-full object-cover"
-          src="https://www.bildagentur-rath.de/fileadmin/_processed_/2/8/csm_2010-05-22__803_D_571klein_ee669368c1.jpg"
-          alt={location.city}
+          src={location.logo}
+          alt={location.Name}
         />
         <div class="flex flex-col p-6">
           <h2 class="text-lg font-semibold">
-            {location.city}, {location.country}
+            {location.Name}
           </h2>
-          <p class="text-sm">{location.address}</p>
+          <p class="text-sm">{location.AddressID}</p>
           <button
             class="mt-4 bg-buttonBlue hover:bg-green-800 duration-300 text-white font-bold py-2 px-4 rounded"
             on:click={() => {
               if (browser) {
-                localStorage.setItem("cinema", location.city);
-                localStorage.setItem(
-                  "cinemaId",
-                  "CD452F0C99F84176B5BE5FCCB19C0B33"
-                );
+                localStorage.setItem("cinema", location.Name);
+                localStorage.setItem("cinemaId", location.ID);
                 goto("/");
               }
             }}
