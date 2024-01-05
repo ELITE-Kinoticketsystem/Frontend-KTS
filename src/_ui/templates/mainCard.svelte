@@ -6,8 +6,8 @@
 </script>
 
 <a href={isActor ? "/actors/" + movie.ID : "/movies/" + movie.ID}>
-  <div class="flex flex-col w-full h-full items-center">
-    <div class="flex w-full h-[88%] overflow-hidden">
+  <div class="flex flex-col w-full h-full items-center justify-between">
+    <div class="flex w-full h-[85%] overflow-hidden">
       <img
         class="min-w-full min-h-full object-cover aspect-auto rounded-md"
         src={isActor ? movie.Pictures[0].PicURL : movie.CoverPicURL}
@@ -15,7 +15,7 @@
         use:lazyImage
       />
     </div>
-    <div class="flex flex-col place-content-evenly w-full h-[11%]">
+    <div class="flex flex-col place-content-evenly w-full h-[13%]">
       <p
         class=" mx-auto text-[0.9cqw] p-[0.1rem] text-center leading-snug line-clamp-2 text-textWhite font-semibold"
       >
