@@ -5,6 +5,7 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { apiUrl } from "$lib/_services/authService";
   import { page } from "$app/stores";
+  import { fire } from "$lib/swalTemplate";
 
   const dispatch = createEventDispatcher();
 
@@ -54,13 +55,7 @@
     )
       .then((response) => {
         if (!response.ok) {
-          Swal.fire({
-            title: "A database error occured!",
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire("A database error occured!");
           console.log(response);
         }
         return response.json();
@@ -95,15 +90,10 @@
           if (response.status === 409) {
             dispatch("seatSelectionChanged", { wasBlock: false });
             thereWasAConflict = true;
+            fire("There was a conflict!", 3000, false, false);
             return;
           }
-          Swal.fire({
-            title: "A database error occured!",
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire("A database error occured!");
           console.log(response);
         }
         return response.json();
@@ -165,17 +155,7 @@
 
   function seatWasSelected(seat: any) {
     if (seat.BlockedByOther) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        color: "#FAFAFA",
-        timer: 2500,
-        confirmButtonColor: "#89a3be",
-        customClass: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
-        timerProgressBar: true,
-        background: "#354A5F",
-        text: "This seat is already booked!\nPlease select another seat!",
-      });
+      fire("This seat is already booked!\nPlease select another seat!", 3000);
       return;
     }
 
@@ -191,17 +171,7 @@
     }
     //case: not-selected seat was clicked
     if (!isNeighborSeat(seat)) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        color: "#FAFAFA",
-        timer: 5000,
-        confirmButtonColor: "#89a3be",
-        customClass: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
-        timerProgressBar: true,
-        background: "#354A5F",
-        text: "Please select seats next to each other!",
-      });
+      fire("Please select seats next to each other!", 3000);
       return;
     }
     blockSeat(seat);

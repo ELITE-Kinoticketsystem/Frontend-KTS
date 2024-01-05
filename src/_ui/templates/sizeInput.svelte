@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fire } from "$lib/swalTemplate";
   import { createEventDispatcher } from "svelte";
   import Swal from "sweetalert2";
 
@@ -21,16 +22,7 @@
 
   function giveSizeUpdateIfNecessary() {
     if (!pattern.test(size.toString())) {
-      Swal.fire({
-        icon: "warning",
-        title: "Invalid number",
-        color: "#FAFAFA",
-        timer: 3000,
-        customClass: "rounded-lg w-[70%] sm:w-1/3",
-        timerProgressBar: true,
-        background: "#354A5F",
-        text: "Please enter a number between 1-999",
-      });
+      fire("Invalid number\nPlease enter a number between 1-999", 3000);
       size = previousSize;
       return;
     }

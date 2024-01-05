@@ -7,6 +7,7 @@
   import PriceForCatSetter from "../../../../_ui/templates/priceForCatSetter.svelte";
   import ShowTimeTool from "../../../../_ui/templates/showTimeTool.svelte";
   import { apiUrl } from "$lib/_services/authService";
+  import { fire } from "$lib/swalTemplate";
 
   export let data: { movies: any };
 
@@ -49,16 +50,6 @@
       movieNames.push(selectedMovies.at(i).Title);
     }
     descriptionLength = Description.length;
-  }
-
-  function fire(content: string) {
-    Swal.fire({
-      title: content,
-      confirmButtonColor: "#89a3be",
-      customClass: {
-        popup: "bg-backgroundBlue text-textWhite text-[100%]",
-      },
-    });
   }
 
   function checkEntries() {

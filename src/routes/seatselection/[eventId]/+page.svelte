@@ -7,6 +7,7 @@
   import { onMount } from "svelte";
   import { apiUrl } from "$lib/_services/authService";
   import { page } from "$app/stores";
+  import { fire } from "$lib/swalTemplate";
 
   let seats: any[] = [];
 
@@ -37,13 +38,7 @@
     })
       .then((response) => {
         if (!response.ok) {
-          Swal.fire({
-            title: "A database error occured!",
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire("A database error occured!", 3000);
           return;
         }
         return response.json();
@@ -64,19 +59,10 @@
   }
   function timerFinished() {
     getDBSeats();
-    Swal.fire({
-      icon: "warning",
-      title: "Timer ran out!",
-      color: "#FAFAFA",
-      timer: 5000,
-      confirmButtonColor: "#89a3be",
-      customClass: {
-        popup: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
-      },
-      timerProgressBar: true,
-      background: "#354A5F",
-      text: "Be quicker!",
-    });
+    fire(
+      "Timer ran out!\nSeats only get blocked for a certain amount of time",
+      4500
+    );
   }
   onMount(async () => {
     getDBSeats();

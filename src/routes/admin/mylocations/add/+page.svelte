@@ -134,13 +134,7 @@
       },
     }).then((input) => {
       if (input.value === "") {
-        Swal.fire({
-          title: "You have to enter a non empty url",
-          confirmButtonColor: "#89a3be",
-          customClass: {
-            popup: "bg-backgroundBlue text-textWhite text-[100%]",
-          },
-        });
+        fire("You have to enter a non empty url");
         return;
       }
       LogoUrl = input.value;
