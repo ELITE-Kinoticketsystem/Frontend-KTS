@@ -1,29 +1,35 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
   import Searchbar from "../../_ui/templates/searchbar.svelte";
+  import Swal from "sweetalert2";
+  import { fire } from "$lib/swalTemplate";
 
   export let data;
 
   let specialEvents = data.specialEvents;
 
-  let displayedSpecialEvents = JSON.parse(JSON.stringify(specialEvents));
+  $: displayedSpecialEvents = JSON.parse(JSON.stringify(specialEvents));
 
   let showFskDropdown = false;
 
+  onMount(() => {
+    displayedSpecialEvents.sort((a: any, b: any) => {
+      return new Date(a.Start).getTime() - new Date(b.Start).getTime();
+    });
+    displayedSpecialEvents = displayedSpecialEvents;
+  });
+
   $: ratingText = "0 - 18";
   $: ratingRange = 100;
-  let fromDate: any;
-  let toDate: any;
+  let fromDate: any = new Date().toISOString().split("T")[0];
+  let toDate: any = "";
   let key = "";
-  let rating = 0;
-  function getShowingTime() {
-    let date = new Date(specialEvents.Start);
-    var newDateObj = new Date(date.getTime());
-    return newDateObj.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
+
+  $: minValueFromDate =
+    toDate == "" ? new Date().toISOString().split("T")[0] : toDate;
+  $: minValueToDate =
+    fromDate == "" ? new Date().toISOString().split("T")[0] : fromDate;
   function getTotalTime(specialEvent: any): number {
     let movies = specialEvent.Movies;
     let totalTime = 0;
@@ -68,11 +74,51 @@
         return getMaxFsk(specialEvent) <= age;
       }
     );
+    if (fromDate != "") {
+      displayedSpecialEvents = displayedSpecialEvents.filter(
+        (specialEvent: any) => {
+          return new Date(specialEvent.Start) >= new Date(fromDate);
+        }
+      );
+    }
+    if (toDate != "") {
+      displayedSpecialEvents = displayedSpecialEvents.filter(
+        (specialEvent: any) => {
+          return new Date(specialEvent.Start) <= new Date(toDate);
+        }
+      );
+    }
+    displayedSpecialEvents.sort((a: any, b: any) => {
+      return new Date(a.Start).getTime() - new Date(b.Start).getTime();
+    });
+    if (displayedSpecialEvents.length == 0) {
+      document.getElementById("nospecialEvents")!.hidden = false;
+    } else {
+      document.getElementById("nospecialEvents")!.hidden = true;
+    }
+    displayedSpecialEvents = displayedSpecialEvents;
   }
 
+  function resetFilters() {
+    displayedSpecialEvents = JSON.parse(JSON.stringify(specialEvents));
+    ratingRange = 100;
+    fromDate = new Date().toISOString().split("T")[0];
+    toDate = "";
+    key = "";
+    displayedSpecialEvents.sort((a: any, b: any) => {
+      return new Date(a.Start).getTime() - new Date(b.Start).getTime();
+    });
+  }
   function validateDate() {
-    console.log(new Date(fromDate).toLocaleDateString());
-    console.log(new Date(toDate).toLocaleDateString());
+    if (fromDate != "" && toDate != "") {
+      if (fromDate > toDate) {
+        toDate = fromDate;
+      }
+      filter();
+    } else {
+      displayedSpecialEvents = JSON.parse(JSON.stringify(specialEvents));
+      filter();
+    }
   }
 </script>
 
@@ -104,9 +150,9 @@
             <input
               type="date"
               name=""
-              on:input={validateDate}
+              on:change={validateDate}
               bind:value={fromDate}
-              id=""
+              id="fromDatePicker"
               class="text-white bg-headerBlue hover:bg-buttonBlue duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
             />
           </div>
@@ -115,9 +161,9 @@
             <input
               type="date"
               name=""
-              on:input={validateDate}
+              on:change={validateDate}
               bind:value={toDate}
-              id=""
+              id="toDatepicker"
               class="text-white bg-headerBlue hover:bg-buttonBlue duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
             />
           </div>
@@ -277,6 +323,16 @@
         </div>
       </button>
     {/each}
+    <p
+      id="nospecialEvents"
+      class="text-textWhite text-xl font-semibold mx-auto mt-10"
+      hidden
+    >
+      No special events were found! <button
+        class="bg-buttonBlue hover:bg-green-600 duration-300 rounded-md px-2 py-1"
+        on:click={resetFilters}>Reset filters</button
+      >
+    </p>
   </div>
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
