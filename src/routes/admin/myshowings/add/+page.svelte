@@ -42,7 +42,7 @@
     is3d = is3d;
     Description = Description;
     pictureUrl = pictureUrl;
-    EventType = selectedMovies.length > 1 ? "special" : "showing";
+    EventType = selectedMovies.length > 1 ? "special event" : "showing";
 
     nrOfShowings = 0;
     for (let i = 0; i < allShowings.length; ++i) {
@@ -55,7 +55,7 @@
     descriptionLength = Description.length;
   }
 
-  function checkEntries() {
+  function createEvent() {
     if (nrOfShowings === 0) {
       fire("You can not create an event with no showings");
       return false;
@@ -83,67 +83,63 @@
           return;
         }
         allShowings.forEach((showing) => {
-          let Start = `${showing.date}T${
-            showing.times.sort((a: string, b: string) => {
-              return a > b ? 1 : -1;
-            })[0]
-          }:00.00Z`;
+          showing.times.forEach((startTime: any) => {
+            let Start = `${showing.date}T${startTime}:00.00Z`;
 
-          let accumulatedMovieLength = 0;
-          selectedMovies.forEach((element: any) => {
-            accumulatedMovieLength += element.TimeInMin;
-          });
-          let End = new Date(
-            new Date(Start).getTime() + accumulatedMovieLength * 60000
-          ).toISOString();
-          console.log(End);
-          fetch(`${apiUrl}/events`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              CinemaHallID: "1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C01",
-              Description,
-              End,
-              EventSeatCategories: [
-                {
-                  Price: prices.regular * 100,
-                  SeatCategoryID: "11EEAA3879BC5F4D81D30242AC120002",
-                },
-                {
-                  Price: prices.vip * 100,
-                  SeatCategoryID: "11EEAA388565BA7281D30242AC120002",
-                },
-                {
-                  Price: prices.loge * 100,
-                  SeatCategoryID: "11EEAA388201A99F81D30242AC120002",
-                },
-              ],
-              EventType,
-              is3d,
-              Movies: selectedMovies.map((movie: any) => {
-                return movie.ID;
+            let accumulatedMovieLength = 0;
+            selectedMovies.forEach((element: any) => {
+              accumulatedMovieLength += element.TimeInMin;
+            });
+            let End = new Date(
+              new Date(
+                new Date(Start).getTime() +
+                  new Date().getTimezoneOffset() * 60 * 1000
+              ).getTime() +
+                accumulatedMovieLength * 60000
+            ).toISOString();
+            Start = new Date(
+              new Date(
+                new Date(Start).getTime() +
+                  new Date().getTimezoneOffset() * 60 * 1000
+              )
+            ).toISOString();
+
+            fetch(`${apiUrl}/events`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                CinemaHallID: "1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C01",
+                Description,
+                End,
+                EventSeatCategories: [
+                  {
+                    Price: prices.regular * 100,
+                    SeatCategoryID: "11EEAA3879BC5F4D81D30242AC120002",
+                  },
+                  {
+                    Price: prices.vip * 100,
+                    SeatCategoryID: "11EEAA388565BA7281D30242AC120002",
+                  },
+                  {
+                    Price: prices.loge * 100,
+                    SeatCategoryID: "11EEAA388201A99F81D30242AC120002",
+                  },
+                ],
+                EventType,
+                is3d,
+                Movies: selectedMovies.map((movie: any) => {
+                  return movie.ID;
+                }),
+                Start,
+                Title: eventName,
               }),
-              Start,
-              Title: eventName,
-            }),
-            mode: "cors",
-            credentials: "include",
+              mode: "cors",
+              credentials: "include",
+            });
           });
         });
       });
     }
-  }
-
-  function createEvent() {
-    checkEntries();
-    let obj = {
-      allShowings,
-      selectedMovies,
-      prices,
-      is3d,
-      description: Description,
-      eventType: EventType,
-    };
   }
 
   function addPicture() {
@@ -228,7 +224,7 @@
             }}
             bind:checked={is3d}
             type="checkbox"
-            class="w-auto mx-auto h-full aspect-1 rounded-md ring-1 ring-slate-500"
+            class="w-full mx-auto h-full aspect-1 rounded-md ring-1 ring-slate-500"
             style={mouseIsOverCheckbox ? "cursor: pointer" : "cursor: grabbing"}
           />
         </div>

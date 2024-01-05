@@ -15,6 +15,7 @@
   let selectedSeats: any[] = [];
   let timerSignal = 0;
   let blockedUntil = 0;
+  let disabled: boolean;
   $: disabled = disabled;
   disabled = true;
 
@@ -40,8 +41,11 @@
       credentials: "include",
     })
       .then((response) => {
-        if (!response.ok) {
-          fire("A database error occured!", 3000);
+        if (response.status === 401) {
+          goto(`/auth/login?redirect=/seatselection/${$page.params.eventId}`);
+          return;
+        } else if (response.status === 404) {
+          goto("/movies");
           return;
         }
         return response.json();

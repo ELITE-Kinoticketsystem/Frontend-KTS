@@ -3,6 +3,8 @@
   import HallCreator from "../../../../_ui/templates/hallCreator.svelte";
   import TypeSelector from "../../../../_ui/templates/typeSelector.svelte";
   import { onMount } from "svelte";
+  import { fire } from "$lib/swalTemplate";
+  import { apiUrl } from "$lib/_services/authService";
 
   let seatCategories = ["regular", "loge", "vip"];
   let seatTypes = ["regular", "double", "eraser"];
@@ -35,13 +37,13 @@
   $: curSeatCategory = curSeatCategory;
   $: hallWidth = hallWidth;
   $: hallHeight = hallHeight;
-
+  $: console.log(JSON.stringify({ theatreID: "", seats }));
   function postHall(name: string) {
-    fetch(`${name}`, {
+    fetch(`${apiUrl}/halls`, {
       method: "POST",
       mode: "cors",
       credentials: "include",
-      body: JSON.stringify({ seats }),
+      body: JSON.stringify({ theatreID: "", seats }),
     }).then((response) => {
       return response.ok;
     });
@@ -66,6 +68,10 @@
   }
 
   function createHall() {
+    if (hallIsEmpty()) {
+      fire("Empty halls can not be created", 3000);
+      return;
+    }
     Swal.fire({
       title: "How do you want to name the hall?",
       input: "text",
