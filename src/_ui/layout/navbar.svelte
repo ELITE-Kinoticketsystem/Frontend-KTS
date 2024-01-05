@@ -144,7 +144,7 @@
                 aria-labelledby="regionDropDown"
               >
                 <li>
-                  <a href="/locations">
+                  <a href="/theatres">
                     <div
                       class="flex flex-col items-center p-2 rounded hover:bg-buttonBlue duration-300"
                     >

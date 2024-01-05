@@ -19,7 +19,7 @@
     {
       question: "How can I change the cinema's location?",
       answer:
-        "To change the cinema's location, go to the <a href='/locations' class='text-buttonBlue hover:text-blue-500 duration-300'>locations page</a> under the user icon in the navbar and select the cinema you want to visit.",
+        "To change the cinema's location, go to the <a href='/theatres' class='text-buttonBlue hover:text-blue-500 duration-300'>locations page</a> under the user icon in the navbar and select the cinema you want to visit.",
     },
   ];
   for (let i = 0; i < questions.length; i++) {
