@@ -22,7 +22,7 @@
 >
   {#each moviesToDisplay as movie}
     <div
-      class="flex-none sm:w-[15%] min-h-full hover:scale-105 duration-300"
+      class="flex-none sm:w-[14%] min-h-full hover:scale-105 duration-300"
     >
       <MainCard {movie} />
     </div>
