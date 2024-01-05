@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { browser, dev } from "$app/environment";
+  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { apiUrl } from "$lib/_services/authService";
@@ -15,7 +15,7 @@
   let coverUrl: string = "";
   let newGenre: string = "";
   let releaseYear: number;
-  let genres: string[] = ["Action", "Adventure", "Comedy", "Drama", "Fantasy"];
+  $: genres = [];
 
   let draftSaved = false;
 
@@ -235,9 +235,22 @@
       ).toString(16)
     );
   }
+
+  async function getGenres() {
+    const genresRepsone = await fetch(apiUrl + "/genres", {
+      method: "GET",
+      credentials: "include",
+    });
+    return await genresRepsone.json();
+  }
+  let fetchGenres: any[] = [];
   onMount(async () => {
     if (!$page.url.searchParams.get("fromUUID")!) {
       await getAllDrafts();
+    }
+    fetchGenres = await getGenres();
+    for (let i = 0; i < fetchGenres.length; i++) {
+      genres = [...genres, fetchGenres[i].GenreName];
     }
   });
 
@@ -453,7 +466,7 @@
           <div class="flex flex-col w-full">
             <p class="my-auto text-xl text-textWhite">Genres:</p>
             <div class="grid grid-cols-3 gap-5 mt-2">
-              {#each genres as genre}
+              {#each genres.splice(0, 5) as genre}
                 <div
                   class="flex text-textWhite justify-between bg-buttonBlue rounded-md px-2 py-1 my-auto"
                 >

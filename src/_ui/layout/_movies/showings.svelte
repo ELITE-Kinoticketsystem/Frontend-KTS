@@ -65,20 +65,16 @@
   }
 
   function getDate(datetime: string): string {
-    const weekday = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
+    const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     let currentDate = new Date(Date.now());
     let showingDate = new Date(datetime);
-    if (new Date(datetime) === currentDate)
+    if (
+      new Date(datetime).getDay() === currentDate.getDay() &&
+      new Date(datetime).getMonth() === currentDate.getMonth() &&
+      new Date(datetime).getFullYear() === currentDate.getFullYear()
+    ) {
       return "Today, " + showingDate.toLocaleDateString();
-    else {
+    } else {
       return (
         weekday[showingDate.getDay()] + ", " + showingDate.toLocaleDateString()
       );
@@ -104,14 +100,14 @@
       {#each [...showings] as [key, value]}
         <div class="flex flex-col bg-tileBlue text-textWhite rounded-md py-2">
           <div
-            class="flex flex-row text-lg font-semibold mx-3 items-center justify-between"
+            class="flex flex-row text-lg font-bold mx-3 items-center justify-between"
           >
             {key}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="w-6 h-6"
+              class="w-5 h-5 ml-px"
             >
               <path
                 d="M12.75 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM7.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM8.25 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9.75 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM10.5 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM12.75 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM14.25 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 13.5a.75.75 0 100-1.5.75.75 0 000 1.5z"

@@ -27,7 +27,7 @@
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        eventSeatPriceCategory: eventSeatPriceCategory,
+        eventSeatPriceCategories: eventSeatPriceCategory,
         paymentMethodID: "2B1F7FB2881C4F2DBD4677A48D2846C8",
       }),
     });
