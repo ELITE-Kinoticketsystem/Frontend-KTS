@@ -109,12 +109,32 @@
 
   <div class="flex flex-col w-[50%] items-center bg-backgroundBlue rounded-md">
     <div class="w-full bg-headerBlue pl-2 rounded-t-md">
-      <p class="text-textWhite text-[100%] font-bold">All Genres</p>
+      <p class="text-textWhite text-[1.2cqw] font-bold">All Genres</p>
     </div>
     {#key existingGenres}
       {#each existingGenres as genre}
-        <div class="w-full border-t-[1px] border-white">
-          <p class="text-textWhite font-semibold text-[100%] pl-2">{genre}</p>
+        <div
+          class="flex flex-row items-center justify-between ring-1 ring-green-400 w-full h-[4vh] border-t-[1px] border-white"
+        >
+          <p class="ring- text-textWhite font-semibold text-[1.2cqw] pl-2">
+            {genre}
+          </p>
+          <button class="flex w-[5%]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#ffffff"
+              viewBox="4 2 16 20"
+              stroke-width="1.5"
+              stroke="#000000"
+              class="w-[90%] h-[90%]"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
         </div>
       {/each}
 

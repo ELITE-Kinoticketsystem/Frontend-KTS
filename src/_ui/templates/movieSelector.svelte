@@ -121,19 +121,3 @@
   </div>
 </div>
 
-<style>
-  /* Custom scrollbar styling */
-  .overflow-x-scroll::-webkit-scrollbar {
-    width: 8px; /* Set the width of the scrollbar */
-  }
-
-  /* Track */
-  .overflow-x-scroll::-webkit-scrollbar-track {
-    background: #cbd5e0; /* Set the color of the scrollbar track */
-  }
-
-  /* Handle */
-  .overflow-x-scroll::-webkit-scrollbar-thumb {
-    background: #4b5563; /* Set the color of the scrollbar thumb */
-  }
-</style>

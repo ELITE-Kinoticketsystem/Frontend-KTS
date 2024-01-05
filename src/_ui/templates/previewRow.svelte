@@ -20,7 +20,7 @@
   </div>
   <div class="h-full w-[47%] flex flex-col place-content-evenly">
     <p
-      class="text-center text-textWhite line-clamp-3 font-bold text-[90%] rounded-md"
+      class="text-center text-textWhite line-clamp-2 font-bold text-[90%] rounded-md"
     >
       {value}
     </p>
