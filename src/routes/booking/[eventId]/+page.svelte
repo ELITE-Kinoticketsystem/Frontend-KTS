@@ -1,12 +1,34 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
+  import { apiUrl } from "$lib/_services/authService.js";
   import { useLazyImage as lazyImage } from "svelte-lazy-image";
 
   export let data;
 
   const eventInformation: any = data.eventInformation;
   const tickets: any = data.eventTickets;
+
+  function createOrder() {
+    fetch(apiUrl + "/events/" + $page.params.eventId + "/book", {
+      mode: "cors",
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        "eventSeatPriceCategory": [
+          {
+            "eventSeatId": tickets[0].ticketId,
+            "priceCategoryId": "iubthbtig"
+          }
+        ],
+        "paymentMethodID": null
+      }),
+    });
+  }
 
   $: totalCost = tickets.reduce((acc: number, ticket: any) => {
     return acc + ticket.price;

@@ -16,6 +16,9 @@
         movies.Description.substring(0, maxLength) +
         "<span class='text-buttonBlue hover:text-darkTextWhite duration-300'> [Read more]</span>";
     }
+    if (movies.Genres == null) {
+      movies.Genres = ["Unknown"];
+    }
   });
 
   function getYear(dateTime: string): string {
