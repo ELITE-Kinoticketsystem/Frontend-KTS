@@ -10,11 +10,14 @@
   import { fire } from "$lib/swalTemplate";
 
   export let data: { movies: any };
+  let oneDayInMs = 24 * 1000 * 3600;
 
   let allShowings: any[] = [
     {
       hall: { hallname: "Select a hall", hallId: "" },
-      date: new Date().toISOString().substr(0, 10),
+      date: new Date(new Date().getTime() + oneDayInMs)
+        .toISOString()
+        .substr(0, 10),
       times: ["12:00"],
     },
   ];
@@ -57,6 +60,10 @@
       fire("You can not create an event with no showings");
       return false;
     }
+    if (eventName === "") {
+      fire("You can not create an event without a name");
+      return false;
+    }
     if (movieNames.length === 0) {
       fire("You can not create an event with no movies");
       return false;
@@ -75,7 +82,6 @@
         if (!result.isConfirmed) {
           return;
         }
-
         allShowings.forEach((showing) => {
           let Start = `${showing.date}T${
             showing.times.sort((a: string, b: string) => {
@@ -95,26 +101,28 @@
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              CinemaHallID: showing.hall.hallId,
+              CinemaHallID: "1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C01",
               Description,
               End,
               EventSeatCategories: [
                 {
-                  Price: prices.regular,
-                  SeatCategoryId: "11EEAA3879BC5F4D81D30242AC120002",
+                  Price: prices.regular * 100,
+                  SeatCategoryID: "11EEAA3879BC5F4D81D30242AC120002",
                 },
                 {
-                  Price: prices.vip,
-                  SeatCategory: "11EEAA388565BA7281D30242AC120002",
+                  Price: prices.vip * 100,
+                  SeatCategoryID: "11EEAA388565BA7281D30242AC120002",
                 },
                 {
-                  Price: prices.loge,
-                  SeatCategoryId: "11EEAA388201A99F81D30242AC120002",
+                  Price: prices.loge * 100,
+                  SeatCategoryID: "11EEAA388201A99F81D30242AC120002",
                 },
               ],
               EventType,
               is3d,
-              Movies: selectedMovies,
+              Movies: selectedMovies.map((movie: any) => {
+                return movie.ID;
+              }),
               Start,
               Title: eventName,
             }),
@@ -158,7 +166,6 @@
         });
         return;
       }
-
       pictureUrl = input.value;
     });
   }
@@ -228,7 +235,7 @@
       </div>
     </div>
 
-    <div class="w-[22%] h-full">
+    <div class="w-[23%] h-full">
       <EventPreview
         bind:eventName
         bind:movieNames

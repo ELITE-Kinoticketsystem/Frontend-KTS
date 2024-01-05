@@ -8,12 +8,15 @@
   import { apiUrl } from "$lib/_services/authService";
   import { page } from "$app/stores";
   import { fire } from "$lib/swalTemplate";
+  import { goto } from "$app/navigation";
 
   let seats: any[] = [];
 
   let selectedSeats: any[] = [];
   let timerSignal = 0;
   let blockedUntil = 0;
+  $: disabled = disabled;
+  disabled = true;
 
   $: {
     seats = seats;
@@ -103,14 +106,18 @@
         </div>
       {/key}
     </div>
-    <a
-      href="/confirmation/{$page.params.eventId}"
-      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-12 hover:bg-blue-400 duration-300"
+    <button
+      disabled={selectedSeats.length === 0}
+      on:click={() => {
+        goto(`/confirmation/${$page.params.eventId}`);
+      }}
+      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg h-[6vh] enabled:hover:bg-blue-400 duration-300
+      disabled:bg-slate-400 disabled:opacity-40 disabled:cursor-not-allowed"
     >
-      <p class="bg-rd-50 mt-[0.6rem] text-center text-textWhite text-xl">
-        Book now
-      </p>
-    </a>
+      <div class="flex flex-row items-center place-content-evenly h-full">
+        <p class="text-textWhite text-[150%]">Book now</p>
+      </div>
+    </button>
     <div class="w-full">
       <SeatLegend {seatColors} />
     </div>
