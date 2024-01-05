@@ -19,7 +19,7 @@
         priceCategoryId: getCategorieIdByType(seats[i].type),
       });
     }
-    fetch(apiUrl + "/events/" + $page.params.eventId + "/book", {
+    fetch(apiUrl + "/events/" + $page.params.eventId + "/reserve", {
       mode: "cors",
       method: "POST",
       credentials: "include",
@@ -103,7 +103,7 @@
   <div
     class="flex flex-col w-max flex-grow space-x-5 bg-tileBlue px-10 py-10 rounded-2xl space-y-5"
   >
-    <div class="mx-auto text-textWhite text-4xl font-semibold">Payment</div>
+    <div class="mx-auto text-textWhite text-4xl font-semibold">Reservation</div>
     <div class="flex flex-row justify-between">
       <div class="w-1/3 justify-start">
         <img
@@ -131,10 +131,16 @@
         <p>{eventInformation.CinemaHallID}</p>
         <p>{eventInformation.Is3d ? "3D" : "2D"}</p>
         <p class="text-buttonBlue mt-10 ml-10 text-justify">
-          Please note that the next step is the payment step and by completing
-          it, you will be purchasing the ticket at the cost of {(
+          Please note that the next step is the reservation step and by
+          completing it, you will be reserving the ticket at the cost of {(
             totalPrice / 100
-          ).toFixed(2)} €.
+          ).toFixed(2)} €. The price is needed to be paid at the cinema. If you have
+          any questions, you can look at our
+          <a
+            href="/help"
+            class="hover:text-purple-600 duration-300 text-textWhite"
+            >FAQ page</a
+          > or contact us.
         </p>
       </div>
     </div>
@@ -144,7 +150,7 @@
         on:click={() => {
           createOrder();
           //goto("/tickets/" + 1);
-        }}>Pay</button
+        }}>Confirm reservation</button
       >
     </div>
   </div>
