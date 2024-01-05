@@ -6,59 +6,19 @@
   import Swal from "sweetalert2";
 
   let isUserLoggedIn = false;
-  onMount(async () => {
-    await AuthService.isUserLoggedIn().then((res) => {
-      isUserLoggedIn = res;
-    });
-    if (!isUserLoggedIn) {
-      goto("/auth/login?redirect=/confirmation/" + $page.params.eventId);
-    }
-  });
 
   export let data;
 
-  const eventInformation: any = data.eventInformation;
-  const seats: any = data.eventTickets.selectedSeats;
-  const priceCategories: any = data.priceCategories;
-
-  $: totalCost = seats.reduce((acc: number, seat: any) => {
-    return (
-      acc + calulatePrice(seat.EventSeatCategory.Price, priceOfType(seat.type))
-    );
-  }, 0);
-
-  let types: string[] = [];
-  priceCategories.forEach((category: any) => {
-    types.push(category.CategoryName);
-  });
-  let showDropdown: boolean[] = [];
-  for (let i = 0; i < seats.length; i++) {
-    showDropdown.push(false);
-  }
+  let eventInformation: any = data.eventInformation;
+  let seats: any = data.eventTickets.selectedSeats;
+  let priceCategories: any = data.priceCategories;
 
   let title: string;
-  seats.forEach((seat: any) => {
-    seat.type = "adult";
-  });
-
   if (eventInformation.Movies.length > 1) {
-    title = eventInformation.Title;
-  } else {
     title = eventInformation.Movies[0].Title;
+  } else {
+    title = eventInformation.Title;
   }
-  const calulatePrice = (seatPrice: number, priceCategoryDiscount: number) => {
-    return seatPrice * (1 - priceCategoryDiscount / 100);
-  };
-
-  const priceOfType = (type: string) => {
-    let price = 0;
-    priceCategories.forEach((category: any) => {
-      if (category.CategoryName === type) {
-        price = category.Price;
-      }
-    });
-    return price;
-  };
 </script>
 
 <svelte:head>
@@ -185,13 +145,13 @@
       <button
         class="bg-buttonBlue w-1/2 py-2 text-textWhite text-xl rounded-lg hover:bg-green-500 duration-300"
         on:click={() => {
-          goto("/reservation");
+          goto("/reservation/" + $page.params.eventId);
         }}>Confirm reservation</button
       >
       <button
         class="bg-buttonBlue w-1/2 py-2 text-textWhite text-xl rounded-lg hover:bg-green-500 duration-300"
         on:click={() => {
-          goto("/booking");
+          goto("/booking/" + $page.params.eventId);
         }}>Confirm purchase</button
       >
     </div>

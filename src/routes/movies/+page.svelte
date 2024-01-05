@@ -14,6 +14,9 @@
   const allGenres = data.genres;
 
   for (let i = 0; i < allMovies.length; i++) {
+    if (allMovies[i].Genres == null) {
+      allMovies[i].Genres = [];
+    }
     for (let j = 0; j < allMovies[i].Genres.length; j++) {
       allMovies[i].Genres[j] = allMovies[i].Genres[j].GenreName.toLowerCase();
     }
@@ -27,7 +30,6 @@
     checkedGenres.push(false);
   }
   onMount(() => {
-    console.log(allMovies);
     filter();
     invalidateAll();
   });
