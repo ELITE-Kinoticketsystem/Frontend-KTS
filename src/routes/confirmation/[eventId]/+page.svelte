@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { AuthService } from "$lib/_services/authService";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
@@ -11,24 +11,54 @@
       isUserLoggedIn = res;
     });
     if (!isUserLoggedIn) {
-      goto("/auth/login?redirect=/confirmation");
+      goto("/auth/login?redirect=/confirmation/" + $page.params.eventId);
     }
   });
 
   export let data;
 
   const eventInformation: any = data.eventInformation;
-  const tickets: any = data.eventTickets;
+  const seats: any = data.eventTickets.selectedSeats;
+  const priceCategories: any = data.priceCategories;
 
-  $: totalCost = tickets.reduce((acc: number, ticket: any) => {
-    return acc + ticket.price;
+  $: totalCost = seats.reduce((acc: number, seat: any) => {
+    return (
+      acc + calulatePrice(seat.EventSeatCategory.Price, priceOfType(seat.type))
+    );
   }, 0);
 
-  const types = ["Child", "Student", "Senior", "Adult"];
+  let types: string[] = [];
+  priceCategories.forEach((category: any) => {
+    types.push(category.CategoryName);
+  });
   let showDropdown: boolean[] = [];
-  for (let i = 0; i < tickets.length; i++) {
+  for (let i = 0; i < seats.length; i++) {
     showDropdown.push(false);
   }
+
+  let title: string;
+  seats.forEach((seat: any) => {
+    seat.type = "adult";
+  });
+
+  if (eventInformation.Movies.length > 1) {
+    title = eventInformation.Title;
+  } else {
+    title = eventInformation.Movies[0].Title;
+  }
+  const calulatePrice = (seatPrice: number, priceCategoryDiscount: number) => {
+    return seatPrice * (1 - priceCategoryDiscount / 100);
+  };
+
+  const priceOfType = (type: string) => {
+    let price = 0;
+    priceCategories.forEach((category: any) => {
+      if (category.CategoryName === type) {
+        price = category.Price;
+      }
+    });
+    return price;
+  };
 </script>
 
 <svelte:head>
@@ -40,9 +70,9 @@
   <div class="flex flex-col w-max mx-auto flex-grow">
     <div class="flex flex-col text-textWhite font-semibold text-center mb-10">
       <p class="text-4xl">Review and confirm tickets</p>
-      <p class="text-2xl">{eventInformation.movieTitle}</p>
+      <p class="text-2xl">{title}</p>
       <p class="text-2xl">
-        {new Date(eventInformation.dateTime).toLocaleString()}
+        {new Date(eventInformation.Start).toLocaleString()}
       </p>
     </div>
     <div class="table w-full">
@@ -57,18 +87,18 @@
             </tr>
           </thead>
           <tbody>
-            {#each tickets as ticket, index}
+            {#each seats as seat, index}
               <tr
                 class="bg-headerBlue border-b text-textWhite hover:bg-inputBlue duration-300"
               >
                 <td class="px-6 py-2">
-                  Row {ticket.y}, Seat {ticket.x}
+                  Row {seat.Seat.RowNr}, Seat {seat.Seat.ColumnNr}
                 </td>
                 <td class="p-2">
                   <div class="flex">
                     <button
                       id="dropdownBgHoverButton"
-                      class="text-white duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 focus:bg-tileBlue font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+                      class="text-white duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 focus:bg-tileBlue font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center capitalize"
                       type="button"
                       on:click={() => {
                         showDropdown[index] = !showDropdown[index];
@@ -79,7 +109,7 @@
                         }
                       }}
                     >
-                      {ticket.type}
+                      {seat.type}
                       <svg
                         id="arrowRegion"
                         class="w-2.5 h-2.5 ms-3 duration-300"
@@ -108,21 +138,17 @@
                         aria-labelledby="regionDropDown"
                       >
                         {#each types as type}
-                          {#if type !== ticket.type}
+                          {#if type !== seat.type}
                             <li>
                               <button
                                 on:click={() => {
-                                  ticket.type = type;
-                                  ticket.price =
-                                    eventInformation.prices[
-                                      ticket.category.toLowerCase()
-                                    ][ticket.type];
+                                  seat.type = type;
                                   showDropdown[index] = false;
                                 }}
                                 class="w-full"
                               >
                                 <div
-                                  class="flex items-center p-2 rounded hover:bg-headerBlue duration-300"
+                                  class="flex items-center p-2 rounded hover:bg-headerBlue duration-300 capitalize"
                                 >
                                   {type}
                                 </div>
@@ -134,11 +160,16 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-2">
-                  {ticket.category}
+                <td class="px-6 py-2 capitalize">
+                  {seat.SeatCategory.CategoryName}
                 </td>
                 <td class="px-6 py-2">
-                  {(ticket.price / 100).toFixed(2)} €
+                  {(
+                    calulatePrice(
+                      seat.EventSeatCategory.Price,
+                      priceOfType(seat.type)
+                    ) / 100
+                  ).toFixed(2)} €
                 </td>
               </tr>
             {/each}
@@ -185,19 +216,3 @@
   </div>
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
-
-<style>
-  .gradient {
-    background: rgb(135, 147, 149);
-    background: linear-gradient(
-      90deg,
-      rgba(135, 147, 149, 1) 0%,
-      rgba(137, 163, 190, 1) 100%
-    );
-    background-size: 100%;
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -moz-text-fill-color: transparent;
-  }
-</style>

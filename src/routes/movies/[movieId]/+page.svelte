@@ -11,6 +11,9 @@
 
   let isUserLoggedIn = false;
   let userID = "";
+
+  $: forNow = 0;
+  forNow = forNow;
   onMount(async () => {
     await AuthService.isUserLoggedIn().then((res) => {
       isUserLoggedIn = res;
@@ -29,12 +32,6 @@
 
   movie.genre = ["Action", "Adventure", "Comedy", "Drama", "Fantasy"];
 
-  reviews.forEach((review: any) => {
-    const date = new Date(review.Datetime);
-    review.Datetime = date.toLocaleString();
-    review.Datetime = review.Datetime.split(" ")[0].slice(0, -1);
-  });
-
   let cinema = "";
   if (browser) {
     cinema = window.localStorage.getItem("cinema") || "Not selected";
@@ -47,19 +44,31 @@
   $: textAreaValue = "";
 
   function submitReview(hasSpoiler: boolean) {
+    let fetchReview;
     if (isUserLoggedIn && textAreaValue.length > 0) {
       fetch(apiUrl + "/reviews", {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({
-          Comment: textAreaValue,
-          MovieID: movie.MovieID,
-          Rating: rating,
-          IsSpoiler: hasSpoiler,
+          comment: textAreaValue,
+          movieId: movie.ID,
+          datetime: new Date().toISOString(),
+          rating: rating,
+          isSpoiler: hasSpoiler ? true : false,
         }),
-      }).then((res) => {
-        if (res.status === 200) {
-          invalidateAll();
+      }).then(async (res) => {
+        if (res.status === 201) {
+          await res.json().then((data) => {
+            const date = new Date(data.review.Datetime);
+            data.review.Datetime = date.toLocaleString();
+            data.review.Datetime = data.review.Datetime.split(" ")[0].slice(
+              0,
+              -1
+            );
+            reviews = [data.review, ...reviews];
+            reviewAmount++;
+            forNow = forNow;
+          });
           textAreaValue = "";
           rating = 0;
           if (hasSpoiler) {
@@ -75,7 +84,6 @@
               icon: "success",
             });
           }
-          invalidateAll();
         } else {
           Swal.fire({
             title: "Something went wrong!",
@@ -99,9 +107,21 @@
       }
     }
   }
+  function convert() {
+    reviews.sort((a: any, b: any) => {
+      return new Date(b.Datetime).getTime() - new Date(a.Datetime).getTime();
+    });
+    reviews.forEach((review: any) => {
+      const date = new Date(review.Datetime);
+      review.Datetime = date.toLocaleString();
+      review.Datetime = review.Datetime.split(" ")[0].slice(0, -1);
+    });
+    reviews = reviews;
+  }
 
-  onMount(() => {
+  onMount(async () => {
     invalidateAll();
+    convert();
   });
 
   function getYear(dateTime: string): string {
@@ -110,24 +130,58 @@
   }
 
   function deleteReview(reviewID: number) {
-    fetch(apiUrl + "/reviews/" + reviewID, {
-      method: "DELETE",
-      credentials: "include",
-    }).then((res) => {
-      if (res.status === 200) {
-        Swal.fire({
-          title: "Your review has been deleted!",
-          icon: "success",
-        });
-        reviews = reviews.filter((review: any) => review.ID !== reviewID);
-        invalidateAll();
-      } else {
-        Swal.fire({
-          title: "Something went wrong!",
-          icon: "error",
-        });
-      }
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton:
+          "rounded-md bg-green-500 text-textWhite py-2 px-4 hover:bg-green-600 duration-300 mr-2",
+        cancelButton:
+          "rounded-md bg-red-500 text-textWhite py-2 px-4 hover:bg-red-600 duration-300",
+        popup: "rounded-lg bg-backgroundBlue text-textWhite text-[100%]",
+      },
+      buttonsStyling: false,
     });
+    swalWithBootstrapButtons
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire({
+            title: "Deleted!",
+            text: "Your review has been deleted.",
+            icon: "success",
+          });
+          fetch(apiUrl + "/reviews/" + reviewID, {
+            method: "DELETE",
+            credentials: "include",
+          }).then((res) => {
+            if (res.status === 200) {
+              reviews = reviews.filter((review: any) => review.ID !== reviewID);
+              invalidateAll();
+              reviewAmount--;
+            } else {
+              Swal.fire({
+                title: "Something went wrong!",
+                icon: "error",
+              });
+            }
+          });
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire({
+            title: "Cancelled",
+            text: "Your review is safe :)",
+            icon: "error",
+          });
+        }
+      });
   }
 </script>
 
@@ -278,10 +332,7 @@
           </div>
         {/key}
       </section>
-      <section
-        id="ratings"
-        class="bg-tileBlue py-8 antialiased mt-5 rounded-md"
-      >
+      <section id="ratings" class=" py-8 antialiased mt-5 rounded-md">
         <div class="max-w-2xl mx-auto px-4">
           <div class="flex justify-between items-center mb-6">
             <h2 class="text-lg lg:text-2xl font-bold text-textWhite">
@@ -353,36 +404,86 @@
               </div>
             </div>
           </form>
-          {#each reviews as review, index}
-            <article class="relative p-6 text-base bg-inputBlue rounded-lg">
-              {#if review.UserID === userID}
-                <div class="absolute top-0 right-0">
-                  <button
-                    class="rounded-full"
-                    on:click={() => {
-                      deleteReview(review.ID);
-                    }}
-                    ><svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-6 h-6 hover:text-red-700 duration-300"
+          {#key forNow}
+            {#each reviews as review, index}
+              <article class="relative p-6 text-base bg-inputBlue rounded-lg">
+                {#if review.UserID === userID}
+                  <div class="absolute top-0 right-0">
+                    <button
+                      class="rounded-full"
+                      on:click={() => {
+                        deleteReview(review.ID);
+                      }}
+                      ><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6 hover:text-red-700 duration-300"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                {/if}
+                <footer class="flex justify-between items-center mb-2">
+                  <div class="flex items-center">
+                    <p
+                      class="inline-flex items-center mr-3 text-sm text-textWhite font-bold"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              {/if}
-              <footer class="flex justify-between items-center mb-2">
-                <div class="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6 text-darkTextWhite mr-1"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        />
+                      </svg>
+                      {review.UserID}
+                      <Rating id="ratingLab" total={5} rating={review.Rating} />
+                    </p>
+                  </div>
+                  <p class="inline-flex ml-0 text-sm text-textWhite font-bold">
+                    {review.Datetime}
+                  </p>
+                </footer>
+                <div class="relative">
                   <p
-                    class="inline-flex items-center mr-3 text-sm text-textWhite font-bold"
+                    class="text-textWhite {!review.showSpoiler &&
+                    review.IsSpoiler
+                      ? 'blur-sm select-none'
+                      : ''} duration-300"
+                  >
+                    {review.Comment}
+                  </p>
+                  <button
+                    on:click={() => {
+                      Swal.fire({
+                        title: "Spoiler warning",
+                        background: "#2A313A",
+                        color: "#FFFFFF",
+                        text: "Our system has detected that this review may contains spoilers. Please be sure to read this review at your own risk.",
+                        footer:
+                          "You can see the review by clicking the button below.",
+                        icon: "warning",
+                      });
+                    }}
+                    class="{review.IsSpoiler
+                      ? !review.showSpoiler
+                        ? ''
+                        : 'hidden'
+                      : 'hidden'} flex absolute font-semibold text-black duration-500 bg-white rounded-lg px-4 py-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -390,98 +491,51 @@
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      class="w-6 h-6 text-darkTextWhite mr-1"
+                      class="w-6 h-6 mr-1"
                     >
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                      />
+                    </svg> This review contains spoilers
+                  </button>
+                </div>
+                <div
+                  class="flex items-center mt-4 space-x-4 {!review.IsSpoiler
+                    ? 'hidden'
+                    : ''} "
+                >
+                  <button
+                    type="button"
+                    class="flex items-center text-sm text-textWhite px-4 py-2 rounded-lg font-medium {review.showSpoiler
+                      ? 'hover:bg-green-500'
+                      : 'hover:bg-red-500'} duration-300"
+                    on:click={() => (review.showSpoiler = !review.showSpoiler)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6 mr-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
                       />
                     </svg>
-                    {review.UserID}
-                    <Rating id="ratingLab" total={5} rating={review.Rating} />
-                  </p>
+                    {!review.showSpoiler ? "Show spoiler" : "Hide spoiler"}
+                  </button>
                 </div>
-                <p class="inline-flex ml-0 text-sm text-textWhite font-bold">
-                  {review.Datetime}
-                </p>
-              </footer>
-              <div class="relative">
-                <p
-                  class="text-textWhite {!review.showSpoiler && review.IsSpoiler
-                    ? 'blur-sm select-none'
-                    : ''} duration-300"
-                >
-                  {review.Comment}
-                </p>
-                <button
-                  on:click={() => {
-                    Swal.fire({
-                      title: "Spoiler warning",
-                      background: "#2A313A",
-                      color: "#FFFFFF",
-                      text: "Our system has detected that this review may contains spoilers. Please be sure to read this review at your own risk.",
-                      footer:
-                        "You can see the review by clicking the button below.",
-                      icon: "warning",
-                    });
-                  }}
-                  class="{review.IsSpoiler
-                    ? !review.showSpoiler
-                      ? ''
-                      : 'hidden'
-                    : 'hidden'} flex absolute font-semibold text-black duration-500 bg-white rounded-lg px-4 py-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 mr-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-                    />
-                  </svg> This review contains spoilers
-                </button>
-              </div>
-              <div
-                class="flex items-center mt-4 space-x-4 {!review.IsSpoiler
-                  ? 'hidden'
-                  : ''} "
-              >
-                <button
-                  type="button"
-                  class="flex items-center text-sm text-textWhite px-4 py-2 rounded-lg font-medium {review.showSpoiler
-                    ? 'hover:bg-green-500'
-                    : 'hover:bg-red-500'} duration-300"
-                  on:click={() => (review.showSpoiler = !review.showSpoiler)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 mr-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-                    />
-                  </svg>
-                  {!review.showSpoiler ? "Show spoiler" : "Hide spoiler"}
-                </button>
-              </div>
-            </article>
-            {#if index !== reviews.length - 1}
-              <hr class="h-px my-8 bg-textWhite border-0" />
-            {/if}
-          {/each}
+              </article>
+              {#if index !== reviews.length - 1}
+                <hr class="h-px my-8 bg-textWhite border-0" />
+              {/if}
+            {/each}
+          {/key}
         </div>
       </section>
     </div>
