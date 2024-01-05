@@ -5,6 +5,7 @@
   import MinusButton from "./minusButton.svelte";
   import { createEventDispatcher } from "svelte";
   import SizeInput from "./sizeInput.svelte";
+  import { fire } from "$lib/swalTemplate";
 
   const dispatch = createEventDispatcher();
 
@@ -21,43 +22,19 @@
   // $: console.log(seats);
 
   function fireNotEnoughCols() {
-    Swal.fire({
-      icon: "warning",
-      title: "There are no columns left for removal",
-      color: "#FAFAFA",
-      timer: 5000,
-      customClass: "rounded-lg text-textWhite w-[70%] sm:w-1/3",
-      timerProgressBar: true,
-      background: "#1a1f25",
-      text: "Add a column first!",
-    });
+    fire("There are no columns left for removal\nAdd a column first", 3000);
     mouseDown = false;
   }
   function fireNotEnoughRows() {
-    Swal.fire({
-      icon: "warning",
-      title: "There are no rows left for removal",
-      color: "#FAFAFA",
-      timer: 5000,
-      customClass: "rounded-lg text-textWhite w-[70%] sm:w-1/3",
-      timerProgressBar: true,
-      background: "#1a1f25",
-      text: "Add a row first!",
-    });
+    fire("There are no rows left for removal\nAdd a row first", 3000);
     mouseDown = false;
   }
   function fireDoubleSeatHasNoSpace() {
-    Swal.fire({
-      icon: "warning",
-      title:
-        "A double seat can not be placed here because there is not enough space!",
-      color: "#FAFAFA",
-      timer: 5000,
-      customClass: "rounded-lg w-[70%] text-textWhite sm:w-1/3",
-      timerProgressBar: true,
-      background: "#1a1f25",
-      text: "Select a grid cell where itself and its right neighbor is empty!",
-    });
+    fire(
+      "A double seat can not be placed here because there is not enough space!\n" +
+        "Select a grid cell where itself and its right neighbor is empty!",
+      3000
+    );
     mouseDown = false;
   }
 

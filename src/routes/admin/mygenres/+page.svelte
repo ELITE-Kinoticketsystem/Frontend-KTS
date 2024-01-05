@@ -1,5 +1,6 @@
 <script lang="ts">
   import { apiUrl } from "$lib/_services/authService";
+  import { fire } from "$lib/swalTemplate";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
 
@@ -16,14 +17,7 @@
         if (response.ok) {
           return response.json();
         } else {
-          Swal.fire({
-            title: "Internal error occured!",
-            timer: 3000,
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire("Internal error occured!", 3000);
           return;
         }
       })
@@ -45,14 +39,7 @@
     }
 
     if (inputValue === "") {
-      Swal.fire({
-        title: "Genre name can not be empty!",
-        timer: 3000,
-        confirmButtonColor: "#89a3be",
-        customClass: {
-          popup: "bg-backgroundBlue text-textWhite text-[100%]",
-        },
-      });
+      fire("Genre name can not be empty!", 3000);
       return;
     }
     fetch(`${apiUrl}/genres`, {
@@ -64,47 +51,19 @@
     })
       .then((response) => {
         if (response.ok) {
-          Swal.fire({
-            title: `Genre ${inputValue} was created succesfully`,
-            timer: 3000,
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire(`Genre ${inputValue} was created succesfully`, 3000);
         } else {
-          Swal.fire({
-            title: "Genre couldn't be created due to internal error!",
-            timer: 3000,
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire("Genre couldn't be created due to internal error!", 3000);
         }
       })
       .catch((error) => {
-        Swal.fire({
-          title: "Some error occured when trying to access the database!",
-          timer: 3000,
-          confirmButtonColor: "#89a3be",
-          customClass: {
-            popup: "bg-backgroundBlue text-textWhite text-[100%]",
-          },
-        });
+        fire("Some error occured when trying to access the database!", 3000);
       });
     setTimeout(getLatestGenres, 50);
   }
   function genreAlreadyExists() {
     if (existingGenres.includes(inputValue)) {
-      Swal.fire({
-        title: "This genre already exists!",
-        timer: 3000,
-        confirmButtonColor: "#89a3be",
-        customClass: {
-          popup: "bg-backgroundBlue text-textWhite text-[100%]",
-        },
-      });
+      fire("This genre already exists!", 3000);
       return true;
     }
     return false;

@@ -31,7 +31,7 @@
     setTimeout(() => {
       currentTime = Math.floor((blockedUntil - Date.now()) / 1000);
       decreaseTimer();
-    }, 1000);
+    }, 100);
   }
   onDestroy(() => {
     timerSignal = 0;
@@ -62,9 +62,9 @@
   </div>
   <div class=" my-auto basis-2/3 h-full">
     {#key currentTime}
-      <div class="flex flex-col place-content-evenly items-center h-full">
+      <div class="flex flex-col justify-center items-center h-full">
         <p
-          class="w-full h-full text-center font-mono text-textWhite text-[3cqw] p-1 font-semibold"
+          class="font-mono text-textWhite align-middle text-[5.5vh] p-1 font-semibold"
         >
           {minutes}:{higherDigitSeconds}{lowerDigitSeconds}
         </p>
