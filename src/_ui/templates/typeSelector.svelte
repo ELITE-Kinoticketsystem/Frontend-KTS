@@ -32,9 +32,9 @@
           : 'bg-backgroundBlue'} rounded-lg mb-5 ring-white ring-1 hover:bg-blue-400 w-full"
       >
         <p
-          class="m-1 sm:m-2 text-textWhite text-center text-xs sm:text-sm md:text-lg xl:text-xl"
+          class="m-1 sm:m-2 text-textWhite text-center first-letter:uppercase text-xs sm:text-sm md:text-lg xl:text-xl"
         >
-          {item[0].toUpperCase() + item.slice(1)}
+          {item}
         </p>
       </button>
     </div>

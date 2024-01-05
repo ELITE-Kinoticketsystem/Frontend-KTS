@@ -46,7 +46,7 @@
       height="100%"
       viewBox="0 0 100 50"
     >
-      <rect width="100" height="50" rx="20" fill={seatColors.Loge} />
+      <rect width="100" height="50" rx="20" fill={seatColors.loge} />
     </svg>
     <div class="col-span-4">
       <p class="c text-center text-textWhite text-lg font-semibold">Loge</p>
