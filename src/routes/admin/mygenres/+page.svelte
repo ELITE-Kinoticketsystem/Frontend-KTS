@@ -5,7 +5,8 @@
   import Swal from "sweetalert2";
 
   let inputValue = "";
-  let existingGenres: any[] = [];
+  let genres: any[] = [];
+  let indexOfVisibleRing = -1;
 
   async function getLatestGenres() {
     const data = fetch(`${apiUrl}/genres`, {
@@ -17,15 +18,12 @@
         if (response.ok) {
           return response.json();
         } else {
-          fire("Internal error occured!", 3000);
+          fire("Genres could not be fetched due to an internal error!", 3000);
           return;
         }
       })
-      .then((genres) => {
-        existingGenres = [];
-        genres.forEach((element: any) => {
-          existingGenres = [...existingGenres, element.GenreName];
-        });
+      .then((fetchedGenres) => {
+        genres = fetchedGenres;
       });
   }
 
@@ -56,17 +54,61 @@
           fire("Genre couldn't be created due to internal error!", 3000);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         fire("Some error occured when trying to access the database!", 3000);
       });
     setTimeout(getLatestGenres, 50);
   }
   function genreAlreadyExists() {
-    if (existingGenres.includes(inputValue)) {
-      fire("This genre already exists!", 3000);
+    let genreNames = genres.map((genre) => genre.GenreName.toLowerCase());
+    let index = genreNames.findIndex((name) => {
+      return name === inputValue.toLowerCase();
+    });
+    if (index !== -1) {
+      fire("This genre already exists!", 1500);
+      setTimeout(() => {
+        indexOfVisibleRing = index;
+      }, 1500);
+      setTimeout(() => {
+        indexOfVisibleRing = -1;
+      }, 3100);
+      inputValue = "";
       return true;
     }
     return false;
+  }
+  function removeButtonWasClicked(genre: any) {
+    Swal.fire({
+      title: `Are you sure you want to delete '${genre.GenreName}' ?`,
+      showCancelButton: true,
+      showConfirmButton: true,
+      cancelButtonColor: "#aaaaaa",
+      confirmButtonColor: "#89a3be",
+      customClass: {
+        popup: "bg-tileBlue text-textWhite rounded-lg mt-12",
+      },
+    }).then((answer) => {
+      if (answer.isConfirmed) {
+        deleteGenre(genre);
+      }
+    });
+  }
+  function deleteGenre(genre: any) {
+    console.log(genre.ID);
+    fetch(`${apiUrl}/genres/${genre.ID}`, {
+      method: "DELETE",
+      mode: "cors",
+      credentials: "include",
+    }).then((response) => {
+      if (response.status === 200) {
+        fire(`${genre.GenreName} was succesfully deleted`, 3000);
+      } else {
+        fire(
+          `${genre.GenreName} was not deleted due to an internal error!`,
+          3000
+        );
+      }
+    });
   }
 </script>
 
@@ -111,22 +153,29 @@
     <div class="w-full bg-headerBlue pl-2 rounded-t-md">
       <p class="text-textWhite text-[1.2cqw] font-bold">All Genres</p>
     </div>
-    {#key existingGenres}
-      {#each existingGenres as genre}
+    {#key genres}
+      {#each genres as genre, index (index)}
         <div
-          class="flex flex-row items-center justify-between ring-1 ring-green-400 w-full h-[4vh] border-t-[1px] border-white"
+          class="flex flex-row {index === indexOfVisibleRing
+            ? 'ring-2 ring-red-500 ring-inset'
+            : ''} items-center justify-between px-[0.4rem] w-full h-[4vh] border-t-[1px] border-white"
         >
-          <p class="ring- text-textWhite font-semibold text-[1.2cqw] pl-2">
-            {genre}
+          <p class="text-textWhite font-semibold text-[1.2cqw]">
+            {genre.GenreName}
           </p>
-          <button class="flex w-[5%]">
+          <button
+            on:click={() => {
+              removeButtonWasClicked(genre);
+            }}
+            class="flex w-[4.5%]"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="#ffffff"
-              viewBox="4 2 16 20"
+              viewBox="0 0 23 25"
               stroke-width="1.5"
               stroke="#000000"
-              class="w-[90%] h-[90%]"
+              class="w-full h-full"
             >
               <path
                 stroke-linecap="round"
@@ -138,7 +187,7 @@
         </div>
       {/each}
 
-      {#if existingGenres.length === 0}
+      {#if genres.length === 0}
         <div class="w-full border-b-[1px] border-white">
           <p class="text-textWhite font-semibold text-[100%] pl-2">No genres</p>
         </div>

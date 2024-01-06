@@ -9,46 +9,53 @@
   let seatCategories = ["regular", "loge", "vip"];
   let seatTypes = ["regular", "double", "eraser"];
   let clearAllSeatsSignal = 0;
-  let theatreNames: string[] = ["Cineplex", "Cinestar", "Casablanca", "Elias"];
-  // onMount(async () => {
-  //   const data = fetch("", {
-  //     method: "GET",
-  //     mode: "cors",
-  //     credentials: "include",
-  //   });
-  //   data
-  //     .then((response) => {
-  //       return response.json();
-  //     })
-  //     .then((halls) => {
-  //       halls.forEach((element: any) => {
-  //         theatreNames = [...theatreNames, element.name];
-  //       });
-  //     });
-  // });
+  let theatres: string[] = [];
+
+  onMount(async () => {
+    const data = fetch(`${apiUrl}/theatres`, {
+      mode: "cors",
+      credentials: "include",
+    });
+    data
+      .then((response) => {
+        if (!response.ok) {
+          fire("A database error occured", 3000);
+        }
+        return response.json();
+      })
+      .then((fetchedTheatres) => {
+        theatres = fetchedTheatres;
+      });
+  });
 
   let seatTypeToPlace = seatTypes.at(0);
   let curSeatCategory = seatCategories.at(0);
   let hallWidth = 23;
   let hallHeight = 15;
   let seats: any[] = [];
+  let hallName = "";
   $: seats = seats;
   $: seatTypeToPlace = seatTypeToPlace;
   $: curSeatCategory = curSeatCategory;
   $: hallWidth = hallWidth;
   $: hallHeight = hallHeight;
-  $: console.log(JSON.stringify({ theatreID: "", seats }));
-  function postHall(name: string) {
-    fetch(`${apiUrl}/halls`, {
+
+  function postHall(theatre: any) {
+    let success = false;
+    fetch(`${apiUrl}/cinema-halls`, {
       method: "POST",
       mode: "cors",
       credentials: "include",
-      body: JSON.stringify({ theatreID: "", seats }),
+      body: JSON.stringify({
+        theatreID: theatre.ID,
+        hallName,
+        seats,
+      }),
     }).then((response) => {
-      return response.ok;
+      success = response.status === 200;
     });
 
-    return false;
+    return success;
   }
 
   function hallIsEmpty() {
@@ -85,46 +92,29 @@
         title: "text-textWhite bg-backgroundBlue",
         popup: "bg-backgroundBlue",
       },
-      preConfirm: (hallName) => {
+      preConfirm: (enteredHallName) => {
         let nameIsValid = true;
         if (!nameIsValid) {
-          Swal.fire({
-            title: "The name is invalid! Please enter a different name",
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          });
+          fire(`${enteredHallName} is not a valid name`, 3000);
         } else {
+          hallName = enteredHallName;
           Swal.fire({
-            title: `In which of your theatres is ${hallName}?`,
+            title: `In which of your theatres is ${enteredHallName}?`,
             input: "select",
-            inputOptions: theatreNames,
+            inputOptions: theatres.map((theatre: any) => {
+              return theatre.Name;
+            }),
             showCancelButton: true,
             confirmButtonColor: "#89a3be",
             customClass: {
               popup: "bg-backgroundBlue text-textWhite text-[100%]",
             },
-          }).then((selectedHall) => {
-            if (postHall(selectedHall.value)) {
-              Swal.fire({
-                title: `${hallName} was created succesfully!`,
-                timer: 1500,
-                confirmButtonColor: "#89a3be",
-                customClass: {
-                  popup: "bg-backgroundBlue text-textWhite text-[100%]",
-                },
-              });
-            } else {
-              Swal.fire({
-                title: `${hallName} could not be created due to internal problems!`,
-                timer: 1500,
-                confirmButtonColor: "#89a3be",
-                customClass: {
-                  popup: "bg-backgroundBlue text-textWhite text-[100%]",
-                },
-              });
-            }
+          }).then((selectedHallIndex: any) => {
+            fire(
+              postHall(theatres.at(selectedHallIndex))
+                ? `${hallName} was created succesfully!`
+                : `${hallName} could not be created due to internal problems!`
+            );
           });
         }
       },
@@ -182,7 +172,6 @@
             if (hallIsEmpty()) {
               return;
             }
-
             Swal.fire({
               title: "Do you want to remove all placed seats?",
               showDenyButton: true,

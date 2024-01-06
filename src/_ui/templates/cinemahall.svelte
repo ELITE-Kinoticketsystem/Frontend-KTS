@@ -1,7 +1,6 @@
 <script lang="ts">
   import DrawSeat from "./drawSeat.svelte";
   import Swal from "sweetalert2";
-
   import { createEventDispatcher, onMount } from "svelte";
   import { apiUrl } from "$lib/_services/authService";
   import { page } from "$app/stores";
@@ -18,6 +17,7 @@
   export let blockedUntil: number;
   export let seats: any[] = [];
   export let seatColors: any;
+  export let clearSeats: number = 0;
   export let selectedSeats: any[] = []; //used as an ordered list
 
   let seatsLength = 0;
@@ -25,6 +25,26 @@
   $: {
     seatsLength = seats.length;
     seatRowLength = seats.length > 0 ? seats.at(0).length : 0;
+  }
+
+  $: if (clearSeats === 1) {
+    fetch(`${apiUrl}/events/${eventId}/seats/unblock-all`, {
+      method: "PATCH",
+      mode: "cors",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status !== 200) {
+          console.log(response);
+          fire("Not all seats could be freed correctly!", 3000);
+        }
+        return response.json();
+      })
+      .then((fetchedResponse) => {
+        dispatch("seatSelectionChanged");
+      });
+
+    clearSeats = 0;
   }
 
   function getSeatToUnblock(seat: any) {
@@ -64,7 +84,7 @@
           blockedUnt.blockedUntil === null
             ? 0
             : new Date(Date.parse(blockedUnt.blockedUntil)).getTime();
-        dispatch("seatSelectionChanged", { wasBlock: false });
+        dispatch("seatSelectionChanged");
       });
   }
 
@@ -104,7 +124,7 @@
           blockedUnt.blockedUntil === null
             ? 0
             : new Date(Date.parse(blockedUnt.blockedUntil)).getTime();
-        dispatch("seatSelectionChanged", { wasBlock: true });
+        dispatch("seatSelectionChanged");
       });
   }
 
@@ -217,12 +237,13 @@
       {#each seatrow as seat}
         {#if seat.Type === "regular" || seat.Type === "double"}
           <button
-            class="w-full h-full ring-white {seat.Type === 'double'
+            disabled={seat.BlockedByOther}
+            class="disabled:cursor-not-allowed w-full h-full ring-white {seat.Type ===
+            'double'
               ? 'col-span-2'
               : ''} "
             on:click={() => {
               seatWasSelected(seat);
-              dispatch("seatWasSelected", { selectedSeats });
             }}
           >
             {#key selectedSeats}

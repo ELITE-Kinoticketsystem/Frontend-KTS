@@ -2,20 +2,23 @@
   import PlusButton from "./plusButton.svelte";
   import TimeRow from "./timeRow.svelte";
 
-  export let allShowings = [
-    {
-      hall: { hallname: "Select a hall", hallId: "0" },
-      date: new Date().toISOString(),
-      times: ["12:00"],
-    },
-  ];
+  export let allShowings: any[] = [];
 
-  let hall = { hallname: "Select a hall", hallId: "" };
-  let date: string =
-    allShowings.length > 0 ? allShowings.at(0)!.date : new Date().toISOString();
+  let addedDefaultTheatre = {
+    Name: "Theatre",
+    ID: "",
+    AddressID: "",
+    LogoURL: null,
+  };
+  let addedDefaultHall = { ID: "", Name: "Hall", Capacity: 0, TheatreID: "" };
+  let addedDefaultDate: string =
+    allShowings.length > 0
+      ? allShowings.at(0)!.date
+      : new Date().toISOString().substr(0, 10);
   $: {
-    date = date;
-    hall = hall;
+    addedDefaultDate = addedDefaultDate;
+    addedDefaultHall = addedDefaultHall;
+    addedDefaultTheatre = addedDefaultTheatre;
     allShowings = allShowings;
   }
 </script>
@@ -27,7 +30,7 @@
         <TimeRow
           bind:times={showing.times}
           bind:date={showing.date}
-          bind:hallname={showing.hall.hallname}
+          bind:selectedHall={showing.hall}
         />
         <button
           class="z-10 w-[3%] aspect-1 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2"
@@ -56,7 +59,15 @@
   </div>
   <button
     on:click={() => {
-      allShowings = [...allShowings, { hall, date, times: ["12:00"] }];
+      allShowings = [
+        ...allShowings,
+        {
+          theatre: addedDefaultTheatre,
+          hall: addedDefaultHall,
+          date: addedDefaultDate,
+          times: ["12:00"],
+        },
+      ];
     }}
     class="flex mx-auto w-[3%] my-3 hover:bg-blue-400 rounded-full"
   >

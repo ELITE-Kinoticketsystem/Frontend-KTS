@@ -15,17 +15,16 @@
   let selectedSeats: any[] = [];
   let timerSignal = 0;
   let blockedUntil = 0;
-  let disabled: boolean;
-  $: disabled = disabled;
-  disabled = true;
+  let disabled: boolean = true;
+  let clearSeats = 0;
 
   $: {
     seats = seats;
+    clearSeats = clearSeats;
+    disabled = disabled;
     aspectRatio = aspectRatio;
     blockedUntil = blockedUntil;
   }
-
-  $: console.log(aspectRatio);
   const seatColors = {
     regular: "#86BBD8",
     vip: "#F6AE2D",
@@ -52,18 +51,25 @@
         return response.json();
       })
       .then((seatData) => {
-        seats = seatData.seat_rows;
         console.log(seatData);
-        selectedSeats = seatData.currentUserSeats;
+        seats = seatData.seat_rows;
+        selectedSeats =
+          seatData.currentUserSeats === null ? [] : seatData.currentUserSeats;
         blockedUntil =
           seatData.blockedUntil === null
             ? 0
             : new Date(Date.parse(seatData.blockedUntil)).getTime();
-        timerSignal = selectedSeats.length > 0 ? 1 : 0;
+        timerSignal =
+          seatData.currentUserSeats === null ||
+          seatData.currentUserSeats.length == 0
+            ? 0
+            : 1;
         aspectRatio = `aspect-ratio: ${
           seats.length > 0 ? seats.at(0).length : 0
         }/${seats.length};`;
       });
+    selectedSeats = selectedSeats;
+    seats = seats;
   }
   function timerFinished() {
     getDBSeats();
@@ -72,6 +78,7 @@
       4500
     );
   }
+
   onMount(async () => {
     getDBSeats();
   });
@@ -85,14 +92,13 @@
     style={aspectRatio}
   >
     <Cinemahall
+      bind:clearSeats
       bind:seats
       bind:blockedUntil
       {seatColors}
       bind:selectedSeats
-      on:seatSelectionChanged={(e) => {
+      on:seatSelectionChanged={() => {
         getDBSeats();
-        selectedSeats = selectedSeats;
-        timerSignal = e.detail.wasBlock ? 1 : 0;
       }}
     />
   </div>
@@ -115,18 +121,47 @@
         </div>
       {/key}
     </div>
-    <button
-      disabled={selectedSeats.length === 0}
-      on:click={() => {
-        goto(`/confirmation/${$page.params.eventId}`);
-      }}
-      class="ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
+    <div class="flex flex-row justify-between w-full">
+      <button
+        disabled={selectedSeats.length === 0}
+        on:click={() => {
+          goto(`/confirmation/${$page.params.eventId}`);
+        }}
+        class="w-[45%] ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
       disabled:bg-slate-400 disabled:opacity-40 disabled:cursor-not-allowed"
-    >
-      <div class="flex flex-row items-center place-content-evenly h-full">
-        <p class="text-textWhite text-[150%]">Book now</p>
-      </div>
-    </button>
+      >
+        <div class="flex flex-row items-center place-content-evenly h-full">
+          <p class="text-textWhite text-[150%]">Book now</p>
+        </div>
+      </button>
+      <button
+        disabled={selectedSeats.length === 0}
+        on:click={() => {
+          Swal.fire({
+            title: "Are you sure you want to free all your seats?",
+            showDenyButton: true,
+            confirmButtonText: "Sure",
+            denyButtonColor: "#888888",
+            denyButtonText: "Cancel",
+            confirmButtonColor: "#89a3be",
+            customClass: {
+              popup: "bg-backgroundBlue text-textWhite text-[100%]",
+            },
+          }).then((result) => {
+            if (result.isConfirmed) {
+              clearSeats = 1;
+              timerSignal = 0;
+            }
+          });
+        }}
+        class="w-[45%] ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
+      disabled:bg-slate-400 disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        <div class="flex flex-row items-center place-content-evenly h-full">
+          <p class="text-textWhite text-[150%]">Cancel</p>
+        </div>
+      </button>
+    </div>
     <div class="w-full">
       <SeatLegend {seatColors} />
     </div>

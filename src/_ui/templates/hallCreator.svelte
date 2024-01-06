@@ -19,7 +19,6 @@
   const yStartDim = 15;
   let mouseDown = false;
   $: mouseDown = mouseDown;
-  // $: console.log(seats);
 
   function fireNotEnoughCols() {
     fire("There are no columns left for removal\nAdd a column first", 3000);

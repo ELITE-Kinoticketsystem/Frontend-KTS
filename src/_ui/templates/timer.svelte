@@ -1,6 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from "svelte";
 
+  const startTime = 900;
+
   export let blockedUntil: number = 0;
 
   let currentTime =
@@ -17,16 +19,26 @@
   $: blockedUntil = blockedUntil;
 
   function startTimer(signal: number) {
-    if (signal > 0) {
+    if (signal === 0) {
+      currentTime = startTime;
+      return;
+    }
+    if (signal === 1) {
       decreaseTimer();
     }
   }
   function decreaseTimer() {
+    if (timerSignal === 0) {
+      return;
+    }
     if (currentTime === 0) {
-      currentTime = blockedUntil;
       dispatch("timerFinished");
       return;
     }
+    currentTime =
+      blockedUntil === 0
+        ? startTime
+        : Math.floor((blockedUntil - Date.now()) / 1000);
 
     setTimeout(() => {
       currentTime = Math.floor((blockedUntil - Date.now()) / 1000);
@@ -62,9 +74,7 @@
   </div>
   <div class=" my-auto w-[60%] h-full">
     {#key currentTime}
-      <div
-        class="flex flex-col justify-center items-center h-full w-full"
-      >
+      <div class="flex flex-col justify-center items-center h-full w-full">
         <p
           class="font-mono text-textWhite font-semibold
           text-[7vw] sm:text-[2.8vw]"
