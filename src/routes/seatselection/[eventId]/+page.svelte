@@ -127,7 +127,7 @@
         on:click={() => {
           goto(`/confirmation/${$page.params.eventId}`);
         }}
-        class="w-[45%] ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
+        class="w-[48%] ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
       disabled:bg-slate-400 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <div class="flex flex-row items-center place-content-evenly h-full">
@@ -140,7 +140,7 @@
           Swal.fire({
             title: "Are you sure you want to free all your seats?",
             showDenyButton: true,
-            confirmButtonText: "Sure",
+            confirmButtonText: "I'm sure",
             denyButtonColor: "#888888",
             denyButtonText: "Cancel",
             confirmButtonColor: "#89a3be",
@@ -154,7 +154,7 @@
             }
           });
         }}
-        class="w-[45%] ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
+        class="w-[48%] ring-1 ring-white bg-tileBlue my-4 rounded-lg enabled:hover:bg-blue-400 duration-300
       disabled:bg-slate-400 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <div class="flex flex-row items-center place-content-evenly h-full">
