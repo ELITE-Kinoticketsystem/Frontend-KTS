@@ -14,10 +14,9 @@
 
   let allShowings: any[] = [
     {
-      hall: { hallname: "Select a hall", hallId: "" },
-      date: new Date(new Date().getTime() + oneDayInMs)
-        .toISOString()
-        .substr(0, 10),
+      theatre: { Name: "Select Theatre", ID: "", AddressID: "", LogoURL: null },
+      hall: { ID: "", Name: "Select Hall", Capacity: 0, TheatreID: "" },
+      date: new Date().toISOString().substr(0, 10),
       times: ["12:00"],
     },
   ];
@@ -103,12 +102,13 @@
                   new Date().getTimezoneOffset() * 60 * 1000
               )
             ).toISOString();
+            fire("Event is currently under construction");
 
             fetch(`${apiUrl}/events`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                CinemaHallID: "1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C01",
+                CinemaHallID: showing.hall.ID,
                 Description,
                 End,
                 EventSeatCategories: [
@@ -135,6 +135,15 @@
               }),
               mode: "cors",
               credentials: "include",
+            }).then((response) => {
+              if (response.ok) {
+                fire("The event was successfully created!", 3000);
+              } else {
+                fire(
+                  "The event could not be created due to internal problems!",
+                  3000
+                );
+              }
             });
           });
         });
@@ -284,8 +293,3 @@
     </div>
   </div>
 </div>
-
-<!-- Title: string, start: Date:isoString, end: Date:isoString, description: string, eventType: string, cinemaHallId: uuid, array[movies: uuid],
-     array[eventSeatCategories{seatCategoryId: uuid, price: int}], is3D
-     https://imageio.forbes.com/specials-images/imageserve/627bdaec36beab21cd23ad21/0x0.jpg
-     -->
