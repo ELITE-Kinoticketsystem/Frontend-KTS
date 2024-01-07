@@ -69,7 +69,6 @@
       class="w-full h-full rounded-lg p-2 duration-300 text-sm text-textWhite
       border border-gray-300 bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
       type="text"
-      maxlength="24"
       placeholder="Search for movies..."
       bind:value={inputValue}
       on:focus={() => {
@@ -120,4 +119,3 @@
     </div>
   </div>
 </div>
-

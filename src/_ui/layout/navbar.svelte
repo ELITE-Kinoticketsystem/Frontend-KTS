@@ -175,13 +175,17 @@
                   </a>
                 </li>
                 <li>
-                  <a href={isUserLoggedIn ? "/auth/logout" : "/auth/login"}>
+                  <button
+                    on:click={() => {
+                      document.cookie = `username=John Smith; expires=Thu, 18 Dec 2013 12:00:00 UTC; path=/`;
+                    }}
+                  >
                     <div
-                      class="flex items-center p-2 rounded hover:bg-buttonBlue duration-300"
+                      class="flex items-center p-2 ring-2 ring-red-500 rounded hover:bg-buttonBlue duration-300"
                     >
                       {isUserLoggedIn ? "Logout" : "Login"}
                     </div>
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

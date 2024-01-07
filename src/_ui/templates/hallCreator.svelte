@@ -115,7 +115,7 @@
     switch (seatTypeToPlace) {
       //eraser is selected
       case "empty":
-        eraseSeatAt(seatTypeToPlace, x, y);
+        eraseSeatAt(seats.at(y).at(x).Type, x, y);
         break;
       case "regular":
         let previousType = seats.at(y).at(x).Type;
@@ -433,91 +433,82 @@
     {/each}
 
     <div
-      class="absolute -right-8 sm:-right-0 translate-x-[150%] top-1/2 -translate-y-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[120%] flex flex-col items-center justify-between h-[25%]"
     >
-      <button on:click={addColToRight}><PlusButton /></button>
-    </div>
-    <div
-      class="absolute -right-8 sm:-right-0 sm:translate-x-[120%] top-1/2 -translate-y-1/2 w-14"
-    >
-      <SizeInput
-        placeholder={"X:"}
-        bind:updateSize={hallWidth}
-        on:sizeChanged={(e) => {
-          setColsFromRight(e.detail);
-        }}
-      />
-    </div>
-    <div
-      class="absolute -right-8 sm:-right-0 translate-x-[150%] top-1/2 translate-y-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
-    >
-      <button on:click={removeRightCol}><MinusButton /></button>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={addColToRight}><PlusButton /></button>
+      </div>
+      <div class="w-14">
+        <SizeInput
+          placeholder={"X:"}
+          bind:updateSize={hallWidth}
+          on:sizeChanged={(e) => {
+            setColsFromRight(e.detail);
+          }}
+        />
+      </div>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={removeRightCol}><MinusButton /></button>
+      </div>
     </div>
 
     <div
-      class="absolute -left-8 sm:-left-0 top-1/2 -translate-x-[150%] -translate-y-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-[120%] flex flex-col items-center justify-between h-[25%]"
     >
-      <button on:click={addColToLeft}><PlusButton /></button>
-    </div>
-    <div
-      class="absolute -left-8 sm:-left-0 top-1/2 -translate-x-[120%] -translate-y-1/2 w-14"
-    >
-      <SizeInput
-        placeholder={"X:"}
-        bind:updateSize={hallWidth}
-        on:sizeChanged={(e) => {
-          setColsFromLeft(e.detail);
-        }}
-      />
-    </div>
-    <div
-      class="absolute -left-8 sm:-left-0 top-1/2 translate-y-[90%] -translate-x-[150%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
-    >
-      <button on:click={removeLeftCol}><MinusButton /></button>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={addColToLeft}><PlusButton /></button>
+      </div>
+      <div class="w-14">
+        <SizeInput
+          placeholder={"X:"}
+          bind:updateSize={hallWidth}
+          on:sizeChanged={(e) => {
+            setColsFromLeft(e.detail);
+          }}
+        />
+      </div>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={removeLeftCol}><MinusButton /></button>
+      </div>
     </div>
 
     <div
-      class="absolute -bottom-8 sm:-bottom-0 translate-y-[150%] left-1/2 translate-x-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
+      class="absolute -bottom-8 left-1/2 flex flex-row justify-between translate-y-[70%] -translate-x-1/2 w-[18%]"
     >
-      <button on:click={addRowToBottom}><PlusButton /></button>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={removeBottomRow}><MinusButton /></button>
+      </div>
+      <div class="w-14">
+        <SizeInput
+          placeholder={"Y:"}
+          bind:updateSize={hallHeight}
+          on:sizeChanged={(e) => {
+            setRowsFromBottom(e.detail);
+          }}
+        />
+      </div>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={addRowToBottom}><PlusButton /></button>
+      </div>
     </div>
     <div
-      class="absolute -bottom-8 sm:-bottom-0 translate-y-[155%] left-1/2 -translate-x-1/2 w-14"
+      class="absolute -top-8 -translate-y-[70%] left-1/2 -translate-x-1/2 flex flex-row justify-between w-[18%]"
     >
-      <SizeInput
-        placeholder={"Y:"}
-        bind:updateSize={hallHeight}
-        on:sizeChanged={(e) => {
-          setRowsFromBottom(e.detail);
-        }}
-      />
-    </div>
-    <div
-      class="absolute -bottom-8 sm:-bottom-0 translate-y-[150%] left-1/2 -translate-x-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
-    >
-      <button on:click={removeBottomRow}><MinusButton /></button>
-    </div>
-
-    <div
-      class="absolute -top-8 sm:-top-0 -translate-y-[150%] left-1/2 translate-x-[90%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
-    >
-      <button on:click={addRowToTop}><PlusButton /></button>
-    </div>
-    <div
-      class="absolute -top-8 sm:-top-0 -translate-y-[155%] left-1/2 -translate-x-1/2 w-14"
-    >
-      <SizeInput
-        placeholder={"Y:"}
-        bind:updateSize={hallHeight}
-        on:sizeChanged={(e) => {
-          setRowsFromTop(e.detail);
-        }}
-      />
-    </div>
-    <div
-      class="absolute -top-8 sm:-top-0 -translate-y-[150%] left-1/2 -translate-x-[190%] hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}"
-    >
-      <button on:click={removeTopRow}><MinusButton /></button>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={removeTopRow}><MinusButton /></button>
+      </div>
+      <div class="w-14">
+        <SizeInput
+          placeholder={"Y:"}
+          bind:updateSize={hallHeight}
+          on:sizeChanged={(e) => {
+            setRowsFromTop(e.detail);
+          }}
+        />
+      </div>
+      <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
+        <button on:click={addRowToTop}><PlusButton /></button>
+      </div>
     </div>
   </button>
 </div>

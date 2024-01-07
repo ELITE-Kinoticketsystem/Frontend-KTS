@@ -7,8 +7,9 @@
   let inputValue = "";
   let genres: any[] = [];
   let indexOfVisibleRing = -1;
+  $: genres = genres;
 
-  async function getLatestGenres() {
+  function getLatestGenres() {
     const data = fetch(`${apiUrl}/genres`, {
       mode: "cors",
       credentials: "include",
@@ -40,15 +41,17 @@
       fire("Genre name can not be empty!", 3000);
       return;
     }
-    fetch(`${apiUrl}/genres`, {
+    fetch(`${apiUrl}/genres/${inputValue}`, {
       method: "POST",
       headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ GenreName: inputValue }),
       mode: "cors",
       credentials: "include",
     })
       .then((response) => {
         if (response.ok) {
+          setTimeout(() => {
+            getLatestGenres();
+          }, 50);
           fire(`Genre ${inputValue} was created succesfully`, 3000);
         } else {
           fire("Genre couldn't be created due to internal error!", 3000);
@@ -57,7 +60,6 @@
       .catch(() => {
         fire("Some error occured when trying to access the database!", 3000);
       });
-    setTimeout(getLatestGenres, 50);
   }
   function genreAlreadyExists() {
     let genreNames = genres.map((genre) => genre.GenreName.toLowerCase());
@@ -71,7 +73,7 @@
       }, 1500);
       setTimeout(() => {
         indexOfVisibleRing = -1;
-      }, 3100);
+      }, 3000);
       inputValue = "";
       return true;
     }
@@ -94,14 +96,16 @@
     });
   }
   function deleteGenre(genre: any) {
-    console.log(genre.ID);
     fetch(`${apiUrl}/genres/${genre.ID}`, {
       method: "DELETE",
       mode: "cors",
       credentials: "include",
     }).then((response) => {
       if (response.status === 200) {
-        fire(`${genre.GenreName} was succesfully deleted`, 3000);
+        getLatestGenres();
+        setTimeout(() => {
+          fire(`${genre.GenreName} was succesfully deleted`, 3000);
+        }, 10);
       } else {
         fire(
           `${genre.GenreName} was not deleted due to an internal error!`,

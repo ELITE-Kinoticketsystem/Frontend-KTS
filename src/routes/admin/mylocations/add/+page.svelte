@@ -46,7 +46,7 @@
     if (!RegExp("^[0-9]{3,6}$").test(Zipcode)) {
       zipcodeIsValid = false;
     }
-    if (!RegExp("^[a-z]{2,20}$").test(Country)) {
+    if (!RegExp("^[a-zA-Z]{2,20}$").test(Country)) {
       countryIsValid = false;
     }
   }
@@ -291,7 +291,7 @@
         countryIsValid = true;
       }}
       on:blur={() => {
-        if (!RegExp("^[a-z]{2,20}$").test(Country)) {
+        if (!RegExp("^[a-zA-Z]{2,20}$").test(Country)) {
           countryIsValid = false;
         }
       }}
