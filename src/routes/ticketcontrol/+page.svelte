@@ -3,7 +3,6 @@
     import { onMount } from 'svelte'
     import Invalid from "./invalid.svelte"
     import Valid from "./valid.svelte"
-    import Booking from "/src/routes/booking/+page.svelte"
 
 
     let scanning = false;

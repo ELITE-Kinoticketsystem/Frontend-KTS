@@ -62,11 +62,7 @@
       <hr />
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div class="flex flex-col mt-3 p-2 border-2 rounded-md border-textWhite">
-        <button
-          on:mouseenter={() => {
-            startVideo();
-          }}
-        >
+        <button>
           <img
             id="player-1"
             src={movie.wallpaper}
