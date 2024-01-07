@@ -3,13 +3,15 @@
     import { onMount } from 'svelte'
     import Invalid from "./invalid.svelte"
     import Valid from "./valid.svelte"
+    import Booking from "/src/routes/booking/+page.svelte"
+
 
     let scanning = false;
-
     let html5Qrcode;
     let ticketQrcodeMaually;
     let isValid="";
     let manualInput;
+    let isScanning;
     let backCamera = 1;
     let frontCamera = 0;
     let isTicketPayed;
@@ -19,11 +21,12 @@
     $: isUsed = "";
     $: ticketAlreadyUsed = false;
     $: isNotFound = "";
-
+    $: isPayed = "";
+    $: ticketDetails = "";
 
     // $: ticketDetailsInput = "";
     // $: ticketDetailsScanned = "";
-    $: ticketDetails = "";
+
 
     onMount(init);
 
@@ -68,15 +71,15 @@
     }
 
     function manual(event){
-        manualInput = true;
+        isScanning = false;
         ticketQrcodeMaually = event.target.value;
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        //alert(`Code matched = ${decodedText}`)
+        isScanning = true;
         showData(decodedText);
         console.log(decodedResult);
-        html5Qrcode.pause()
+        html5Qrcode.pause();
     }
 
     function onScanFailure(error) {
@@ -91,6 +94,7 @@
     async function showData(decodedText){
         let ticket;
         codeNotFound = true;
+
 
         await getTicket().then((tickets) =>{
             for(let i=0; i<tickets.length; i++){
@@ -142,84 +146,51 @@
 
 </script>
 
-<style>
-    main {
-        background-color: #2A313A;
-        width: 800px;
-        height: 90%;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        margin-left: 33%;
-    }
-    reader {
-        background-color: black;
-        width: 100%;
-    }
-    container{
-        background-color: black;
-        width: 100%;
-    }
-
-    button {
-        background-color: cadetblue;
-        color: black;
-        padding: 5px 20px 5px 20px;
-    }
-
-    div{
-        color: white;
-    }
-
-</style>
-
-<main>
-    <reader id="reader" />
+<div class="bg-gray-800 max-w-lg w-full h-9/10 text-center flex flex-col items-center justify-center space-y-5">
+    <div id="reader" class="bg-black w-full"></div>
     {#if codeNotFound}
-        <h1 style="color: white">Error</h1>
-        <h3 style="color: white">The given Code was NOT found.</h3>
+        <h1 class="text-white">Error</h1>
+        <h3 class="text-white">The given Code was NOT found.</h3>
         <Invalid />
-        <button     action="action"
-                    onclick="window.history.go(0); return false;"
-                    type="submit">Try again </button>
+        <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2"
+                onclick="window.history.go(0); return false;"
+                type="submit">Try again </button>
     {:else if ticketAlreadyUsed}
-        <h1 style="color: white">Error</h1>
-        <h3 style="color: white">The given Code was ALREADY used.</h3>
+        <h1 class="text-white">Error</h1>
+        <h3 class="text-white">The given Code was ALREADY used.</h3>
         <Invalid />
-        <button     action="action"
-                    onclick="window.history.go(0); return false;"
-                    type="submit">Try again </button>
+        <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2"
+                onclick="window.history.go(0); return false;"
+                type="submit">Try again </button>
     {:else}
         {#if scanning}
-            <div id="container">
-                <div style="font-size: 20px"> Ticket Information </div>
+            <div id="container" class="text-white text-xl">
+                Ticket Information
                 {@html ticketDetails}
-                {#if isTicketPayed}
-                <Valid />
-                {:else if isTicketNotPayed}
+                {#if isTicketPayed && isScanning}
+                    <Valid />
+                {:else if isTicketNotPayed && isScanning}
                     <Invalid />
                 {/if}
-
             </div>
-
-            <button on:click={stop}>Stop Scanning</button>
-            <button on:click={nextTicket}>Next Ticket</button>
-
+            <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={stop}>Stop Scanning</button>
+            <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={nextTicket}>Next Ticket</button>
         {:else}
-            <button on:click={start}>Start Scanning</button>
-            <label for="manual"> <input placeholder="Type QRCode manually..." id = "manual" type = 'text' on:input={manual} style="width: 210px"> <button id="manual" on:click={showData}>Check</button></label>
-            <div id="container">
-                <div style="font-size: 20px"> Ticket Information </div>
+            <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={start}>Start Scanning</button>
+            <label for="manual">
+                <input placeholder="Type QRCode manually..." id="manual" type="text" on:input={manual} class="w-52">
+                <button id="manual" class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={showData}>Check</button>
+            </label>
+            <div id="container" class="text-white text-xl">
+                Ticket Information
                 {@html ticketDetails}
-                {#if isTicketPayed}
+                {#if isTicketPayed && !isScanning}
                     <Valid />
-                {:else if isTicketNotPayed}
+                {:else if isTicketNotPayed && !isScanning}
                     <Invalid />
                 {/if}
             </div>
         {/if}
     {/if}
-</main>
+</div>
+
