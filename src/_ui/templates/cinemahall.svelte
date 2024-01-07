@@ -22,6 +22,9 @@
 
   let seatsLength = 0;
   let seatRowLength = 0;
+
+  $: console.log(selectedSeats);
+  $: console.log(seats);
   $: {
     seatsLength = seats.length;
     seatRowLength = seats.length > 0 ? seats.at(0).length : 0;
@@ -35,12 +38,11 @@
     })
       .then((response) => {
         if (response.status !== 200) {
-          console.log(response);
           fire("Not all seats could be freed correctly!", 3000);
         }
         return response.json();
       })
-      .then((fetchedResponse) => {
+      .then(() => {
         dispatch("seatSelectionChanged");
       });
 
@@ -61,10 +63,7 @@
   function unblockSeat(seat: any) {
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
-        seats
-          .at(seat.RowNr)
-          .at(seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr)
-          .ID
+        seats.at(seat.RowNr).at(seat.ColumnNr).ID
       }/unblock`,
       {
         method: "PATCH",
@@ -89,13 +88,11 @@
   }
 
   function blockSeat(seat: any) {
+    console.log("I want to block: " + JSON.stringify(seat));
     let thereWasAConflict = false;
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
-        seats
-          .at(seat.RowNr)
-          .at(seat.Type === "emptyDouble" ? seat.ColumnNr - 1 : seat.ColumnNr)
-          .ID
+        seats.at(seat.RowNr).at(seat.ColumnNr).ID
       }/block`,
       {
         method: "PATCH",
@@ -106,7 +103,7 @@
       .then((response) => {
         if (!response.ok) {
           if (response.status === 409) {
-            dispatch("seatSelectionChanged", { wasBlock: false });
+            dispatch("seatSelectionChanged");
             thereWasAConflict = true;
             fire("There was a conflict!", 3000, false, false);
             return;
@@ -129,6 +126,9 @@
   }
 
   function isNeighborSeat(seat: any) {
+    console.log(seat);
+    console.log(selectedSeats);
+    console.log(seats);
     let x = seat.ColumnNr;
     let y = seat.RowNr;
     //all selected seats share y coordinate
@@ -172,6 +172,7 @@
   }
 
   function seatWasSelected(seat: any) {
+    console.log("HERESETS" + JSON.stringify(seat));
     if (seat.BlockedByOther) {
       fire("This seat is already booked!\nPlease select another seat!", 3000);
       return;
@@ -238,7 +239,7 @@
         {#if seat.Type === "regular" || seat.Type === "double"}
           <button
             disabled={seat.BlockedByOther}
-            class="disabled:cursor-not-allowed w-full h-full ring-white {seat.Type ===
+            class="disabled:cursor-not-allowed col-start- w-full h-full ring-white {seat.Type ===
             'double'
               ? 'col-span-2'
               : ''} "

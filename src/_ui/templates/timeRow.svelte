@@ -56,7 +56,7 @@
     class="w-[80%] h-full flex flex-row gap-x-3 items-center overflow-x-auto overflow-y-hidden py-[0.4rem] px-1"
   >
     {#each times as time, thisTime}
-      <div class="relative w-[25%] flex h-[90%]">
+      <div class="relative w-[26%] flex h-[90%]">
         <input class="w-full h-auto rounded-md" type="time" bind:value={time} />
         <button
           class:hidden={times.length === 1}

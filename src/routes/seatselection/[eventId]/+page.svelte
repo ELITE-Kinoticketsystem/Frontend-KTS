@@ -27,8 +27,8 @@
   }
   const seatColors = {
     regular: "#86BBD8",
-    vip: "#F6AE2D",
-    loge: "#33658A",
+    vip: "#7b2cbf",
+    loge: "#F6AE2D",
     selected: "#00cc00",
     blocked: "#777777",
   };
@@ -51,7 +51,6 @@
         return response.json();
       })
       .then((seatData) => {
-        console.log(seatData);
         seats = seatData.seat_rows;
         selectedSeats =
           seatData.currentUserSeats === null ? [] : seatData.currentUserSeats;

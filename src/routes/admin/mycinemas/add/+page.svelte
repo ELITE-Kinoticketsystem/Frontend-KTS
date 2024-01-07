@@ -18,13 +18,12 @@
     });
     data
       .then((response) => {
-        if (!response.ok) {
+        if (response.status !== 200) {
           fire("A database error occured", 3000);
         }
         return response.json();
       })
       .then((fetchedTheatres) => {
-        console.log(fetchedTheatres);
         theatres = fetchedTheatres;
       });
   });
@@ -40,10 +39,10 @@
   $: curSeatCategory = curSeatCategory;
   $: hallWidth = hallWidth;
   $: hallHeight = hallHeight;
-  $:console.log(hallName);
+
+  $: console.log(seats);
 
   function postHall(theatre: any) {
-    let success = false;
     fetch(`${apiUrl}/cinema-halls`, {
       method: "POST",
       mode: "cors",
@@ -54,10 +53,12 @@
         seats,
       }),
     }).then((response) => {
-      success = response.status === 200;
+      fire(
+        response.status === 201
+          ? `${hallName} was created succesfully!`
+          : `${hallName} could not be created due to internal problems!`
+      );
     });
-
-    return success;
   }
 
   function hallIsEmpty() {
@@ -95,14 +96,12 @@
         popup: "bg-backgroundBlue",
       },
     }).then((answer) => {
-      console.log(answer);
       let enteredHallName = answer.value;
       let nameIsValid = true;
       if (!nameIsValid) {
         fire(`${enteredHallName.value} is not a valid name`, 3000);
       } else {
         hallName = enteredHallName;
-        console.log(hallName);
         Swal.fire({
           title: `In which of your theatres is ${enteredHallName}?`,
           input: "select",
@@ -115,11 +114,7 @@
             popup: "bg-backgroundBlue text-textWhite text-[100%]",
           },
         }).then((selectedHallIndex: any) => {
-          fire(
-            postHall(theatres.at(selectedHallIndex))
-              ? `${hallName} was created succesfully!`
-              : `${hallName} could not be created due to internal problems!`
-          );
+          postHall(theatres.at(selectedHallIndex.value));
         });
       }
     });

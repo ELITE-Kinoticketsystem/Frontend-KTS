@@ -23,7 +23,7 @@
   let allDbMovies: any[] = data.movies;
   let selectedMovies: any[] = [];
   let eventName = "";
-  let prices = { regular: 10, vip: 5, loge: 3 };
+  let prices = { regular: 10.0, vip: 20.0, loge: 15.0 };
   let is3d = false;
   let Description = "";
   let EventType = "regular";
@@ -54,14 +54,34 @@
     descriptionLength = Description.length;
   }
 
+  function allHallsAreValid() {
+    if (allShowings === null || allShowings.length === 0) {
+      return false;
+    }
+    for (let i = 0; i < allShowings.length; ++i) {
+      if (
+        allShowings.at(i).hall === null ||
+        allShowings.at(i).hall.ID === null ||
+        allShowings.at(i).hall.ID === ""
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   function createEvent() {
+    if (eventName === "") {
+      fire("You can not create an event without a name");
+      return false;
+    }
     if (nrOfShowings === 0) {
       fire("You can not create an event with no showings");
       return false;
     }
-    if (eventName === "") {
-      fire("You can not create an event without a name");
-      return false;
+    if (!allHallsAreValid()) {
+      fire("Not every event has a valid hall!", 3000);
+      return;
     }
     if (movieNames.length === 0) {
       fire("You can not create an event with no movies");
@@ -232,7 +252,9 @@
             bind:checked={is3d}
             type="checkbox"
             class="w-full mx-auto h-full aspect-1 rounded-md ring-1 ring-slate-500"
-            style={mouseIsOverCheckbox ? "cursor: pointer" : "cursor: grabbing"}
+            style="{mouseIsOverCheckbox
+              ? 'cursor: pointer'
+              : 'cursor: grabbing'};"
           />
         </div>
       </div>

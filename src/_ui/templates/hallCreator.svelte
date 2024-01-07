@@ -159,7 +159,6 @@
     seats = seats;
   }
 
-  async function placeSeat(x: number, y: number) {}
   function cleanHalfDoubleSeatsRight() {
     for (let y = 0; y < hallHeight; ++y) {
       if (seats.at(y).at(hallWidth - 1).Type === "double") {
@@ -196,6 +195,7 @@
     }
     seats = newSeats;
     ++hallHeight;
+    correctCoordinates();
   }
   function addRowToBottom() {
     let newRow: any = [];
@@ -204,6 +204,7 @@
     }
     seats = [...seats, newRow];
     ++hallHeight;
+    correctCoordinates();
   }
   function addColToLeft() {
     let newSeats: any[] = [];
@@ -222,6 +223,7 @@
     seats = newSeats;
     ++hallWidth;
     cleanHalfDoubleSeatsLeft();
+    correctCoordinates();
   }
   function addColToRight() {
     if (hallHeight === 0) {
@@ -234,6 +236,7 @@
     seats = seats;
     ++hallWidth;
     cleanHalfDoubleSeatsRight();
+    correctCoordinates();
   }
 
   function removeTopRow() {
@@ -242,7 +245,13 @@
       return;
     }
     seats = seats.slice(1, seats.length);
+    for (let x = 0; x < seats.length; ++x) {
+      for (let y = 0; y < seats.at(0).length; ++y) {
+        --seats.at(y).at(x).RowNr;
+      }
+    }
     --hallHeight;
+    correctCoordinates();
   }
   function removeLeftCol() {
     if (hallWidth === 0) {
@@ -252,8 +261,14 @@
     for (let y = 0; y < hallHeight; ++y) {
       seats[y] = seats.at(y).slice(1, hallWidth);
     }
+    for (let x = 0; x < seats.length; ++x) {
+      for (let y = 0; y < seats.at(0).length; ++y) {
+        --seats.at(y).at(x).ColumnNr;
+      }
+    }
     --hallWidth;
     cleanHalfDoubleSeatsLeft();
+    correctCoordinates();
   }
   function removeRightCol() {
     if (hallWidth === 0) {
@@ -263,8 +278,10 @@
     for (let y = 0; y < hallHeight; ++y) {
       seats[y] = seats.at(y).slice(0, hallWidth - 1);
     }
+
     --hallWidth;
     cleanHalfDoubleSeatsRight();
+    correctCoordinates();
   }
   function removeBottomRow() {
     if (hallHeight === 0) {
@@ -273,6 +290,7 @@
     }
     seats = seats.slice(0, seats.length - 1);
     --hallHeight;
+    correctCoordinates();
   }
   function setRowsFromTop(newYDim: number) {
     if (newYDim > hallHeight) {
@@ -303,9 +321,10 @@
     } else {
       seats = seats.slice(hallHeight - newYDim, seats.length);
     }
-
     hallHeight = newYDim;
+    correctCoordinates();
   }
+
   function setRowsFromBottom(newYDim: number) {
     if (newYDim > hallHeight) {
       let additionalRows = newYDim - hallHeight;
@@ -322,6 +341,7 @@
     }
 
     hallHeight = newYDim;
+    correctCoordinates();
   }
   function setColsFromLeft(newHallWidth: number) {
     if (newHallWidth > hallWidth) {
@@ -347,6 +367,7 @@
 
     hallWidth = newHallWidth;
     cleanHalfDoubleSeatsLeft();
+    correctCoordinates();
   }
 
   function setColsFromRight(newHallWidth: number) {
@@ -363,6 +384,16 @@
     }
     hallWidth = newHallWidth;
     cleanHalfDoubleSeatsRight();
+    correctCoordinates();
+  }
+
+  function correctCoordinates() {
+    for (let y = 0; y < hallHeight; ++y) {
+      for (let x = 0; x < hallWidth; ++x) {
+        seats.at(y).at(x).RowNr = y;
+        seats.at(y).at(x).ColumnNr = x;
+      }
+    }
   }
 
   let sizesForPlusButton = "h-5 w-5 sm:h-8 sm:w-8 xl:h-10 xl:w-10";

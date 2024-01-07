@@ -31,7 +31,7 @@
   </p>
 
   {#each distinctSeatsWithCount as seat}
-    <div class="w-[90%] h-[10%]">
+    <div class="w-[90%] h-[12%]">
       <SelectedSeatCard
         nrOfSeats={seat[1]}
         seatType={seat[0].split(splitAnchor)[0]}
