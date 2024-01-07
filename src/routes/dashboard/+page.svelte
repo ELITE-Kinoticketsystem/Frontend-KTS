@@ -58,21 +58,27 @@
     if (type === "date") {
       if (sorted % 2 === 0) {
         ticketHistory.sort((a, b) => {
-          return new Date(a.date).getTime() - new Date(b.date).getTime();
+          return (
+            new Date(a.Event.Start).getTime() -
+            new Date(b.Event.Start).getTime()
+          );
         });
       } else {
         ticketHistory.sort((a, b) => {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
+          return (
+            new Date(b.Event.Start).getTime() -
+            new Date(a.Event.Start).getTime()
+          );
         });
       }
     } else if (type === "price") {
       if (sorted % 2 === 0) {
         ticketHistory.sort((a, b) => {
-          return a.price - b.price;
+          return a.Order.Totalprice - b.Order.Totalprice;
         });
       } else {
         ticketHistory.sort((a, b) => {
-          return b.price - a.price;
+          return b.Order.Totalprice - a.Order.Totalprice;
         });
       }
     }
@@ -229,7 +235,7 @@
                 <div class="break-words text-textWhite">
                   <p>
                     {upcomingMovies.Movies.length > 1
-                      ? upcomingMovies.Title
+                      ? upcomingMovies.Event.Title
                       : upcomingMovies.Movies[0].Title}
                   </p>
                 </div>
@@ -249,8 +255,8 @@
       </div>
     </div>
     <hr class="h-px my-8 bg-textWhite border-0" />
-    <div class="text-textWhite mb-4 text-xl">Your area</div>
-    <div class="grid grid-cols-3 grid-rows-2 gap-x-5 gap-y-5 h-max">
+    <!--   <div class="text-textWhite mb-4 text-xl">Your area</div>
+ <div class="grid grid-cols-3 grid-rows-2 gap-x-5 gap-y-5 h-max">
       <div class="grid bg-tileBlue rounded-md">
         <div class="flex flex-col">
           <div class="text-textWhite text-xl mt-1 ml-2">Change Username:</div>
@@ -332,7 +338,8 @@
           </form>
         </div>
       </div>
-      <div class="grid col-span-3 bg-tileBlue rounded-md w-full h-full">
+      <div class="grid"></div>
+      <div class="grid bg-tileBlue rounded-md w-full h-full">
         <button
           class="w-max h-max bg-red-500 mx-auto my-auto rounded-md px-4 py-2 text-black hover:bg-red-800 hover:text-textWhite duration-500"
           on:click={() => {
@@ -366,8 +373,9 @@
           }}>Delete your account</button
         >
       </div>
+      <div class="grid"></div>
     </div>
-    <hr class="h-px my-8 bg-textWhite border-0" />
+    <hr class="h-px my-8 bg-textWhite border-0" />-->
     <div class="flex text-textWhite mb-4 text-xl justify-between">
       <p>Ticket history</p>
       {#key sorted}
@@ -514,7 +522,7 @@
                   <th scope="row" class="px-6 py-4 font-medium text-textWhite">
                     {ticket.Movies.length === 1
                       ? ticket.Movies[0].Title
-                      : ticket.Title}
+                      : ticket.Event.Title}
                   </th>
                   <td class="px-6 py-4"> {ticket.Theatre.Name} </td>
                   <td class="px-6 py-4">

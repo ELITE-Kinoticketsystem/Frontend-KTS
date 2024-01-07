@@ -1,285 +1,229 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
   import { apiUrl } from "$lib/_services/authService";
+  import { Rating } from "flowbite-svelte";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
 
-  let title: string = "";
-  let description: string = "";
-  let fsk: number = 50;
-  let trailerId: string = "";
-  let durationInMinutes: string = "";
-  let wallpaperUrl: string = "";
-  let coverUrl: string = "";
-  let newGenre: string = "";
-  let releaseYear: number;
-  $: genres = [];
+  let movieTitle = "Not set";
+  let description = "Not set";
+  let durationInMin = 0;
+  let releaseYear = new Date().getFullYear();
+  let wallPaperPicUrl = "";
+  let fsk = 0;
+  let trailerId = "";
+  let coverPicURL = "";
+  let genres: string[] = [];
+  let actors: any[] = [];
 
-  let draftSaved = false;
-
-  let fskMap = new Map();
-  fskMap.set(0, 0);
-  fskMap.set(25, 6);
-  fskMap.set(50, 12);
-  fskMap.set(75, 16);
-  fskMap.set(100, 18);
-  let fskMapReversed = new Map();
-  fskMapReversed.set(0, 0);
-  fskMapReversed.set(6, 25);
-  fskMapReversed.set(12, 50);
-  fskMapReversed.set(16, 75);
-  fskMapReversed.set(18, 100);
-
-  let uniqueReviewId = uuidv4();
-
-  if ($page.url.searchParams.has("fromUUID")) {
-    const uuid = $page.url.searchParams.get("fromUUID")!;
-
-    uniqueReviewId = uuid;
-    if (browser) {
-      const draftString = window.localStorage
-        .getItem("draft-" + uuid)!
-        .replaceAll("Not set", "")
-        .split(",");
-      title = draftString[0];
-      description = draftString[2];
-      fsk = fskMapReversed.get(parseInt(draftString[1]));
-      trailerId = draftString[3];
-      durationInMinutes = draftString[4];
-      coverUrl = draftString[4];
-      genres = draftString[7].split(".");
-      releaseYear = parseInt(draftString[8]);
-    }
-  }
-
-  async function fireAddImg(type: string) {
-    let data: any;
-    let toCheck;
-    if (type === "wallpaper") toCheck = wallpaperUrl;
-    else toCheck = coverUrl;
-    if (toCheck === "") {
-      data = {
-        title: "Enter the " + type + " url",
-        input: "text",
-        showCancelButton: true,
-        inputValidator: (value: any) => {
-          if (!value) {
-            return "You need to write something!";
-          }
-        },
-      };
-    } else {
-      data = {
-        title: "Enter the " + type + " url",
-        input: "text",
-        showDenyButton: true,
-        denyButtonText: "Remove " + type,
-        showCancelButton: true,
-        inputValidator: (value: any) => {
-          if (!value) {
-            return "You need to write something!";
-          }
-        },
-      };
-    }
-    await Swal.fire(data).then((result) => {
-      if (result.isConfirmed) {
-        if (type === "wallpaper") wallpaperUrl = result.value;
-        else coverUrl = result.value;
-      } else if (result.isDenied) {
-        if (type === "wallpaper") wallpaperUrl = "";
-        else coverUrl = "";
-      }
+  function fireHelp() {
+    Swal.fire({
+      title: "Movie",
+      icon: "info",
+      html: `Here you can see the movie you are creating. <br> <br> You can change the <b>title</b>, <b>description</b> and much more by clicking on the <span class='text-green-500 font-semibold'> green pencil</span> next to it.
+        <br> <br> Every single "not set" or empty field will <b>not</b> be send for creation
+      `,
+      showConfirmButton: true,
+      confirmButtonColor: "#888888",
+      color: "#FAFAFA",
+      customClass: {
+        input: "rounded-md text-backgroundBlue",
+        title: "text-textWhite bg-backgroundBlue",
+        popup: "bg-backgroundBlue",
+      },
     });
   }
-
-  function saveDraft() {
-    if (browser) {
-      let titleToSave = title === "" ? "Not set" : title;
-      let fskToSave = fskMap.get(fsk);
-      let descriptionToSave = description === "" ? "Not set" : description;
-      let trailerIdToSave = trailerId === "" ? "Not set" : trailerId;
-      let durationInMinutesToSave =
-        durationInMinutes === "" ? "Not set" : durationInMinutes;
-      let wallpaperUrlToSave = wallpaperUrl === "" ? "Not set" : wallpaperUrl;
-      let coverUrlToSave = coverUrl === "" ? "Not set" : coverUrl;
-      if (genres.length == 0) genres = ["Not set"];
-      let releaseYearToSave = releaseYear === 0 ? -1 : releaseYear;
-      let draftString =
-        titleToSave +
-        "," +
-        fskToSave +
-        "," +
-        descriptionToSave +
-        "," +
-        trailerIdToSave +
-        "," +
-        durationInMinutesToSave +
-        "," +
-        wallpaperUrlToSave +
-        "," +
-        coverUrlToSave +
-        "," +
-        genres.toString().replaceAll(",", ".") +
-        "," +
-        releaseYearToSave;
-      window.localStorage.setItem("draft-" + uniqueReviewId, draftString);
-      draftSaved = true;
-    }
-  }
-
-  function previewSite() {
-    if (browser) {
-      if (draftSaved) {
-        goto("/admin/mymovies/preview/" + uniqueReviewId);
-      } else {
-        Swal.fire({
-          icon: "info",
-          title: "Drafts",
-          text: "You need to change a value to convert the movie to a draft",
-        });
-      }
-    }
-  }
-
   function create() {
-    if (browser) {
-      fetch(apiUrl + "/movies", {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({
-          Title: title,
-          Description: description,
-          Fsk: fskMap.get(fsk),
-          TrailerURL: trailerId,
-          TimeInMin: durationInMinutes,
-          BannerPicURL: wallpaperUrl,
-          CoverPicURL: coverUrl,
-          ReleaseDate: new Date(releaseYear).toISOString(),
-          Rating: 0,
-        }),
-      }).then((res) => {
-        if (res.status === 200) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: "Movie created successfully",
-          });
-          if (browser) {
-            window.localStorage.removeItem("draft-" + uniqueReviewId);
-            goto("/admin/mymovies");
-          }
+    if (movieTitle === "Not set" || movieTitle === "") {
+      Swal.fire({
+        title: "Error",
+        icon: "error",
+        html: `You current have fields wich are not set or empty. <br> <br> Please be sure that you want to create the movie.`,
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#888888",
+        color: "#FAFAFA",
+        customClass: {
+          input: "rounded-md text-backgroundBlue",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
+      }).then((answer) => {
+        if (!answer.isConfirmed) {
+          return;
         } else {
           Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Something went wrong, please try again later",
+            title: "Final step",
+            html: `Please enter a wallpaper for your movie. This is mandatory`,
+            input: "url",
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonColor: "#888888",
+            cancelButtonColor: "#cccccc",
+            color: "#FAFAFA",
+            customClass: {
+              input: "rounded-md bg-backgroundBlue text-textWhite",
+              title: "text-textWhite bg-backgroundBlue",
+              popup: "bg-backgroundBlue",
+            },
+          }).then((answer) => {
+            if (answer.isConfirmed) {
+              wallPaperPicUrl = answer.value;
+              createMovieViaBackend();
+            }
+            return;
           });
         }
       });
+    } else {
+      Swal.fire({
+        title: "Final step",
+        html: `Please enter a wallpaper for your movie. This is mandatory`,
+        input: "url",
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#888888",
+        cancelButtonColor: "#cccccc",
+        color: "#FAFAFA",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
+      }).then((answer) => {
+        if (answer.isConfirmed) {
+          wallPaperPicUrl = answer.value;
+          createMovieViaBackend();
+        }
+        return;
+      });
     }
   }
-
-  async function getAllDrafts() {
-    return new Promise((resolve, reject) => {
-      let inputOptions: any[] = [];
-      let draftIds = new Map();
-      let amount = 0;
-      if (browser) {
-        for (let i = 0; i < window.localStorage.length; i++) {
-          const item = window.localStorage.key(i);
-          if (item?.includes("draft")) {
-            amount++;
-            const draftItem = window.localStorage.getItem(item);
-            const title = draftItem?.split(",")[0];
-            inputOptions.push(title);
-            item.substring(6, item.length);
-            draftIds.set(title, item.substring(6, item.length));
-          }
-        }
-        if (amount > 0) resolve([inputOptions, draftIds]);
-        else reject();
-      }
-    })
-      .then(async (items: any | unknown[]) => {
-        const inputOptions = items[0];
-        const draftIds = items[1];
-        const { value: option } = await Swal.fire({
-          title: "You have unsaved drafts, pick one or ignore this message",
-          input: "radio",
-          inputOptions: inputOptions,
-          showCancelButton: true,
-        });
-        if (option) {
-          goto(
-            "/admin/mymovies/add?fromUUID=" + draftIds.get(inputOptions[option])
-          );
-        }
-      })
-      .catch(() => {});
-  }
-
-  function deleteDraft() {
-    if (browser) {
-      window.localStorage.removeItem("draft-" + uniqueReviewId);
-      goto("/admin/mymovies/add");
-    }
-  }
-  function uuidv4() {
-    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c: any) =>
-      (
-        c ^
-        (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
-      ).toString(16)
-    );
-  }
-
-  async function getGenres() {
-    const genresRepsone = await fetch(apiUrl + "/genres", {
-      method: "GET",
-      credentials: "include",
+  function createMovieViaBackend() {
+    const body = JSON.stringify({
+      Title: movieTitle,
+      Description: description,
+      Fsk: parseInt(fsk.toString()),
+      TrailerURL: trailerId,
+      TimeInMin: parseInt(durationInMin.toString()),
+      BannerPicURL: wallPaperPicUrl,
+      CoverPicURL: coverPicURL,
+      ReleaseDate: new Date(releaseYear).toISOString(),
+      Rating: 0.0,
     });
-    return await genresRepsone.json();
+    fetch(apiUrl + "/movie", {
+      mode: "cors",
+      method: "POST",
+      credentials: "include",
+      body: body,
+    }).then((response) => {
+      if (response.status === 201) {
+        Swal.fire({
+          title: "Success",
+          icon: "success",
+          html: `Your movie has been created. <br> <br> You will be redirected to the movie page in a few seconds`,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          confirmButtonColor: "#888888",
+          color: "#FAFAFA",
+          customClass: {
+            input: "rounded-md text-backgroundBlue",
+            title: "text-textWhite bg-backgroundBlue",
+            popup: "bg-backgroundBlue",
+          },
+        }).then(async () => {
+          let json = await response.json();
+          console.log(json);
+          goto("/movies/" + json);
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          icon: "error",
+          html: `Your movie could not be created. <br> <br> Please try again later`,
+          showConfirmButton: true,
+          confirmButtonColor: "#888888",
+          color: "#FAFAFA",
+          customClass: {
+            input: "rounded-md text-backgroundBlue",
+            title: "text-textWhite bg-backgroundBlue",
+            popup: "bg-backgroundBlue",
+          },
+        });
+      }
+    });
   }
-  let fetchGenres: any[] = [];
   onMount(async () => {
-    if (!$page.url.searchParams.get("fromUUID")!) {
-      await getAllDrafts();
-    }
-    fetchGenres = await getGenres();
-    for (let i = 0; i < fetchGenres.length; i++) {
-      genres = [...genres, fetchGenres[i].GenreName];
-    }
+    fireHelp();
   });
-
-  $: showDeleteDraftButton = () => {
-    if (!browser) return false;
-    return window.localStorage.getItem("draft-" + uniqueReviewId) != null;
-  };
+  function change(type: string) {
+    let inputType: string = "text";
+    if (
+      type.toLowerCase() === "fsk" ||
+      type.toLowerCase() === "duration in min" ||
+      type.toLowerCase() === "release year"
+    ) {
+      inputType = "number";
+    } else if (type.toLowerCase() === "description") {
+      inputType = "textarea";
+    } else {
+      inputType = "text";
+    }
+    Swal.fire({
+      title: "You are about to change: <br>" + type,
+      input: inputType,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonColor: "#888888",
+      cancelButtonColor: "#cccccc",
+      color: "#FAFAFA",
+      customClass: {
+        input: "rounded-md bg-backgroundBlue text-textWhite",
+        title: "text-textWhite bg-backgroundBlue",
+        popup: "bg-backgroundBlue",
+      },
+    }).then((answer) => {
+      if (answer.isConfirmed) {
+        if (type.toLowerCase() === "movie title") {
+          movieTitle = answer.value;
+        } else if (type.toLowerCase() === "fsk") {
+          fsk = answer.value;
+        } else if (type.toLowerCase() === "duration in min") {
+          durationInMin = answer.value;
+        } else if (type.toLowerCase() === "release year") {
+          releaseYear = answer.value;
+        } else if (type.toLowerCase() === "description") {
+          description = answer.value;
+        } else if (type.toLowerCase() === "youtube trailer") {
+          ("https://www.youtube.com/watch?v=KMhl5N4n18o&ab_channel=KuchenTV");
+          trailerId = answer.value;
+          trailerId = trailerId.replace("https://www.youtube.com/watch?v=", "");
+          if (trailerId.indexOf("&") != -1) {
+            trailerId = trailerId.substring(0, trailerId.indexOf("&"));
+          }
+        } else if (type.toLowerCase() === "cover picture") {
+          coverPicURL = answer.value;
+        }
+      }
+    });
+  }
 </script>
 
-<head:svelte>
-  <title>Cinemika - Add movie</title>
-</head:svelte>
-
 <div class="flex w-screen h-max">
-  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
-  <div class="flex flex-col w-full h-full flex-grow">
+  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="flex flex-col w-full h-full flex-grow mx-auto">
     <div class="flex justify-between text-textWhite mb-2">
       <div class="justify-start text-2xl">Enter movie details</div>
       <div class="justify-end space-x-2">
-        {#if showDeleteDraftButton()}
-          <button
-            class="text-md py-2 px-4 bg-red-600 hover:bg-headerBlue rounded-md duration-300 -mt-1"
-            on:click={deleteDraft}>Delete draft</button
-          >
-        {/if}
         <button
           class="text-md py-2 px-4 bg-buttonBlue hover:bg-headerBlue rounded-md duration-300 -mt-1"
-          on:click={previewSite}>Preview site</button
+          on:click={() => {
+            fireHelp();
+          }}
         >
+          Help
+        </button>
         <button
           class="text-md py-2 px-4 bg-buttonBlue hover:bg-headerBlue rounded-md duration-300 -mt-1"
           on:click={create}>Create now</button
@@ -287,264 +231,260 @@
       </div>
     </div>
     <hr />
-    <div class="mt-3">
-      <div class="flex flex-col">
-        <p class="font-semibold text-textWhite text-md mb-2">
-          Add the movies wallpaper:
-        </p>
-        {#key wallpaperUrl}
-          <button
-            class="flex w-full sm:h-36 md:h-60 xl:h-96 2xl:h-[32rem] px-10 py-10 bg-buttonBlue rounded-md hover:bg-headerBlue duration-300 text-textWhite"
-            on:click={() => {
-              fireAddImg("wallpaper");
-
-              saveDraft();
-            }}
-            class:hidden={wallpaperUrl !== ""}
+    <div class="mt-3 border-1 border-white">
+      <div class="relative">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/{trailerId}"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+          allowfullscreen
+          class="rounded-lg w-full 2xl:h-[22rem] xl:h-[22rem] sm:h-max md:h-[18rem] h-max"
+        />
+        <button
+          on:click={() => {
+            change("Youtube Trailer");
+          }}
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-8 h-8 my-auto ml-2 text-green-500 absolute top-0 right-0 border-white border-2 rounded"
           >
-            <div class="flex mx-auto my-auto">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="flex flex-row mt-14">
+        <div class="relative basis-1/3 flex-shrink-0 h-max">
+          <img
+            src={coverPicURL}
+            alt={movieTitle}
+            class="min-w-full h-auto aspect-auto overflow-hidden rounded-md"
+          />
+          <button
+            on:click={() => {
+              change("Cover Picture");
+            }}
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8 my-auto ml-2 text-green-500 absolute top-0 right-0 border-white border-2 rounded"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="flex flex-col flex-grow px-5">
+          <div
+            class="flex flex-col sm:flex-row md:flex-row text-textWhite mx-auto sm:text-md md:text-xl xl:text-2xl 2xl:text-4xl font-bold"
+          >
+            <p class="break-words">
+              {movieTitle}
+              <button
+                on:click={() => {
+                  change("Movie Title");
+                }}
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5 my-auto ml-1 text-green-500"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
+              </button>
+            </p>
+
+            <div class="mx-auto xl:ml-5 xl:mt-1">
+              <Rating id="ratingLab" total={5} rating={5} />
+            </div>
+          </div>
+          <div
+            class="flex flex-col sm:flex-row md:flex-row gap-2 text-textWhite mt-5 mx-5 gap-x-5 justify-center"
+          >
+            <p class="flex text-sm">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
                 stroke="currentColor"
-                class="w-5 h-5 my-auto mr-1"
+                class="w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3"
                 />
               </svg>
-              Add wallpaper
-            </div>
-          </button>
-          <div class="relative" class:hidden={wallpaperUrl === ""}>
-            <img
-              src={wallpaperUrl}
-              alt="Your wallpaper"
-              class="w-full sm:h-36 md:h-60 xl:h-96 2xl:h-[32rem] object-cover group rounded-md"
-            />
-            <div class="absolute top-3 right-3">
-              <button
-                class="px-4 py-2 hover:bg-transparent duration-300 bg-buttonBlue text-textWhite rounded-md"
-                on:click={() => {
-                  fireAddImg("wallpaper");
-                  saveDraft();
-                }}>Edit</button
+
+              <span class="ml-1">
+                {#each genres as genre, index}
+                  {genre}{#if index != genres.length - 1},{/if}
+                {/each}</span
               >
-            </div>
-          </div>
-        {/key}
-      </div>
-    </div>
-    <div class="flex justify-between mt-10">
-      <div class="flex-grow w-1/2">
-        {#key coverUrl}
-          <div class="mx-10">
-            <button
-              class="flex mx-auto w-full sm:h-36 md:h-60 xl:h-96 2xl:h-[32rem] px-10 py-10 bg-buttonBlue rounded-md hover:bg-headerBlue duration-300 text-textWhite"
-              on:click={() => {
-                fireAddImg("cover");
-                saveDraft();
-              }}
-              class:hidden={coverUrl !== ""}
-            >
-              <div class="flex mx-auto my-auto">
-                <svg
+            </p>
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                />
+              </svg>
+              <span class="ml-1">FSK {fsk} </span>
+              <button
+                on:click={() => {
+                  change("FSK");
+                }}
+                ><svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke-width="1.5"
                   stroke="currentColor"
-                  class="w-5 h-5 my-auto mr-1"
+                  class="w-4 h-4 my-auto ml-2 text-green-500"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
                   />
                 </svg>
-                Add cover
-              </div>
-            </button>
-            <div class="relative" class:hidden={coverUrl === ""}>
-              <div class="relative basis-1/3 flex-shrink-0 h-max">
-                <img
-                  src={coverUrl}
-                  alt="Your cover"
-                  class="min-w-full h-auto aspect-auto overflow-hidden rounded-md"
-                />
-              </div>
-              <div class="absolute top-3 right-3">
-                <button
-                  class="px-4 py-2 hover:bg-transparent duration-300 bg-buttonBlue text-textWhite rounded-md"
-                  on:click={() => {
-                    fireAddImg("cover");
-                    saveDraft();
-                  }}>Edit</button
-                >
-              </div>
-            </div>
-          </div>
-        {/key}
-      </div>
-      <div class="flex-grow w-1/2">
-        <div class="flex flex-col space-y-10">
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">Title:</p>
-            <input
-              type="text"
-              bind:value={title}
-              name=""
-              on:change={saveDraft}
-              id=""
-              placeholder="Enter a title for your movie"
-              class="bg-inputBlue rounded-md px-4 py-2 w-full placeholder:text-darkTextWhite text-textWhite"
-            />
-          </div>
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">Release year:</p>
-            <input
-              type="date"
-              bind:value={releaseYear}
-              name=""
-              on:change={saveDraft}
-              id=""
-              placeholder="Enter the realease year for your movie"
-              class="bg-inputBlue rounded-md px-4 py-2 w-full placeholder:text-darkTextWhite text-textWhite"
-            />
-          </div>
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">Trailer YoutubeId:</p>
-            <input
-              type="url"
-              name=""
-              bind:value={trailerId}
-              on:change={saveDraft}
-              id=""
-              placeholder="Enter a youtube id for your trailer"
-              class="bg-inputBlue rounded-md px-4 py-2 w-full placeholder:text-darkTextWhite text-textWhite"
-            />
-          </div>
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">Duration in minutes:</p>
-            <input
-              type="number"
-              name=""
-              bind:value={durationInMinutes}
-              on:change={saveDraft}
-              id=""
-              placeholder="Enter the movies duration in minutes"
-              class="bg-inputBlue rounded-md px-4 py-2 w-full placeholder:text-darkTextWhite text-textWhite"
-            />
-          </div>
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">FSK:</p>
-            <div class="w-full">
-              <input
-                type="range"
-                min="0"
-                bind:value={fsk}
-                on:change={saveDraft}
-                max="100"
-                class="w-full h-2 rounded-lg cursor-pointer"
-                step="25"
-              />
-              <div
-                class="w-full flex justify-between text-xs px-2 text-textWhite"
+              </button>
+            </p>
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
               >
-                <span>0</span>
-                <span>6</span>
-                <span>12</span>
-                <span>16</span>
-                <span>18</span>
-              </div>
-            </div>
-          </div>
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">Genres:</p>
-            <div class="grid grid-cols-3 gap-5 mt-2">
-              {#each genres.splice(0, 5) as genre}
-                <div
-                  class="flex text-textWhite justify-between bg-buttonBlue rounded-md px-2 py-1 my-auto"
-                >
-                  <p>{genre}</p>
-                  <button
-                    on:click={() => {
-                      genres = genres.filter((g) => g !== genre);
-                      saveDraft();
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-5 h-5 text-right ml-2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              {/each}
-              <div class="relative">
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  placeholder="Add"
-                  maxlength="12"
-                  bind:value={newGenre}
-                  class="bg-inputBlue rounded-md text-textWhite h-full w-full placeholder:text-darkTextWhite"
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
-                <button
-                  class="absolute top-1 right-0 rounded-md px-2 py-1 mt-px"
-                  on:click={() => {
-                    if (newGenre === "") return;
-                    genres = [...genres, newGenre];
-                    newGenre = "";
-                    saveDraft();
-                  }}
-                  ><svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-5 h-5 text-textWhite -mt-px"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
+              </svg>
+              <span class="ml-1">{durationInMin}min</span>
+              <button
+                on:click={() => {
+                  change("Duration in min");
+                }}
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 my-auto ml-2 text-green-500"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
+              </button>
+            </p>
+            <p class="flex text-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64"
+                />
+              </svg>
+
+              <span class="ml-1">{releaseYear}</span>
+              <button
+                on:click={() => {
+                  change("Release Year");
+                }}
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 my-auto ml-2 text-green-500"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
+              </button>
+            </p>
           </div>
-          <div class="flex flex-col w-full">
-            <p class="my-auto text-xl text-textWhite">Description:</p>
-            <textarea
-              bind:value={description}
-              cols="6"
-              name=""
-              on:change={saveDraft}
-              id=""
-              placeholder="Enter a description for your movie"
-              class="bg-inputBlue rounded-md px-4 py-2 w-full placeholder:text-darkTextWhite text-textWhite"
-            />
+          <div
+            class=" text-textWhite my-5 {description.length > 100
+              ? 'mx-5'
+              : 'mx-auto'} sm:text-sm md:text-md xl:text-xl 2xl:text-2xl break-words text-justify"
+          >
+            <span class="break-words">{description}</span>
+            <button
+              on:click={() => {
+                change("Description");
+              }}
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-4 h-4 my-auto ml-2 text-green-500"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
