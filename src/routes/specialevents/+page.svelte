@@ -7,6 +7,7 @@
   export let data;
 
   let specialEvents = data.specialEvents;
+  console.log(specialEvents);
 
   $: displayedSpecialEvents = JSON.parse(JSON.stringify(specialEvents));
 
@@ -120,6 +121,10 @@
     }
   }
 </script>
+
+<svelte:head>
+  <title>Cinemika - Specialevents</title>
+</svelte:head>
 
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
