@@ -34,13 +34,22 @@
     });
   }
   function create() {
-    if (movieTitle === "Not set" || movieTitle === "") {
+    if (
+      movieTitle === "Not set" ||
+      movieTitle === "" ||
+      description === "Not set" ||
+      description === "" ||
+      durationInMin === 0 ||
+      releaseYear === 0 ||
+      fsk === 0 ||
+      trailerId === "" ||
+      coverPicURL === ""
+    ) {
       Swal.fire({
         title: "Error",
         icon: "error",
-        html: `You current have fields wich are not set or empty. <br> <br> Please be sure that you want to create the movie.`,
+        html: `You current have fields wich are not set or empty. <br> <br> Please set a value to those fields.`,
         showConfirmButton: true,
-        showCancelButton: true,
         confirmButtonColor: "#888888",
         color: "#FAFAFA",
         customClass: {
@@ -48,32 +57,8 @@
           title: "text-textWhite bg-backgroundBlue",
           popup: "bg-backgroundBlue",
         },
-      }).then((answer) => {
-        if (!answer.isConfirmed) {
-          return;
-        } else {
-          Swal.fire({
-            title: "Final step",
-            html: `Please enter a wallpaper for your movie. This is mandatory`,
-            input: "url",
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonColor: "#888888",
-            cancelButtonColor: "#cccccc",
-            color: "#FAFAFA",
-            customClass: {
-              input: "rounded-md bg-backgroundBlue text-textWhite",
-              title: "text-textWhite bg-backgroundBlue",
-              popup: "bg-backgroundBlue",
-            },
-          }).then((answer) => {
-            if (answer.isConfirmed) {
-              wallPaperPicUrl = answer.value;
-              createMovieViaBackend();
-            }
-            return;
-          });
-        }
+      }).then(() => {
+        return;
       });
     } else {
       Swal.fire({
