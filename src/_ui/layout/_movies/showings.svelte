@@ -6,6 +6,7 @@
 
   export let cinema: any;
   export let movie: any;
+  console.log(movie);
 
   const dispatcher = createEventDispatcher();
 

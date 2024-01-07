@@ -23,6 +23,7 @@
   export let data;
 
   let movie: any = data.movie;
+  console.log(movie);
 
   let reviewAmount = 0;
   if (movie.Reviews != undefined) reviewAmount = movie.Reviews.length;

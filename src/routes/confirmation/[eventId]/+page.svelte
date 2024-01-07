@@ -33,15 +33,15 @@
       seats = data.selectedSeats;
       for (let i = 0; i < seats.length; i++) {
         if (
-          localStorage.getItem("selectedSeats-" + seats[i].EventSeat.ID) !==
+          sessionStorage.getItem("selectedSeats-" + seats[i].EventSeat.ID) !==
           null
         ) {
-          seats[i].type = localStorage.getItem(
+          seats[i].type = sessionStorage.getItem(
             "selectedSeats-" + seats[i].EventSeat.ID
           );
         } else {
           seats[i].type = "adult";
-          localStorage.setItem(
+          sessionStorage.setItem(
             "selectedSeats-" + seats[i].EventSeat.ID,
             "adult"
           );
@@ -132,7 +132,7 @@
                 class="bg-headerBlue border-b text-textWhite hover:bg-inputBlue duration-300"
               >
                 <td class="px-6 py-2">
-                  Row {seat.Seat.RowNr}, Seat {seat.Seat.ColumnNr}
+                  Row {seat.Seat.VisibleRowNr}, Seat {seat.Seat.VisibleColumnNr}
                 </td>
                 <td class="p-2">
                   <div class="flex">
@@ -184,7 +184,7 @@
                                 on:click={() => {
                                   seat.type = type;
                                   showDropdown[index] = false;
-                                  localStorage.setItem(
+                                  sessionStorage.setItem(
                                     "selectedSeats-" + seat.EventSeat.ID,
                                     type
                                   );

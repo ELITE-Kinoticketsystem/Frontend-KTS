@@ -2,16 +2,19 @@
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { AuthService, apiUrl } from "$lib/_services/authService.js";
+  import { fire } from "$lib/swalTemplate.js";
   import { onMount } from "svelte";
   import { useLazyImage as lazyImage } from "svelte-lazy-image";
+  import Swal from "sweetalert2";
 
   export let data;
 
   const eventInformation: any = data.eventInformation;
   const priceCategories: any = data.priceCategories;
+
   let seats: any[] = [];
 
-  function createOrder() {
+  async function createOrder() {
     let eventSeatPriceCategory: any[] = [];
     for (let i = 0; i < seats.length; i++) {
       eventSeatPriceCategory.push({
@@ -19,7 +22,7 @@
         priceCategoryId: getCategorieIdByType(seats[i].type),
       });
     }
-    fetch(apiUrl + "/events/" + $page.params.eventId + "/book", {
+    await fetch(apiUrl + "/events/" + $page.params.eventId + "/book", {
       mode: "cors",
       method: "POST",
       credentials: "include",
@@ -30,9 +33,24 @@
         eventSeatPriceCategories: eventSeatPriceCategory,
         paymentMethodID: "2B1F7FB2881C4F2DBD4677A48D2846C8",
       }),
+    }).then(async (res) => {
+      const json = await res.json();
+      if (res.ok) {
+        fire("Successfuly booked. You will be redirected to your tickets.");
+        goto("/tickets/" + json.id);
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
+      }
     });
   }
   let rowNr = 0;
+  let cinemaHallName = "";
+  let theatreName = "";
   let isUserLoggedIn = false;
   let title = "";
   if (eventInformation.Movies.length === 1) {
@@ -50,9 +68,13 @@
     await getEventTickets().then((data) => {
       seats = data.selectedSeats;
       seats.forEach((seat) => {
-        seat.type = localStorage.getItem("selectedSeats-" + seat.EventSeat.ID);
+        seat.type = sessionStorage.getItem(
+          "selectedSeats-" + seat.EventSeat.ID
+        );
       });
-      rowNr = seats[0].Seat.RowNr;
+      cinemaHallName = seats[0].CinemaHall.Name;
+      theatreName = seats[0].Theatre.Name;
+      rowNr = seats[0].Seat.VisibleRowNr;
     });
   });
 
@@ -75,7 +97,7 @@
       calculatePrice(
         seat.EventSeatCategory.Price,
         priceOfType(seat.type),
-w
+        seat.Seat.Type
       )
     );
   }, 0);
@@ -124,20 +146,20 @@ w
       </div>
       <div class="flex flex-col w-2/3 text-right text-textWhite text-xl">
         <p>{title}</p>
-        <p>{eventInformation.CinemaHallID}</p>
+        <p>{cinemaHallName}</p>
         <p>{new Date(eventInformation.Start).toLocaleString()}</p>
         <p>
           Row {rowNr}: Seat
           {#each seats as seat, index}
             {#if index === seats.length - 1}
-              {seat.Seat.ColumnNr}
+              {seat.Seat.VisibleColumnNr}
             {:else}
-              {seat.Seat.ColumnNr},&nbsp;
+              {seat.Seat.VisibleColumnNr},&nbsp;
             {/if}
           {/each}
         </p>
         <p>{(totalPrice / 100).toFixed(2)} €</p>
-        <p>{eventInformation.CinemaHallID}</p>
+        <p>{theatreName}</p>
         <p>{eventInformation.Is3d ? "3D" : "2D"}</p>
         <p class="text-buttonBlue mt-10 ml-10 text-justify">
           Please note that the next step is the payment step and by completing

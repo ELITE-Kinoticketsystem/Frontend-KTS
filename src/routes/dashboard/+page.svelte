@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { AuthService } from "$lib/_services/authService";
+  import { AuthService, apiUrl } from "$lib/_services/authService";
   import "chart.js/auto";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
@@ -8,20 +8,18 @@
   import { goto } from "$app/navigation";
 
   const invoicetemplate = new InvoiceTemplate();
+  let ticketHistory: any[] = [];
 
   let isUserLoggedIn = false;
-  onMount(async () => {
-    await AuthService.isUserLoggedIn().then((res) => {
-      isUserLoggedIn = res;
+  async function fetchOrders() {
+    const ticketsResponse = await fetch(apiUrl + "/orders", {
+      method: "GET",
+      mode: "cors",
+      credentials: "include",
     });
+    return await ticketsResponse.json();
+  }
 
-    if (!isUserLoggedIn) {
-      goto("/auth/login");
-    }
-  });
-
-  export let data;
-  let ticketHistory = data.tickets || [];
   let username = "";
   let email = "";
 
@@ -31,13 +29,6 @@
     else if (time.getHours() < 18) return "Good Afternoon";
     else return "Good Evening";
   }
-
-  $: visitedMovies = ticketHistory.length;
-  let totalSpend = 0;
-  ticketHistory.forEach((ticket) => {
-    totalSpend += ticket.price;
-  });
-  $: upcomingFavorite = "You dont have any upcoming favorites";
 
   function animateValue(
     obj: HTMLElement | null,
@@ -61,24 +52,6 @@
     };
     window.requestAnimationFrame(step);
   }
-  onMount(() => {
-    if (browser) {
-      animateValue(
-        document.getElementById("visitedMovies"),
-        0,
-        visitedMovies,
-        1750
-      );
-      animateValue(
-        document.getElementById("totalAmountSpend"),
-        0,
-        totalSpend,
-        2000
-      );
-      username = JSON.parse(sessionStorage.getItem("user")!).Username;
-      email = JSON.parse(sessionStorage.getItem("user")!).Email;
-    }
-  });
 
   $: sorted = 0;
   function sortHistory(type: string) {
@@ -133,6 +106,60 @@
   let nextUsername: string = "";
   let nextEmail: string = "";
   let nextPassword: string = "";
+
+  let totalSpend = 0;
+  $: visitedMovies = 0;
+  $: upcomingMovies = [];
+  onMount(async () => {
+    await AuthService.isUserLoggedIn().then((res) => {
+      isUserLoggedIn = res;
+    });
+
+    if (!isUserLoggedIn) {
+      goto("/auth/login");
+    }
+
+    await fetchOrders().then((data) => {
+      ticketHistory = data;
+      visitedMovies = data.length;
+      upcomingMovies = getNextUpComingMovie();
+      ticketHistory.forEach((orders) => {
+        totalSpend += orders.Order.Totalprice;
+      });
+      if (browser) {
+        animateValue(
+          document.getElementById("visitedMovies"),
+          0,
+          visitedMovies,
+          1750
+        );
+        animateValue(
+          document.getElementById("totalAmountSpend"),
+          0,
+          totalSpend,
+          2000
+        );
+        username = JSON.parse(sessionStorage.getItem("user")!).Username;
+        email = JSON.parse(sessionStorage.getItem("user")!).Email;
+      }
+    });
+  });
+
+  function getNextUpComingMovie() {
+    console.log(ticketHistory);
+    let nextMovies: any[] = [];
+    ticketHistory.forEach((order) => {
+      if (order.Event.Start > new Date().toISOString()) {
+        nextMovies.push(order);
+      }
+    });
+    nextMovies.sort((a, b) => {
+      return (
+        new Date(a.Event.Start).getTime() - new Date(b.Event.Start).getTime()
+      );
+    });
+    return nextMovies[0];
+  }
 </script>
 
 <head:svelte>
@@ -176,16 +203,48 @@
           </p>
         </div>
       </div>
-      <div class="grid bg-tileBlue rounded-md w-full h-full">
+      <div
+        class=" grid bg-tileBlue rounded-md w-full h-full {upcomingMovies.length !=
+        0
+          ? 'hover:scale-105 duration-300'
+          : ''}"
+      >
         <div class="flex relative">
           <div class="absolute text-textWhite text-xl ml-2 mt-1">
-            Upcoming favorite:
+            Upcoming movie:
           </div>
-          <p
-            class="flex-col sm:flex-col text-textWhite text-md sm:text-md md:text-lg xl:text-2xl text-center my-auto"
-          >
-            {upcomingFavorite}
-          </p>
+          {#if upcomingMovies.length != 0}
+            <button
+              class="my-auto mx-2 flex"
+              on:click={() => {
+                goto("/tickets/" + upcomingMovies.Order.ID);
+              }}
+            >
+              <img
+                src={upcomingMovies.Movies[0].CoverPicURL}
+                alt=""
+                class="w-24 h-24 object-cover rounded-sm"
+              />
+              <div class="flex flex-col space-y-2 px-1 my-auto">
+                <div class="break-words text-textWhite">
+                  <p>
+                    {upcomingMovies.Movies.length > 1
+                      ? upcomingMovies.Title
+                      : upcomingMovies.Movies[0].Title}
+                  </p>
+                </div>
+                <div class="break-words text-textWhite">
+                  <p>{new Date(upcomingMovies.Event.Start).toLocaleString()}</p>
+                </div>
+              </div>
+            </button>
+          {:else}
+            <p
+              class="flex-col sm:flex-col text-textWhite text-md sm:text-md md:text-lg xl:text-2xl text-center my-auto"
+            >
+              You dont have any upcoming movies
+            </p>
+          {/if}
         </div>
       </div>
     </div>
@@ -326,23 +385,23 @@
               checkBoxValues[i] = false;
               checkedAll = false;
             }
-            invoicetemplate.generateInvoice({
-              date: new Date(ticketHistory[0].date).toLocaleDateString(),
-              invoiceNumber: Math.floor(Math.random() * 1000000) + "",
-              items: [
-                {
-                  price:
-                    (
-                      ticketHistory[0].price /
-                      100 /
-                      ticketHistory[0].seats.length
-                    ).toFixed(2) + "€",
-                  quantity: ticketHistory[0].seats.length,
-                  description: "Movie ticket: " + ticketHistory[0].title,
-                },
-              ],
-              total: (ticketHistory[0].price / 100).toFixed(2),
-            });
+            // invoicetemplate.generateInvoice({
+            //   date: new Date(ticketHistory[0].date).toLocaleDateString(),
+            //   invoiceNumber: Math.floor(Math.random() * 1000000) + "",
+            //   items: [
+            //     {
+            //       price:
+            //         (
+            //           ticketHistory[0].price /
+            //           100 /
+            //           ticketHistory[0].seats.length
+            //         ).toFixed(2) + "€",
+            //       quantity: ticketHistory[0].seats.length,
+            //       description: "Movie ticket: " + ticketHistory[0].title,
+            //     },
+            //   ],
+            //   total: (ticketHistory[0].price / 100).toFixed(2),
+            // });
           }}
           class="bg-buttonBlue duration-300 px-2 py-1 rounded-lg {atLeastOneCheckBoxIsTrue()
             ? 'hover:bg-green-500'
@@ -382,7 +441,7 @@
                   <div class="flex items-center">Cinema</div>
                 </th>
                 <th scope="col" class="px-6 py-3">
-                  <div class="flex items-center">Seat</div>
+                  <div class="flex items-center">Seat(s)</div>
                 </th>
                 <th scope="col" class="px-6 py-3">
                   <div class="flex items-center">
@@ -453,22 +512,36 @@
                     </div>
                   </td>
                   <th scope="row" class="px-6 py-4 font-medium text-textWhite">
-                    {ticket.title}
+                    {ticket.Movies.length === 1
+                      ? ticket.Movies[0].Title
+                      : ticket.Title}
                   </th>
-                  <td class="px-6 py-4"> {ticket.theatre} </td>
-                  <td class="px-6 py-4"> {ticket.seats} </td>
+                  <td class="px-6 py-4"> {ticket.Theatre.Name} </td>
                   <td class="px-6 py-4">
-                    {(ticket.price / 100).toFixed(2)}€
+                    Row: {ticket.Tickets[0].Seat.VisibleRowNr}; Seat:
+                    {#each ticket.Tickets as seats}
+                      {#if seats.Seat.VisibleColumnNr === ticket.Tickets[ticket.Tickets.length - 1].Seat.VisibleColumnNr}
+                        {seats.Seat.VisibleColumnNr}
+                      {:else}
+                        {seats.Seat.VisibleColumnNr},&nbsp;
+                      {/if}
+                    {/each}
                   </td>
                   <td class="px-6 py-4">
-                    {new Date(ticket.date).toLocaleDateString()}
+                    {(ticket.Order.Totalprice / 100).toFixed(2)}€
+                  </td>
+                  <td class="px-6 py-4">
+                    {new Date(ticket.Event.Start).toLocaleString()}
                   </td>
                   <td class="px-6 py-4 text-right">
                     <button
                       on:click={() => {
                         Swal.fire({
-                          title: ticket.title,
-                          text: "More information....",
+                          title:
+                            ticket.Movies.length > 1
+                              ? ticket.Title
+                              : ticket.Movies[0].Title,
+                          text: `Payed: ${ticket.Order.IsPaid ? "Yes" : "No"}`,
                           icon: "info",
                           color: "#fff",
                           background: "#29313A",
