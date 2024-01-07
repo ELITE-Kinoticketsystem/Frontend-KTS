@@ -24,7 +24,7 @@
     <p
       class="font-bold text-md text-textWhite text-center group-hover:scale-110 duration-300 mt-3"
     >
-      {theatre.ID}
+      Location WIP
     </p>
   </div>
 </div>
