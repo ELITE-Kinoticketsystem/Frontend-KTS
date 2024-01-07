@@ -59,6 +59,7 @@
       <div class="relative w-[25%] flex h-[90%]">
         <input class="w-full h-auto rounded-md" type="time" bind:value={time} />
         <button
+          class:hidden={times.length === 1}
           class="absolute z-10 w-[16%] h-[30%] top-0 right-0 translate-x-[55%] -translate-y-[50%] rounded-full"
           on:click={() => {
             times.splice(thisTime, 1);

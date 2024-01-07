@@ -102,8 +102,7 @@
                   new Date().getTimezoneOffset() * 60 * 1000
               )
             ).toISOString();
-            fire("Event is currently under construction");
-
+            fire("Your event is currently being constructed for you..");
             fetch(`${apiUrl}/events`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -194,17 +193,16 @@
     </button>
   </div>
 
-  <div class="flex flex-row gap-x-10 w-full h-[40vh] mb-6">
+  <div class="flex flex-row gap-x-7 w-full h-[40vh] mb-6">
     <div class="flex-none w-[21%] h-full rounded-md">
       <MovieSelector bind:allDbMovies bind:selectedMovies />
     </div>
-    <div class="flex flex-col gap-y-5 w-[26%] h-full">
+    <div class="flex flex-col gap-y-5 w-[28%] h-full">
       <div class="h-[20%] p-2 rounded-lg bg-tileBlue ring-1 ring-white">
         <input
           class="w-full h-full rounded-lg p-2 duration-300 text-sm text-textWhite
       border border-gray-300 bg-buttonBlue placeholder:text-gray-300 focus:ring-blue-500 focus:border-blue-500"
           type="text"
-          maxlength="24"
           placeholder="Name of the event"
           bind:value={eventName}
         />

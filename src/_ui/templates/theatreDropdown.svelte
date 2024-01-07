@@ -13,7 +13,7 @@
     LogoURL: null,
     AddressID: "",
   };
-  let eligibleTheatresAreVisible = false;
+  let eligibleTheatresAreVisible = 1;
   let theatres: any[] = [];
 
   $: {
@@ -51,7 +51,7 @@
 
 <button
   on:click|stopPropagation={() => {
-    eligibleTheatresAreVisible = true;
+    ++eligibleTheatresAreVisible;
   }}
   class="relative w-full h-full p-1 bg-buttonBlue ring-slate-500 ring-1 rounded-md hover:bg-blue-300"
 >
@@ -66,14 +66,14 @@
     <div
       class="absolute flex flex-col bottom-0 translate-y-[100.7%] z-10 left-0 w-[100%] min-h-[100%] max-h-[420%]
       overflow-y-hidden hover:overflow-y-auto ring-1 ring-slate-500 rounded-md
-      {eligibleTheatresAreVisible ? 'flex' : 'hidden'}"
+      {eligibleTheatresAreVisible % 2 === 0 ? 'flex' : 'hidden'}"
     >
       {#each theatres as curTheatre}
         <button
           class="h-full w-full text-textWhite text-[100%] p-1 bg-buttonBlue ring-1 ring-slate-500 hover:bg-blue-300"
           on:click|stopPropagation={() => {
             selectedTheatre = curTheatre;
-            eligibleTheatresAreVisible = false;
+            ++eligibleTheatresAreVisible;
             dispatch("theatreWasSelected");
           }}
         >

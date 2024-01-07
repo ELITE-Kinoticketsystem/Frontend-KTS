@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Showings from "../layout/_movies/showings.svelte";
   import PlusButton from "./plusButton.svelte";
   import TimeRow from "./timeRow.svelte";
 
@@ -30,9 +31,11 @@
         <TimeRow
           bind:times={showing.times}
           bind:date={showing.date}
+          bind:selectedTheatre={showing.theatre}
           bind:selectedHall={showing.hall}
         />
         <button
+          class:hidden={allShowings.length === 1}
           class="z-10 w-[3%] aspect-1 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2"
           on:click={() => {
             allShowings.splice(thisShowing, 1);
@@ -61,12 +64,19 @@
     on:click={() => {
       allShowings = [
         ...allShowings,
-        {
-          theatre: addedDefaultTheatre,
-          hall: addedDefaultHall,
-          date: addedDefaultDate,
-          times: ["12:00"],
-        },
+        allShowings.length > 0
+          ? {
+              theatre: allShowings.at(allShowings.length - 1).theatre,
+              hall: allShowings.at(allShowings.length - 1).hall,
+              date: allShowings.at(allShowings.length - 1).date,
+              times: ["12:00"],
+            }
+          : {
+              theatre: addedDefaultTheatre,
+              hall: addedDefaultHall,
+              date: addedDefaultDate,
+              times: ["12:00"],
+            },
       ];
     }}
     class="flex mx-auto w-[3%] my-3 hover:bg-blue-400 rounded-full"

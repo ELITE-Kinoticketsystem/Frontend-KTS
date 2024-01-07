@@ -24,6 +24,7 @@
         return response.json();
       })
       .then((fetchedTheatres) => {
+        console.log(fetchedTheatres);
         theatres = fetchedTheatres;
       });
   });
@@ -39,6 +40,7 @@
   $: curSeatCategory = curSeatCategory;
   $: hallWidth = hallWidth;
   $: hallHeight = hallHeight;
+  $:console.log(hallName);
 
   function postHall(theatre: any) {
     let success = false;
@@ -92,32 +94,34 @@
         title: "text-textWhite bg-backgroundBlue",
         popup: "bg-backgroundBlue",
       },
-      preConfirm: (enteredHallName) => {
-        let nameIsValid = true;
-        if (!nameIsValid) {
-          fire(`${enteredHallName} is not a valid name`, 3000);
-        } else {
-          hallName = enteredHallName;
-          Swal.fire({
-            title: `In which of your theatres is ${enteredHallName}?`,
-            input: "select",
-            inputOptions: theatres.map((theatre: any) => {
-              return theatre.Name;
-            }),
-            showCancelButton: true,
-            confirmButtonColor: "#89a3be",
-            customClass: {
-              popup: "bg-backgroundBlue text-textWhite text-[100%]",
-            },
-          }).then((selectedHallIndex: any) => {
-            fire(
-              postHall(theatres.at(selectedHallIndex))
-                ? `${hallName} was created succesfully!`
-                : `${hallName} could not be created due to internal problems!`
-            );
-          });
-        }
-      },
+    }).then((answer) => {
+      console.log(answer);
+      let enteredHallName = answer.value;
+      let nameIsValid = true;
+      if (!nameIsValid) {
+        fire(`${enteredHallName.value} is not a valid name`, 3000);
+      } else {
+        hallName = enteredHallName;
+        console.log(hallName);
+        Swal.fire({
+          title: `In which of your theatres is ${enteredHallName}?`,
+          input: "select",
+          inputOptions: theatres.map((theatre: any) => {
+            return theatre.Name;
+          }),
+          showCancelButton: true,
+          confirmButtonColor: "#89a3be",
+          customClass: {
+            popup: "bg-backgroundBlue text-textWhite text-[100%]",
+          },
+        }).then((selectedHallIndex: any) => {
+          fire(
+            postHall(theatres.at(selectedHallIndex))
+              ? `${hallName} was created succesfully!`
+              : `${hallName} could not be created due to internal problems!`
+          );
+        });
+      }
     });
   }
 </script>
