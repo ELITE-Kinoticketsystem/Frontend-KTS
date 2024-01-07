@@ -75,7 +75,7 @@
           <h2 class="text-lg font-semibold">
             {location.Name}
           </h2>
-          <p class="text-sm">{location.AddressID}</p>
+          <p class="text-sm">Location WIP</p>
           <button
             class="mt-4 bg-buttonBlue hover:bg-green-800 duration-300 text-white font-bold py-2 px-4 rounded"
             on:click={() => {
