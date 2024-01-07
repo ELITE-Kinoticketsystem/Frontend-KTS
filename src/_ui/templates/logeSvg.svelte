@@ -1,0 +1,75 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="100"
+  height="75"
+  stroke="#ffffff"
+  class="w-full h-full"
+>
+  <g id="Layer_1" stroke="null">
+    <path
+      fill="#fff"
+      stroke="#000"
+      d="m12.78689,25.81967"
+      id="svg_15"
+    />
+    <rect
+      stroke="null"
+      id="svg_2"
+      height="72.40736"
+      width="3.70369"
+      y="-0.27769"
+      x="82.2223"
+      stroke-width="0"
+      fill="#000000"
+    />
+    <rect
+      stroke="null"
+      id="svg_4"
+      height="76.11104"
+      width="3.70369"
+      y="-0.27769"
+      x="13.70407"
+      stroke-width="0"
+      fill="#000000"
+    />
+    <rect
+      transform="rotate(90.1157 16.296 74.028)"
+      stroke="null"
+      id="svg_6"
+      height="26.85059"
+      width="3.70369"
+      y="60.60268"
+      x="14.44416"
+      stroke-width="0"
+      fill="#000000"
+    />
+    <rect
+      transform="rotate(90.1157 84.0735 74.028)"
+      stroke="null"
+      id="svg_7"
+      height="26.85059"
+      width="3.70369"
+      y="60.60268"
+      x="82.22164"
+      stroke-width="0"
+      fill="#000000"
+    />
+    <path
+      id="svg_10"
+      d="m34.44451,22.68487"
+      stroke-width="0"
+      stroke="null"
+      fill="#000000"
+    />
+    <ellipse
+      stroke-width="3"
+      ry="14.53697"
+      rx="34.07393"
+      id="svg_12"
+      cy="0.18497"
+      cx="50"
+      stroke="#000000"
+      fill="none"
+    />
+  </g>
+</svg>

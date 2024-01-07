@@ -18,7 +18,7 @@
       credentials: "include",
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response.status !== 200) {
           fire("A database error occured", 3000);
           return;
         }
