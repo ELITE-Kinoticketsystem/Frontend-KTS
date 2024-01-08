@@ -29,7 +29,6 @@
     genreJson.forEach((genre) => {
       allGenres.push(genre.GenreName);
     });
-    console.log(allGenres);
   }
 
   function fireHelp() {
@@ -106,12 +105,10 @@
       let genreIds: string[] = [];
       await fetch(apiUrl + "/genres").then(async (response) => {
         const json = await response.json();
-        console.log(json);
         genres.forEach((genre) => {
           json.forEach((genreJson) => {
             if (genreJson.GenreName === genre) {
               genreIds.push(JSON.parse(JSON.stringify({ ID: genreJson.ID })));
-              console.log(genre, genreJson.ID);
             }
           });
         });
@@ -122,7 +119,6 @@
   }
   async function createMovieViaBackend() {
     await getGenresIds().then((genreIds) => {
-      console.log(genreIds);
       const body = JSON.stringify({
         Title: movieTitle,
         Description: description,
@@ -135,7 +131,6 @@
         Rating: 0.0,
         GenresID: genreIds,
       });
-      console.log("Body", body);
       fetch(apiUrl + "/movie", {
         mode: "cors",
         method: "POST",
@@ -248,6 +243,7 @@
                   });
                 });
                 if (allSuccessfull) {
+                  allGenres.push(...newGenres);
                   genres = newGenres;
                   genres = genres;
                   Swal.fire({
@@ -281,6 +277,7 @@
               }
             });
           } else {
+            allGenres.push(...newGenres);
             genres = newGenres;
             genres = genres;
           }
