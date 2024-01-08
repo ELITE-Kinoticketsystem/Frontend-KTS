@@ -166,6 +166,7 @@
             fire("Successfully canceled", 1500);
             return;
           }
+          fire("Your hall is currently being constructed for you..");
           postHall(theatres.at(answer.value));
         });
       }
