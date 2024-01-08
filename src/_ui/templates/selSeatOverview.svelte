@@ -39,13 +39,5 @@
         priceForAllSeats={seat[1] * prices.regular}
       />
     </div>
-    <!-- <div
-      class="flex flex-row items-center mx-auto ring-1 ring-white rounded-lg"
-    >
-      <p class="text-[2.5cqw] px-2 text-white">
-        {seat[1]}x {seat[0][0].toUpperCase() +
-          seat[0].slice(1)}
-      </p>
-    </div> -->
   {/each}
 </div>

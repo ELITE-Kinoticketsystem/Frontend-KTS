@@ -13,15 +13,14 @@
   import { goto, invalidate, invalidateAll } from "$app/navigation";
   import type { PageData } from "./$types";
   import EditButton from "../../_ui/templates/editButton.svelte";
+  import { apiUrl } from "$lib/_services/authService";
+  import { fire } from "$lib/swalTemplate";
 
   export let data: PageData;
   const revenueData: any = data.revenueData;
-  let routes = new Map<String, String>([
-    ["locations", "mylocations/add"],
-    ["genres", "mygenres"],
-    ["halls", "mycinemas/add"],
-    ["movies", "mymovies/add"],
-  ]);
+
+  let theatres: any[] = [];
+
   let location = "All";
   let locations = [
     "All",
@@ -61,13 +60,31 @@
     else if (time.getHours() < 18) return "Good Afternoon";
     else return "Good Evening";
   }
+  function getTheatres() {
+    fetch(`${apiUrl}/theatres`, {
+      mode: "cors",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          fire("A database error occured when trying to get theatres", 3000);
+          return;
+        }
+
+        return response.json();
+      })
+      .then((fetchedTheatres) => {
+        theatres = fetchedTheatres;
+      });
+  }
 
   onMount(() => {
     localStorage.getItem("cinema") || "All";
-    username =
-      "<span class='font-semibold text-red-600'>Admin</span> " +
-      JSON.parse(sessionStorage.getItem("user")!).Username;
+    username = "John Doe";
+    // "<span class='font-semibold text-red-600'>Admin</span> " +
+    // JSON.parse(sessionStorage.getItem("user")!).Username;
     rerunLoadFunction();
+    getTheatres();
   });
 
   async function fireSwal(type: string, title: string) {
@@ -118,18 +135,6 @@
     }
   }
 
-  async function addPopUp() {
-    await fireSwal("add", "What do you want to add?");
-  }
-  async function editPopUp() {
-    await fireSwal("edit", "What do you want to edit?");
-  }
-  async function deletePopUp() {
-    await fireSwal("remove", "What do you want to remove?");
-  }
-  async function overViewPopUp() {
-    await fireSwal("overview", "What do you want to see?");
-  }
   ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
 </script>
 
@@ -208,19 +213,28 @@
   <div
     class="flex flex-row items-center place-content-evenly w-full h-[8%] mb-2"
   >
-    <div class="w-[20%] h-full">
+    <div class="w-[18%] h-full">
       <EditButton
         name={"Theatres"}
         routeWhenClicked={"admin/mylocations/add"}
       />
     </div>
-    <div class="w-[20%] h-full">
-      <EditButton name={"Halls"} routeWhenClicked={"admin/mycinemas/add"} />
+    <div class="w-[18%] h-full">
+      {#key theatres}
+        <EditButton
+          isDisabled={theatres === null ? true : theatres.length === 0}
+          name={"Halls"}
+          routeWhenClicked={"admin/mycinemas/add"}
+        />
+      {/key}
     </div>
-    <div class="w-[20%] h-full">
+    <div class="w-[18%] h-full">
+      <EditButton name={"Events"} routeWhenClicked={"admin/myshowings/add"} />
+    </div>
+    <div class="w-[18%] h-full">
       <EditButton name={"Movies"} routeWhenClicked={"admin/mymovies/add"} />
     </div>
-    <div class="w-[20%] h-full">
+    <div class="w-[18%] h-full">
       <EditButton name={"Genres"} routeWhenClicked={"admin/mygenres"} />
     </div>
   </div>
