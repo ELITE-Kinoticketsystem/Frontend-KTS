@@ -27,7 +27,7 @@
 <div
   class="h-full w-full flex flex-row gap-x-2 items-center px-3 bg-backgroundBlue rounded-md"
 >
-  <div class="w-[24%] h-[70%]">
+  <div class="w-[28%] h-[70%]">
     <TheatreDropdown
       on:theatreWasSelected={() => {
         selectedHall = {
@@ -47,7 +47,7 @@
   <input
     type="date"
     bind:value={date}
-    class="flex-none w-[15%] h-[70%] bg-gray-50 border border-gray-300 text-gray-900 text-[90%] rounded-lg focus:ring-blue-500
+    class="flex-none font-mono w-[18%] h-[70%] bg-gray-50 border border-gray-300 text-gray-900 text-[90%] rounded-lg focus:ring-blue-500
       focus:border-blue-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
       dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
   />
@@ -56,8 +56,12 @@
     class="w-[80%] h-full flex flex-row gap-x-3 items-center overflow-x-auto overflow-y-hidden py-[0.4rem] px-1"
   >
     {#each times as time, thisTime}
-      <div class="relative w-[26%] flex h-[90%]">
-        <input class="w-full h-auto rounded-md" type="time" bind:value={time} />
+      <div class="relative w-[29%] flex h-[90%]">
+        <input
+          class="w-full h-auto rounded-md font-mono"
+          type="time"
+          bind:value={time}
+        />
         <button
           class:hidden={times.length === 1}
           class="absolute z-10 w-[16%] h-[30%] top-0 right-0 translate-x-[55%] -translate-y-[50%] rounded-full"

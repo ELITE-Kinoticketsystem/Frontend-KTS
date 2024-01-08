@@ -141,7 +141,7 @@
       }
       let enteredHallName = answer.value;
       // allow only reasonable(see Regex) hallnames
-      if (!new RegExp("^[a-zA-Z]{1,24}(?:s?d{0,3})?$").test(enteredHallName)) {
+      if (!new RegExp("^[a-zA-Z]{1,24}(?:-?[a-zA-Z])*(?:\s?\d{0,3})?$").test(enteredHallName)) {
         fire(
           `${
             enteredHallName === "" ? "''" : `'${enteredHallName}'`
