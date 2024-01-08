@@ -20,14 +20,6 @@
   let mouseDown = false;
   $: mouseDown = mouseDown;
 
-  function fireNotEnoughCols() {
-    fire("There are no columns left for removal\nAdd a column first", 3000);
-    mouseDown = false;
-  }
-  function fireNotEnoughRows() {
-    fire("There are no rows left for removal\nAdd a row first", 3000);
-    mouseDown = false;
-  }
   function fireDoubleSeatHasNoSpace() {
     fire(
       "A double seat can not be placed here because there is not enough space!\n" +
@@ -40,17 +32,17 @@
   function getColorFromCategory(Category: string) {
     switch (Category) {
       case "regular":
-        return "#ff0000";
+        return "#86BBD8";
       case "vip":
-        return "#00ff00";
+        return "#7b2cbf";
       case "loge":
-        return "#0000ff";
+        return "#F6AE2D";
       default:
         console.log("Category does not exist!");
         return "#000000";
     }
   }
-
+  //helper function
   function getSeat(
     Category: string,
     Type: string,
@@ -59,7 +51,7 @@
   ) {
     return { Category, Type, ColumnNr, RowNr };
   }
-
+  //initial setup
   for (let y = 0; y < yStartDim; ++y) {
     for (let x = 0; x < xStartDim; ++x) {
       seatrowforFill.push(getSeat("regular", "empty", x, y));
@@ -174,125 +166,11 @@
     }
   }
 
-  function addRowToTop() {
-    let curRow: any = [];
-    for (let x = 0; x < hallWidth; ++x) {
-      curRow.push(getSeat("regular", "empty", x, 0));
-    }
-
-    let newSeats: any[] = [curRow];
-    let curSeat = getSeat("regular", "empty", 0, 0);
-    curRow = [];
-    for (let y = 0; y < hallHeight; ++y) {
-      for (let x = 0; x < hallWidth; ++x) {
-        curSeat = seats.at(y).at(x);
-        ++curSeat.RowNr;
-
-        curRow.push(curSeat);
-      }
-      newSeats.push(curRow);
-      curRow = [];
-    }
-    seats = newSeats;
-    ++hallHeight;
-    correctCoordinates();
-  }
-  function addRowToBottom() {
-    let newRow: any = [];
-    for (let x = 0; x < hallWidth; ++x) {
-      newRow.push(getSeat("regular", "empty", x, hallHeight));
-    }
-    seats = [...seats, newRow];
-    ++hallHeight;
-    correctCoordinates();
-  }
-  function addColToLeft() {
-    let newSeats: any[] = [];
-    let curSeat = getSeat("regular", "empty", 0, 0);
-    let curRow = [getSeat("regular", "empty", 0, 0)];
-
-    for (let y = 0; y < hallHeight; ++y) {
-      for (let x = 0; x < hallWidth; ++x) {
-        curSeat = seats.at(y).at(x);
-        ++curSeat.ColumnNr;
-        curRow.push(curSeat);
-      }
-      newSeats.push(curRow);
-      curRow = [getSeat("regular", "empty", y + 1, 0)]; //start nextrow with additional seat
-    }
-    seats = newSeats;
-    ++hallWidth;
-    cleanHalfDoubleSeatsLeft();
-    correctCoordinates();
-  }
-  function addColToRight() {
-    if (hallHeight === 0) {
-      fireNotEnoughRows();
-      return;
-    }
-    for (let y = 0; y < hallHeight; ++y) {
-      seats.at(y).push(getSeat("regular", "empty", hallWidth, y));
-    }
-    seats = seats;
-    ++hallWidth;
-    cleanHalfDoubleSeatsRight();
-    correctCoordinates();
-  }
-
-  function removeTopRow() {
-    if (hallHeight === 0) {
-      fireNotEnoughRows();
-      return;
-    }
-    seats = seats.slice(1, seats.length);
-    for (let x = 0; x < seats.length; ++x) {
-      for (let y = 0; y < seats.at(0).length; ++y) {
-        --seats.at(y).at(x).RowNr;
-      }
-    }
-    --hallHeight;
-    correctCoordinates();
-  }
-  function removeLeftCol() {
-    if (hallWidth === 0) {
-      fireNotEnoughCols();
-      return;
-    }
-    for (let y = 0; y < hallHeight; ++y) {
-      seats[y] = seats.at(y).slice(1, hallWidth);
-    }
-    for (let x = 0; x < seats.length; ++x) {
-      for (let y = 0; y < seats.at(0).length; ++y) {
-        --seats.at(y).at(x).ColumnNr;
-      }
-    }
-    --hallWidth;
-    cleanHalfDoubleSeatsLeft();
-    correctCoordinates();
-  }
-  function removeRightCol() {
-    if (hallWidth === 0) {
-      fireNotEnoughCols();
-      return;
-    }
-    for (let y = 0; y < hallHeight; ++y) {
-      seats[y] = seats.at(y).slice(0, hallWidth - 1);
-    }
-
-    --hallWidth;
-    cleanHalfDoubleSeatsRight();
-    correctCoordinates();
-  }
-  function removeBottomRow() {
-    if (hallHeight === 0) {
-      fireNotEnoughRows();
-      return;
-    }
-    seats = seats.slice(0, seats.length - 1);
-    --hallHeight;
-    correctCoordinates();
-  }
   function setRowsFromTop(newYDim: number) {
+    if (newYDim < 1) {
+      fire("There has to be at least one row!", 3000);
+      return;
+    }
     if (newYDim > hallHeight) {
       let newSeats: any[] = [];
       let additionalRows = newYDim - hallHeight;
@@ -310,8 +188,6 @@
       for (let y = additionalRows; y < newYDim; ++y) {
         for (let x = 0; x < hallWidth; ++x) {
           curSeat = seats.at(y - additionalRows).at(x);
-          curSeat.RowNr += additionalRows;
-
           curRow.push(curSeat);
         }
         newSeats.push(curRow);
@@ -326,6 +202,10 @@
   }
 
   function setRowsFromBottom(newYDim: number) {
+    if (newYDim < 1) {
+      fire("There has to be at least one row!", 3000);
+      return;
+    }
     if (newYDim > hallHeight) {
       let additionalRows = newYDim - hallHeight;
       let curRow: any = [];
@@ -341,9 +221,12 @@
     }
 
     hallHeight = newYDim;
-    correctCoordinates();
   }
   function setColsFromLeft(newHallWidth: number) {
+    if (newHallWidth < 1) {
+      fire("There has to be at least one column!", 3000);
+      return;
+    }
     if (newHallWidth > hallWidth) {
       let additionalColumns = newHallWidth - hallWidth;
       let curSeat: any;
@@ -355,22 +238,22 @@
         }
         seats[y] = [...curAdditionalPartOfRow, ...seats.at(y)];
         curAdditionalPartOfRow = [];
-        for (let x = additionalColumns; x < newHallWidth; ++x) {
-          seats.at(y).at(x).ColumnNr += additionalColumns;
-        }
       }
     } else {
       for (let y = 0; y < hallHeight; ++y) {
         seats[y] = seats.at(y).slice(hallWidth - newHallWidth, hallWidth);
       }
     }
-
     hallWidth = newHallWidth;
     cleanHalfDoubleSeatsLeft();
     correctCoordinates();
   }
 
   function setColsFromRight(newHallWidth: number) {
+    if (newHallWidth < 1) {
+      fire("There has to be at least one column!", 3000);
+      return;
+    }
     if (newHallWidth > hallWidth) {
       for (let y = 0; y < hallHeight; ++y) {
         for (let i = hallWidth; i < newHallWidth; ++i) {
@@ -384,7 +267,6 @@
     }
     hallWidth = newHallWidth;
     cleanHalfDoubleSeatsRight();
-    correctCoordinates();
   }
 
   function correctCoordinates() {
@@ -467,7 +349,11 @@
       class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[120%] flex flex-col items-center justify-between h-[25%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={addColToRight}><PlusButton /></button>
+        <button
+          on:click={() => {
+            setColsFromRight(hallWidth + 1);
+          }}><PlusButton /></button
+        >
       </div>
       <div class="w-14">
         <SizeInput
@@ -479,7 +365,11 @@
         />
       </div>
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={removeRightCol}><MinusButton /></button>
+        <button
+          on:click={() => {
+            setColsFromRight(hallWidth - 1);
+          }}><MinusButton /></button
+        >
       </div>
     </div>
 
@@ -487,7 +377,11 @@
       class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-[120%] flex flex-col items-center justify-between h-[25%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={addColToLeft}><PlusButton /></button>
+        <button
+          on:click={() => {
+            setColsFromLeft(hallWidth + 1);
+          }}><PlusButton /></button
+        >
       </div>
       <div class="w-14">
         <SizeInput
@@ -499,7 +393,11 @@
         />
       </div>
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={removeLeftCol}><MinusButton /></button>
+        <button
+          on:click={() => {
+            setColsFromLeft(hallWidth - 1);
+          }}><MinusButton /></button
+        >
       </div>
     </div>
 
@@ -507,7 +405,11 @@
       class="absolute -bottom-8 left-1/2 flex flex-row justify-between translate-y-[70%] -translate-x-1/2 w-[18%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={removeBottomRow}><MinusButton /></button>
+        <button
+          on:click={() => {
+            setRowsFromBottom(hallHeight - 1);
+          }}><MinusButton /></button
+        >
       </div>
       <div class="w-14">
         <SizeInput
@@ -519,14 +421,22 @@
         />
       </div>
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={addRowToBottom}><PlusButton /></button>
+        <button
+          on:click={() => {
+            setRowsFromBottom(hallHeight + 1);
+          }}><PlusButton /></button
+        >
       </div>
     </div>
     <div
       class="absolute -top-8 -translate-y-[70%] left-1/2 -translate-x-1/2 flex flex-row justify-between w-[18%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={removeTopRow}><MinusButton /></button>
+        <button
+          on:click={() => {
+            setRowsFromTop(hallHeight - 1);
+          }}><MinusButton /></button
+        >
       </div>
       <div class="w-14">
         <SizeInput
@@ -538,7 +448,11 @@
         />
       </div>
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
-        <button on:click={addRowToTop}><PlusButton /></button>
+        <button
+          on:click={() => {
+            setRowsFromTop(hallHeight + 1);
+          }}><PlusButton /></button
+        >
       </div>
     </div>
   </button>

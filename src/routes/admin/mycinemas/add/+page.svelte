@@ -77,9 +77,47 @@
     return !nonEmptySeatFound;
   }
 
+  function checkHall() {
+    //assure halls a rectangle
+    for (let i = 1; i < hallHeight; ++i) {
+      if (seats.at(i).length !== seats.at(0).length) {
+        return 1;
+      }
+    }
+
+    for (let y = 0; y < hallHeight; ++y) {
+      for (let x = 0; x < hallWidth - 1; ++x) {
+        // check y coordinates
+        if (seats.at(y).at(x).RowNr !== y) {
+          return 2;
+        }
+        // check x coordinates
+        if (seats.at(y).at(x).ColumnNr !== x) {
+          return 3;
+        }
+        // because loop does not cover last element check last x-coordinate as well
+        if (seats.at(y).at(x + 1).ColumnNr !== x + 1) {
+          return 4;
+        }
+        // after double there always has to be an emptyDouble (left,right)
+        if (seats.at(y).at(x).Type === "double") {
+          if (seats.at(y).at(x + 1).Type !== "emptyDouble") {
+            return 5;
+          }
+        }
+      }
+    }
+
+    return 0;
+  }
+
   function createHall() {
     if (hallIsEmpty()) {
       fire("Empty halls can not be created", 3000);
+      return;
+    }
+    if (checkHall() !== 0) {
+      fire(`The hall can not be created ErrorCode: ${checkHall()}`, 3000);
       return;
     }
     Swal.fire({
@@ -96,10 +134,20 @@
         popup: "bg-backgroundBlue",
       },
     }).then((answer) => {
+      if (!answer.isConfirmed) {
+        fire("Successfully canceled", 1500);
+        return;
+      }
       let enteredHallName = answer.value;
-      let nameIsValid = true;
-      if (!nameIsValid) {
-        fire(`${enteredHallName.value} is not a valid name`, 3000);
+      // allow only reasonable(see Regex) hallnames
+      if (!new RegExp("^[a-zA-Z]{1,24}(?:s?d{0,3})?$").test(enteredHallName)) {
+        fire(
+          `${
+            enteredHallName === "" ? "''" : `'${enteredHallName}'`
+          } is not a valid name\nEnter only letters and at most 3 optional digits`,
+          3000
+        );
+        return;
       } else {
         hallName = enteredHallName;
         Swal.fire({
@@ -113,8 +161,12 @@
           customClass: {
             popup: "bg-backgroundBlue text-textWhite text-[100%]",
           },
-        }).then((selectedHallIndex: any) => {
-          postHall(theatres.at(selectedHallIndex.value));
+        }).then((answer: any) => {
+          if (!answer.isConfirmed) {
+            fire("Successfully canceled", 1500);
+            return;
+          }
+          postHall(theatres.at(answer.value));
         });
       }
     });
