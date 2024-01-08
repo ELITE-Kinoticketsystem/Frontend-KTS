@@ -41,12 +41,17 @@
       fire("Genre name can not be empty!", 3000);
       return;
     }
-    fetch(`${apiUrl}/genres/${inputValue}`, {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      mode: "cors",
-      credentials: "include",
-    })
+    fetch(
+      `${apiUrl}/genres/${
+        inputValue.at(0)?.toUpperCase() + inputValue.slice(1)
+      }`,
+      {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        mode: "cors",
+        credentials: "include",
+      }
+    )
       .then((response) => {
         if (response.ok) {
           setTimeout(() => {

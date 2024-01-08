@@ -3,6 +3,7 @@
   import PlusButton from "../../../../_ui/templates/plusButton.svelte";
   import { apiUrl } from "$lib/_services/authService";
   import { goto } from "$app/navigation";
+  import { fire } from "$lib/swalTemplate";
 
   let Name = "";
   let Street = "";
@@ -139,7 +140,7 @@
                 goto("/admin");
               }
             });
-          });
+          }, 2000);
         } else {
           fire("A database error occured. Theatre was not created!");
         }
