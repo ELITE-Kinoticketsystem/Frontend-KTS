@@ -9,13 +9,15 @@
     seatType = seatType;
     priceForAllSeats = priceForAllSeats;
   }
+  $: upperCaseSeatCategory =
+    seatCategory.at(0).toUpperCase() + seatCategory.slice(1);
 </script>
 
 <div
   class="w-full h-full flex flex-row items-center place-content-evenly rounded-md ring-1 ring-white bg-headerBlue"
 >
   <p class="text-textWhite text-[2cqw]">
-    {nrOfSeats}x {seatCategory.at(0).toUpperCase() + seatCategory.slice(1)}
+    {nrOfSeats}x {upperCaseSeatCategory}
     {seatType === "double" ? "Double Seat" : "Seat"}
   </p>
   <div class="w-[10%] h-[80%]">
