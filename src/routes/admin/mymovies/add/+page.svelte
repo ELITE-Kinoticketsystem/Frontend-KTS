@@ -13,8 +13,24 @@
   let fsk = 0;
   let trailerId = "";
   let coverPicURL = "";
-  let genres: string[] = [];
+  $: genres = [];
+  let allGenres: string[] = [];
   let actors: any[] = [];
+  async function getGenres() {
+    const genreResponse = await fetch(apiUrl + "/genres", {
+      mode: "cors",
+      method: "GET",
+      credentials: "include",
+    });
+    const genreJson = await genreResponse.json();
+    for (let i = 0; i < 2; i++) {
+      genres = [...genres, genreJson[i].GenreName];
+    }
+    genreJson.forEach((genre) => {
+      allGenres.push(genre.GenreName);
+    });
+    console.log(allGenres);
+  }
 
   function fireHelp() {
     Swal.fire({
@@ -84,65 +100,194 @@
       });
     }
   }
-  function createMovieViaBackend() {
-    const body = JSON.stringify({
-      Title: movieTitle,
-      Description: description,
-      Fsk: parseInt(fsk.toString()),
-      TrailerURL: trailerId,
-      TimeInMin: parseInt(durationInMin.toString()),
-      BannerPicURL: wallPaperPicUrl,
-      CoverPicURL: coverPicURL,
-      ReleaseDate: new Date(releaseYear).toISOString(),
-      Rating: 0.0,
+
+  async function getGenresIds() {
+    return new Promise(async (resolve, reject) => {
+      let genreIds: string[] = [];
+      await fetch(apiUrl + "/genres").then(async (response) => {
+        const json = await response.json();
+        console.log(json);
+        genres.forEach((genre) => {
+          json.forEach((genreJson) => {
+            if (genreJson.GenreName === genre) {
+              genreIds.push(JSON.parse(JSON.stringify({ ID: genreJson.ID })));
+              console.log(genre, genreJson.ID);
+            }
+          });
+        });
+      });
+      resolve(genreIds);
+      return genreIds;
     });
-    fetch(apiUrl + "/movie", {
-      mode: "cors",
-      method: "POST",
-      credentials: "include",
-      body: body,
-    }).then((response) => {
-      if (response.status === 201) {
-        Swal.fire({
-          title: "Success",
-          icon: "success",
-          html: `Your movie has been created. <br> <br> You will be redirected to the movie page in a few seconds`,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          confirmButtonColor: "#888888",
-          color: "#FAFAFA",
-          customClass: {
-            input: "rounded-md text-backgroundBlue",
-            title: "text-textWhite bg-backgroundBlue",
-            popup: "bg-backgroundBlue",
-          },
-        }).then(async () => {
-          let json = await response.json();
-          console.log(json);
-          goto("/movies/" + json);
-        });
-      } else {
-        Swal.fire({
-          title: "Error",
-          icon: "error",
-          html: `Your movie could not be created. <br> <br> Please try again later`,
-          showConfirmButton: true,
-          confirmButtonColor: "#888888",
-          color: "#FAFAFA",
-          customClass: {
-            input: "rounded-md text-backgroundBlue",
-            title: "text-textWhite bg-backgroundBlue",
-            popup: "bg-backgroundBlue",
-          },
-        });
-      }
+  }
+  async function createMovieViaBackend() {
+    await getGenresIds().then((genreIds) => {
+      console.log(genreIds);
+      const body = JSON.stringify({
+        Title: movieTitle,
+        Description: description,
+        Fsk: parseInt(fsk.toString()),
+        TrailerURL: trailerId,
+        TimeInMin: parseInt(durationInMin.toString()),
+        BannerPicURL: wallPaperPicUrl,
+        CoverPicURL: coverPicURL,
+        ReleaseDate: new Date(releaseYear).toISOString(),
+        Rating: 0.0,
+        GenresID: genreIds,
+      });
+      console.log("Body", body);
+      fetch(apiUrl + "/movie", {
+        mode: "cors",
+        method: "POST",
+        credentials: "include",
+        body: body,
+      }).then((response) => {
+        if (response.status === 201) {
+          Swal.fire({
+            title: "Success",
+            icon: "success",
+            html: `Your movie has been created. <br> <br> You will be redirected to the movie page in a few seconds`,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            confirmButtonColor: "#888888",
+            color: "#FAFAFA",
+            customClass: {
+              input: "rounded-md text-backgroundBlue",
+              title: "text-textWhite bg-backgroundBlue",
+              popup: "bg-backgroundBlue",
+            },
+          }).then(async () => {
+            let json = await response.json();
+            goto("/movies/" + json);
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            icon: "error",
+            html: `Your movie could not be created. <br> <br> Please try again later`,
+            showConfirmButton: true,
+            confirmButtonColor: "#888888",
+            color: "#FAFAFA",
+            customClass: {
+              input: "rounded-md text-backgroundBlue",
+              title: "text-textWhite bg-backgroundBlue",
+              popup: "bg-backgroundBlue",
+            },
+          });
+        }
+      });
     });
   }
   onMount(async () => {
     fireHelp();
+    await getGenres();
   });
   function change(type: string) {
+    if (type.toLowerCase() === "genres") {
+      let genresString: string = genres.join(",");
+      Swal.fire({
+        title: "You are about to change: <br>" + type,
+        input: "text",
+        inputValue: genresString,
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#888888",
+        cancelButtonColor: "#cccccc",
+        color: "#FAFAFA",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
+      }).then((answer) => {
+        if (answer.isConfirmed) {
+          let newGenres = answer.value.split(",");
+          let missingGenres: string[] = [];
+          for (let i = 0; i < newGenres.length; i++) {
+            if (!allGenres.includes(newGenres[i].trim())) {
+              missingGenres.push(newGenres[i].trim());
+            }
+          }
+          if (missingGenres.length != 0) {
+            Swal.fire({
+              title: "Genres",
+              icon: "info",
+              html: `The following genres need(s) to be created: <br> <br> ${missingGenres.join(
+                ","
+              )}`,
+              showConfirmButton: true,
+              showCancelButton: true,
+              confirmButtonColor: "#888888",
+              color: "#FAFAFA",
+              customClass: {
+                input: "rounded-md text-backgroundBlue",
+                title: "text-textWhite bg-backgroundBlue",
+                popup: "bg-backgroundBlue",
+              },
+            }).then((answer1) => {
+              if (!answer1.isConfirmed) {
+                change("Genres");
+              } else {
+                let allSuccessfull = true;
+                missingGenres.forEach((genre) => {
+                  fetch(apiUrl + "/genres/" + genre, {
+                    mode: "cors",
+                    method: "POST",
+                    credentials: "include",
+                  }).then((response) => {
+                    if (
+                      response.status === 400 ||
+                      response.status === 404 ||
+                      response.status === 500 ||
+                      response.status === 401 ||
+                      response.status === 403
+                    ) {
+                      allSuccessfull = false;
+                    }
+                  });
+                });
+                if (allSuccessfull) {
+                  genres = newGenres;
+                  genres = genres;
+                  Swal.fire({
+                    title: "Success",
+                    icon: "success",
+                    html: `All genres have been created. `,
+                    showConfirmButton: true,
+                    confirmButtonColor: "#888888",
+                    color: "#FAFAFA",
+                    customClass: {
+                      input: "rounded-md text-backgroundBlue",
+                      title: "text-textWhite bg-backgroundBlue",
+                      popup: "bg-backgroundBlue",
+                    },
+                  });
+                } else {
+                  Swal.fire({
+                    title: "Error",
+                    icon: "error",
+                    html: `Some genres could not be created. <br> <br> Please try again later`,
+                    showConfirmButton: true,
+                    confirmButtonColor: "#888888",
+                    color: "#FAFAFA",
+                    customClass: {
+                      input: "rounded-md text-backgroundBlue",
+                      title: "text-textWhite bg-backgroundBlue",
+                      popup: "bg-backgroundBlue",
+                    },
+                  });
+                }
+              }
+            });
+          } else {
+            genres = newGenres;
+            genres = genres;
+          }
+        }
+      });
+      return;
+    }
     let inputType: string = "text";
     if (
       type.toLowerCase() === "fsk" ||
@@ -155,9 +300,27 @@
     } else {
       inputType = "text";
     }
+
+    let inputValue: string = "";
+    if (type.toLowerCase() === "movie title") {
+      inputValue = movieTitle;
+    } else if (type.toLowerCase() === "fsk") {
+      inputValue = fsk.toString();
+    } else if (type.toLowerCase() === "duration in min") {
+      inputValue = durationInMin.toString();
+    } else if (type.toLowerCase() === "release year") {
+      inputValue = releaseYear.toString();
+    } else if (type.toLowerCase() === "description") {
+      inputValue = description;
+    } else if (type.toLowerCase() === "youtube trailer") {
+      inputValue = "https://www.youtube.com/watch?v=" + trailerId;
+    } else if (type.toLowerCase() === "cover picture") {
+      inputValue = coverPicURL;
+    }
     Swal.fire({
       title: "You are about to change: <br>" + type,
       input: inputType,
+      inputValue: inputValue,
       showConfirmButton: true,
       showCancelButton: true,
       confirmButtonColor: "#888888",
@@ -181,7 +344,6 @@
         } else if (type.toLowerCase() === "description") {
           description = answer.value;
         } else if (type.toLowerCase() === "youtube trailer") {
-          ("https://www.youtube.com/watch?v=KMhl5N4n18o&ab_channel=KuchenTV");
           trailerId = answer.value;
           trailerId = trailerId.replace("https://www.youtube.com/watch?v=", "");
           if (trailerId.indexOf("&") != -1) {
@@ -330,6 +492,25 @@
                   {genre}{#if index != genres.length - 1},{/if}
                 {/each}</span
               >
+              <button
+                on:click={() => {
+                  change("Genres");
+                }}
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5 my-auto ml-1 text-green-500"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                  />
+                </svg>
+              </button>
             </p>
             <p class="flex text-sm">
               <svg
