@@ -16,7 +16,6 @@
   $: genres = [];
   let allGenres: string[] = [];
   let actors: any[] = [];
-
   async function getGenres() {
     const genreResponse = await fetch(apiUrl + "/genres", {
       mode: "cors",
@@ -30,6 +29,7 @@
     genreJson.forEach((genre) => {
       allGenres.push(genre.GenreName);
     });
+    console.log(allGenres);
   }
 
   function fireHelp() {
@@ -100,59 +100,83 @@
       });
     }
   }
-  function createMovieViaBackend() {
-    const body = JSON.stringify({
-      Title: movieTitle,
-      Description: description,
-      Fsk: parseInt(fsk.toString()),
-      TrailerURL: trailerId,
-      TimeInMin: parseInt(durationInMin.toString()),
-      BannerPicURL: wallPaperPicUrl,
-      CoverPicURL: coverPicURL,
-      ReleaseDate: new Date(releaseYear).toISOString(),
-      Rating: 0.0,
+
+  async function getGenresIds() {
+    return new Promise(async (resolve, reject) => {
+      let genreIds: string[] = [];
+      await fetch(apiUrl + "/genres").then(async (response) => {
+        const json = await response.json();
+        console.log(json);
+        genres.forEach((genre) => {
+          json.forEach((genreJson) => {
+            if (genreJson.GenreName === genre) {
+              genreIds.push(JSON.parse(JSON.stringify({ ID: genreJson.ID })));
+              console.log(genre, genreJson.ID);
+            }
+          });
+        });
+      });
+      resolve(genreIds);
+      return genreIds;
     });
-    fetch(apiUrl + "/movie", {
-      mode: "cors",
-      method: "POST",
-      credentials: "include",
-      body: body,
-    }).then((response) => {
-      if (response.status === 201) {
-        Swal.fire({
-          title: "Success",
-          icon: "success",
-          html: `Your movie has been created. <br> <br> You will be redirected to the movie page in a few seconds`,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          confirmButtonColor: "#888888",
-          color: "#FAFAFA",
-          customClass: {
-            input: "rounded-md text-backgroundBlue",
-            title: "text-textWhite bg-backgroundBlue",
-            popup: "bg-backgroundBlue",
-          },
-        }).then(async () => {
-          let json = await response.json();
-          console.log(json);
-          goto("/movies/" + json);
-        });
-      } else {
-        Swal.fire({
-          title: "Error",
-          icon: "error",
-          html: `Your movie could not be created. <br> <br> Please try again later`,
-          showConfirmButton: true,
-          confirmButtonColor: "#888888",
-          color: "#FAFAFA",
-          customClass: {
-            input: "rounded-md text-backgroundBlue",
-            title: "text-textWhite bg-backgroundBlue",
-            popup: "bg-backgroundBlue",
-          },
-        });
-      }
+  }
+  async function createMovieViaBackend() {
+    await getGenresIds().then((genreIds) => {
+      console.log(genreIds);
+      const body = JSON.stringify({
+        Title: movieTitle,
+        Description: description,
+        Fsk: parseInt(fsk.toString()),
+        TrailerURL: trailerId,
+        TimeInMin: parseInt(durationInMin.toString()),
+        BannerPicURL: wallPaperPicUrl,
+        CoverPicURL: coverPicURL,
+        ReleaseDate: new Date(releaseYear).toISOString(),
+        Rating: 0.0,
+        GenresID: genreIds,
+      });
+      console.log("Body", body);
+      fetch(apiUrl + "/movie", {
+        mode: "cors",
+        method: "POST",
+        credentials: "include",
+        body: body,
+      }).then((response) => {
+        if (response.status === 201) {
+          Swal.fire({
+            title: "Success",
+            icon: "success",
+            html: `Your movie has been created. <br> <br> You will be redirected to the movie page in a few seconds`,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            confirmButtonColor: "#888888",
+            color: "#FAFAFA",
+            customClass: {
+              input: "rounded-md text-backgroundBlue",
+              title: "text-textWhite bg-backgroundBlue",
+              popup: "bg-backgroundBlue",
+            },
+          }).then(async () => {
+            let json = await response.json();
+            goto("/movies/" + json);
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            icon: "error",
+            html: `Your movie could not be created. <br> <br> Please try again later`,
+            showConfirmButton: true,
+            confirmButtonColor: "#888888",
+            color: "#FAFAFA",
+            customClass: {
+              input: "rounded-md text-backgroundBlue",
+              title: "text-textWhite bg-backgroundBlue",
+              popup: "bg-backgroundBlue",
+            },
+          });
+        }
+      });
     });
   }
   onMount(async () => {
@@ -256,6 +280,9 @@
                 }
               }
             });
+          } else {
+            genres = newGenres;
+            genres = genres;
           }
         }
       });
@@ -317,7 +344,6 @@
         } else if (type.toLowerCase() === "description") {
           description = answer.value;
         } else if (type.toLowerCase() === "youtube trailer") {
-          ("https://www.youtube.com/watch?v=KMhl5N4n18o&ab_channel=KuchenTV");
           trailerId = answer.value;
           trailerId = trailerId.replace("https://www.youtube.com/watch?v=", "");
           if (trailerId.indexOf("&") != -1) {
