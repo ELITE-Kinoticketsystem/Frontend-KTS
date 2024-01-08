@@ -10,7 +10,6 @@
   import { fire } from "$lib/swalTemplate";
 
   export let data: { movies: any };
-  let oneDayInMs = 24 * 1000 * 3600;
 
   let allShowings: any[] = [
     {
@@ -42,6 +41,10 @@
     Description = Description;
     pictureUrl = pictureUrl;
     EventType = selectedMovies.length > 1 ? "special event" : "showing";
+
+    if (selectedMovies.length === 1) {
+      eventName = selectedMovies.at(0).Title;
+    }
 
     nrOfShowings = 0;
     for (let i = 0; i < allShowings.length; ++i) {
@@ -167,6 +170,72 @@
           });
         });
       });
+    } else {
+      allShowings.forEach((showing) => {
+        showing.times.forEach((startTime: any) => {
+          let Start = `${showing.date}T${startTime}:00.00Z`;
+
+          let accumulatedMovieLength = 0;
+          selectedMovies.forEach((element: any) => {
+            accumulatedMovieLength += element.TimeInMin;
+          });
+          let End = new Date(
+            new Date(
+              new Date(Start).getTime() +
+                new Date().getTimezoneOffset() * 60 * 1000
+            ).getTime() +
+              accumulatedMovieLength * 60000
+          ).toISOString();
+          Start = new Date(
+            new Date(
+              new Date(Start).getTime() +
+                new Date().getTimezoneOffset() * 60 * 1000
+            )
+          ).toISOString();
+          fire("Your event is currently being constructed for you..");
+          fetch(`${apiUrl}/events`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              CinemaHallID: showing.hall.ID,
+              Description,
+              End,
+              EventSeatCategories: [
+                {
+                  Price: prices.regular * 100,
+                  SeatCategoryID: "11EEAA3879BC5F4D81D30242AC120002",
+                },
+                {
+                  Price: prices.vip * 100,
+                  SeatCategoryID: "11EEAA388565BA7281D30242AC120002",
+                },
+                {
+                  Price: prices.loge * 100,
+                  SeatCategoryID: "11EEAA388201A99F81D30242AC120002",
+                },
+              ],
+              EventType,
+              is3d,
+              Movies: selectedMovies.map((movie: any) => {
+                return movie.ID;
+              }),
+              Start,
+              Title: eventName,
+            }),
+            mode: "cors",
+            credentials: "include",
+          }).then((response) => {
+            if (response.ok) {
+              fire("The event was successfully created!", 3000);
+            } else {
+              fire(
+                "The event could not be created due to internal problems!",
+                3000
+              );
+            }
+          });
+        });
+      });
     }
   }
 
@@ -176,7 +245,7 @@
       input: "text",
       confirmButtonColor: "#89a3be",
       customClass: {
-        popup: "bg-backgroundBlue text-textWhite text-[100%]",
+        popup: "bg-backgroundBlue text-[100%]",
         input: "rounded-md",
       },
     }).then((input) => {
@@ -185,7 +254,7 @@
           title: "You have to enter a non empty url",
           confirmButtonColor: "#89a3be",
           customClass: {
-            popup: "bg-backgroundBlue text-textWhite text-[100%]",
+            popup: "bg-backgroundBlue text-[100%]",
           },
         });
         return;

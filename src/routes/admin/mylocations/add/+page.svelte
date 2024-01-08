@@ -2,6 +2,7 @@
   import Swal from "sweetalert2";
   import PlusButton from "../../../../_ui/templates/plusButton.svelte";
   import { apiUrl } from "$lib/_services/authService";
+  import { goto } from "$app/navigation";
 
   let Name = "";
   let Street = "";
@@ -19,16 +20,6 @@
 
   let LogoUrl = "";
   $: LogoUrl = LogoUrl;
-
-  function fire(message: string) {
-    Swal.fire({
-      title: message,
-      confirmButtonColor: "#89a3be",
-      customClass: {
-        popup: "bg-backgroundBlue text-textWhite text-[100%]",
-      },
-    });
-  }
 
   function showWhichInputsAreValid() {
     if (!RegExp("[a-z]{2,20}").test(Name)) {
@@ -84,6 +75,18 @@
       fire("You have to enter non empty country");
       return;
     }
+    let location = {
+      Name,
+      LogoUrl,
+      Address: {
+        Street,
+        StreetNr,
+        Zipcode,
+        City,
+        Country,
+      },
+    };
+
     if (LogoUrl === "") {
       Swal.fire({
         title: "Are you sure you want to create a theatre without a picture?",
@@ -94,17 +97,6 @@
         },
       }).then((answer) => {
         if (answer.isConfirmed) {
-          let location = {
-            Name,
-            LogoUrl,
-            Address: {
-              Street,
-              StreetNr,
-              Zipcode,
-              City,
-              Country,
-            },
-          };
           fetch(`${apiUrl}/theatres`, {
             method: "POST",
             credentials: "include",
@@ -122,6 +114,36 @@
           });
         }
       });
+    } else {
+      fetch(`${apiUrl}/theatres`, {
+        method: "POST",
+        credentials: "include",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(location),
+      }).then((response) => {
+        if (response.status === 201) {
+          fire(`${Name} was successfully created!`, 2000);
+          setTimeout(() => {
+            Swal.fire({
+              title: "Do you want to create more theatres?",
+              confirmButtonColor: "#89a3be",
+              showCancelButton: true,
+              customClass: {
+                popup: "bg-backgroundBlue text-textWhite text-[100%]",
+              },
+            }).then((answer: any) => {
+              if (!answer.isConfirmed) {
+                goto("/admin");
+              }
+            });
+          });
+        } else {
+          fire("A database error occured. Theatre was not created!");
+        }
+      });
     }
   }
   function addPicture() {
@@ -130,7 +152,7 @@
       input: "text",
       confirmButtonColor: "#89a3be",
       customClass: {
-        popup: "bg-backgroundBlue text-textWhite text-[100%]",
+        popup: "bg-backgroundBlue text-[100%]",
       },
     }).then((input) => {
       if (input.value === "") {

@@ -14,9 +14,9 @@
 </script>
 
 <div
-  class="w-full h-full flex flex-row items-center place-content-evenly rounded-md ring-1 ring-white bg-headerBlue"
+  class="w-full h-full flex flex-row items-center place-content-center rounded-md ring-1 ring-white bg-headerBlue"
 >
-  <p class="text-textWhite text-[2cqw]">
+  <p class="text-textWhite text-[2cqw] mr-2">
     {nrOfSeats}x {upperCaseSeatCategory}
     {seatType === "double" ? "Double Seat" : "Seat"}
   </p>

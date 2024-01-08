@@ -56,7 +56,8 @@
       fire(
         response.status === 201
           ? `${hallName} was created succesfully!`
-          : `${hallName} could not be created due to internal problems!`
+          : `${hallName} could not be created due to internal problems!`,
+        3000
       );
     });
   }
