@@ -17,6 +17,7 @@
       mode: "cors",
       credentials: "include",
     });
+    if (!ticketsResponse.ok) return [];
     return await ticketsResponse.json();
   }
 
@@ -119,11 +120,11 @@
   onMount(async () => {
     await AuthService.isUserLoggedIn().then((res) => {
       isUserLoggedIn = res;
+      if (!isUserLoggedIn) {
+        goto("/auth/login");
+        return;
+      }
     });
-
-    if (!isUserLoggedIn) {
-      goto("/auth/login");
-    }
 
     await fetchOrders().then((data) => {
       ticketHistory = data;
