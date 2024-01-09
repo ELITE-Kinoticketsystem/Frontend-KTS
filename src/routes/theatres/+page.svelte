@@ -68,7 +68,7 @@
       >
         <img
           class="h-48 w-full object-cover"
-          src={location.logo}
+          src={location.LogoURL}
           alt={location.Name}
         />
         <div class="flex flex-col p-6">

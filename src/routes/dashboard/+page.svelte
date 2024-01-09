@@ -152,7 +152,6 @@
   });
 
   function getNextUpComingMovie() {
-    console.log(ticketHistory);
     let nextMovies: any[] = [];
     ticketHistory.forEach((order) => {
       if (order.Event.Start > new Date().toISOString()) {
@@ -164,6 +163,7 @@
         new Date(a.Event.Start).getTime() - new Date(b.Event.Start).getTime()
       );
     });
+    if (nextMovies === undefined || nextMovies.length === 0) return [];
     return nextMovies[0];
   }
 </script>
@@ -219,7 +219,7 @@
           <div class="absolute text-textWhite text-xl ml-2 mt-1">
             Upcoming movie:
           </div>
-          {#if upcomingMovies.length != 0}
+          {#if upcomingMovies.length !== 0}
             <button
               class="my-auto mx-2 flex"
               on:click={() => {
