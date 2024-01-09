@@ -1,195 +1,249 @@
-<script>
-    import { Html5Qrcode } from 'html5-qrcode'
-    import { onMount } from 'svelte'
-    import Invalid from "./invalid.svelte"
-    import Valid from "./valid.svelte"
+<script lang="ts">
+    import { apiUrl } from "$lib/_services/authService";
+    import { fire } from "$lib/swalTemplate";
+    import { Html5Qrcode } from "html5-qrcode";
+    import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
 
+    let html5Qrcode: any;
+    let orderIdInput = "";
 
-    let scanning = false;
-    let html5Qrcode;
-    let ticketQrcodeMaually;
-    let isValid="";
-    let manualInput;
-    let isScanning;
-    let backCamera = 1;
-    let frontCamera = 0;
-    let isTicketPayed;
-    let isTicketNotPayed;
+    let isPaused = false;
 
-    $: codeNotFound = false;
-    $: isUsed = "";
-    $: ticketAlreadyUsed = false;
-    $: isNotFound = "";
-    $: isPayed = "";
-    $: ticketDetails = "";
+    let ticketWasFound = false;
 
-    // $: ticketDetailsInput = "";
-    // $: ticketDetailsScanned = "";
+    let foundOrder = null;
 
+    onMount(() => {
+        html5Qrcode = new Html5Qrcode("reader");
+        startScanning();
+        document.getElementById("orderId")!.focus();
+    });
 
-    onMount(init);
-
-    async function init() {
-        html5Qrcode = new Html5Qrcode('reader')
-        getCameras();
-    }
-
-    function getCameras(){
-        html5Qrcode.getCameras().then(devices => {
-            if(devices && devices.length){
-                cameraId = devices[backCamera].id;
-            }
-        }).catch(error => {
-            alert(error);
-        })
-    }
-    function start() {
-        isValid = "";
-        ticketDetails = "";
+    function startScanning() {
         html5Qrcode.start(
-            {facingMode: 'environment'},
+            { facingMode: "environment" },
             {
                 fps: 10,
                 qrbox: { width: 250, height: 250 },
             },
             onScanSuccess,
             onScanFailure
-        )
-        scanning = true;
+        );
     }
-
-    async function stop() {
-        isValid = "";
-        ticketDetails = "";
+    function stopScanning() {
         html5Qrcode.stop();
-        scanning = false;
     }
 
-    function nextTicket(){
-        html5Qrcode.resume()
+    function resumeScanning() {
+        ticketWasFound = false;
+        isPaused = false;
+        html5Qrcode.resume();
     }
 
-    function manual(event){
-        isScanning = false;
-        ticketQrcodeMaually = event.target.value;
+    async function fetchOrder(orderId: any) {
+        let ok = false;
+        const orderResponse = await fetch(apiUrl + "/orders/" + orderId, {
+            method: "GET",
+            credentials: "include",
+            mode: "cors",
+        });
+        const order = await orderResponse.json();
+        if (!orderResponse.ok) {
+            foundOrder = null;
+        } else {
+            ok = true;
+        }
+        fire("Fetching ticket...", 1500);
+        setTimeout(() => {
+            ticketWasFound = true;
+            if (ok) foundOrder = order;
+        }, 1000);
     }
 
-    function onScanSuccess(decodedText, decodedResult) {
-        isScanning = true;
-        showData(decodedText);
-        console.log(decodedResult);
+    function onScanSuccess(decodedText: any, decodedResult: any) {
+        fetchOrder(decodedText);
+        isPaused = true;
         html5Qrcode.pause();
     }
 
-    function onScanFailure(error) {
-        console.warn(`Code scan error = ${error}`);
-    }
-
-    async function getTicket(){
-        const ticketData = await fetch("https://657cb0cd853beeefdb99d741.mockapi.io/tickets", { mode : "cors"});
-        return ticketData.json();
-    }
-
-    async function showData(decodedText){
-        let ticket;
-        codeNotFound = true;
-
-
-        await getTicket().then((tickets) =>{
-            for(let i=0; i<tickets.length; i++){
-                if((tickets[i].qrcode === ticketQrcodeMaually) || (tickets[i].qrcode === decodedText)){
-                    ticket = tickets[i];
-                    codeNotFound = false;
-                    break;
-                }
+    async function getType(priceCategoryID: any) {
+        const priceCategoryResponse = await fetch(
+            apiUrl + "/price-categories/" + priceCategoryID,
+            {
+                method: "GET",
+                credentials: "include",
+                mode: "cors",
             }
-
-            ticketAlreadyUsed = ticket.isused;
-            const color = ticket.payed ? "green" : "red";
-            isTicketPayed = ticket.payed ? true : false;
-            isTicketNotPayed = ticket.payed ? false : true;
-
-            if(!codeNotFound && (!ticketAlreadyUsed || manualInput)) {
-
-                ticketDetails = `
-                      <div style="display: flex; flex-direction: column;">
-                        <div style="display: flex; justify-content: space-between;">
-                          <span>MovieTitle:</span>
-                          <span>${ticket.movieTitle}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                          <span>Theater:</span>
-                          <span>${ticket.theater}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                          <span>ShowTime:</span>
-                          <span>${ticket.showtime}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                          <span>Payed:</span>
-                          <span style="color: ${color}">${ticket.payed}</span>
-                        </div>
-                        <div style="display: flex; justify-content: space-between;">
-                          <span>Amount:</span>
-                          <span>${ticket.amount}</span>
-                        </div>
-                      </div>
-                    `;
-
-            } else {
-                ticketDetails = "";
-            }
-
-        })
+        );
+        const priceCategory = await priceCategoryResponse.json();
+        return priceCategory.CategoryName;
     }
 
+    let updatedTicket = 0;
+
+    async function validateTicket(ticket: any) {
+        const ticketRepsonse = await fetch(apiUrl + "/tickets/" + ticket.ID, {
+            method: "PATCH",
+            mode: "cors",
+            credentials: "include",
+        });
+        if (!ticketRepsonse.ok) {
+            fire("Ticket could not be validated", 1500);
+            return;
+        } else {
+            fire("Ticket validated", 1500);
+            ticket.Validated = true;
+            updatedTicket++;
+        }
+    }
+    function onScanFailure(error: any) {}
 </script>
 
-<div class="bg-gray-800 max-w-lg w-full h-9/10 text-center flex flex-col items-center justify-center space-y-5">
-    <div id="reader" class="bg-black w-full"></div>
-    {#if codeNotFound}
-        <h1 class="text-white">Error</h1>
-        <h3 class="text-white">The given Code was NOT found.</h3>
-        <Invalid />
-        <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2"
-                onclick="window.history.go(0); return false;"
-                type="submit">Try again </button>
-    {:else if ticketAlreadyUsed}
-        <h1 class="text-white">Error</h1>
-        <h3 class="text-white">The given Code was ALREADY used.</h3>
-        <Invalid />
-        <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2"
-                onclick="window.history.go(0); return false;"
-                type="submit">Try again </button>
-    {:else}
-        {#if scanning}
-            <div id="container" class="text-white text-xl">
-                Ticket Information
-                {@html ticketDetails}
-                {#if isTicketPayed && isScanning}
-                    <Valid />
-                {:else if isTicketNotPayed && isScanning}
-                    <Invalid />
-                {/if}
+<div class="flex flex-row mx-10">
+    <div class=" bg-tileBlue px-5 py-5 rounded-md mx-auto">
+        <div id="reader" class="rounded-lg mx-auto"></div>
+        <div class="text-justify mt-5">
+            <div class="text-textWhite text-center text-lg">
+                Here you can scan a ticket.
             </div>
-            <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={stop}>Stop Scanning</button>
-            <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={nextTicket}>Next Ticket</button>
-        {:else}
-            <button class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={start}>Start Scanning</button>
-            <label for="manual">
-                <input placeholder="Type QRCode manually..." id="manual" type="text" on:input={manual} class="w-52">
-                <button id="manual" class="bg-buttonBlue hover:bg-tileBlue duration-300 px-4 py-2" on:click={showData}>Check</button>
-            </label>
-            <div id="container" class="text-white text-xl">
-                Ticket Information
-                {@html ticketDetails}
-                {#if isTicketPayed && !isScanning}
-                    <Valid />
-                {:else if isTicketNotPayed && !isScanning}
-                    <Invalid />
-                {/if}
+            <div class="text-textWhite text-center text-lg">
+                Should the camera not work, you can also type in the order-id
             </div>
-        {/if}
-    {/if}
-</div>
+            <div class="flex text-center w-full space-x-5 mt-5">
+                <input
+                        type="text"
+                        name=""
+                        bind:value={orderIdInput}
+                        on:keydown={(e) => {
+            if (e.key === "Enter") {
+              fetchOrder(orderIdInput);
+            }
+          }}
+                        id="orderId"
+                        placeholder="Order-ID"
+                        class="text-white bg-headerBlue hover:bg-buttonBlue duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full"
+                />
+                <button
+                        class="bg-buttonBlue px-4 py-2 rounded-md text-textWhite duration-300 {orderIdInput.length ==
+          0
+            ? 'opacity-50 cursor-not-allowed'
+            : ''}"
+                        on:click={() => {
+            fetchOrder(orderIdInput);
+          }}>Check</button
+                >
+            </div>
 
+            <div class="text-center mt-5">
+                <button
+                        class="bg-buttonBlue px-4 py-2 rounded-md text-textWhite duration-300 {!isPaused
+            ? 'opacity-50 cursor-not-allowed'
+            : ''}"
+                        on:click={resumeScanning}>Resume</button
+                >
+            </div>
+        </div>
+    </div>
+    {#key ticketWasFound}
+        <div
+                class="bg-tileBlue px-5 py-5 rounded-md w-full ml-5 my-auto {ticketWasFound
+        ? 'block'
+        : 'hidden'}"
+                transition:fade
+        >
+            <div class="text-textWhite text-center font-semibold text-2xl">
+                Ticket Information
+            </div>
+            {#if foundOrder === null}
+                <div
+                        class="text-red-500 underline underline-offset-2 mt-5 text-center font-bold text-2xl"
+                >
+                    The given ticket was <b>not</b> found.
+                    <img
+                            src="https://i.ibb.co/Q8v1SH3/360-F-616177772-b-EXNr996-NEm-Dli-BSma3d-RNlood-TYR3c-N-removebg-preview.png"
+                            alt="INVALID"
+                            class="mx-auto w-1/2 h-1/2"
+                    />
+                </div>
+            {:else}
+                <div
+                        class="text-green-500 underline underline-offset-2 mt-5 text-center font-bold text-2xl"
+                >
+                    The given ticket was <b>valid</b>.
+                </div>
+                <div class="">
+                    <div class="text-textWhite font-semibold text-lg">
+                        Cinema Hall: {foundOrder.CinemaHall.Name}
+                    </div>
+                    <div class="text-textWhite font-semibold text-lg">
+                        Event Title: {foundOrder.Movies.length > 0
+                        ? foundOrder.Event.Title
+                        : foundOrder.Movies[0].Title}
+                    </div>
+                    <div class="text-textWhite font-semibold text-lg">
+                        Start Time: {new Date(foundOrder.Event.Start).toLocaleString()}
+                    </div>
+                    <div class="text-textWhite font-semibold text-lg">
+                        3D: {foundOrder.Is3d ? "Yes" : "No"}
+                    </div>
+                    <div class="">
+                        <div class="relative overflow-x-auto">
+                            <table class="w-max text-sm text-left text-textWhite mx-auto">
+                                <thead class="text-xs text-textWhite uppercase bg-headerBlue">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3"> Type </th>
+                                    <th scope="col" class="px-6 py-3"> Validate </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {#each foundOrder.Tickets as ticket}
+                                    <tr
+                                            class="bg-buttonBlue border-b text-textWhite duration-300"
+                                    >
+                                        <th
+                                                scope="row"
+                                                class="px-6 py-4 font-medium whitespace-nowrap text-white capitalize"
+                                        >
+                                            {#await getType(ticket.Ticket.PriceCategoryID) then type}
+                                                {type}
+                                            {/await}
+                                        </th>
+                                        <td class="px-6 py-4">
+                                            {#key updatedTicket}
+                                                {#if !ticket.Ticket.Validated}
+                                                    <button
+                                                            class="bg-tileBlue px-4 py-2 rounded-md text-textWhite duration-300"
+                                                            on:click={() => {
+                                validateTicket(ticket.Ticket);
+                              }}>Validate</button
+                                                    >
+                                                {:else}
+                                                    <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke-width="1.5"
+                                                            stroke="currentColor"
+                                                            class="w-6 h-6 text-green-500"
+                                                    >
+                                                        <path
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                                        />
+                                                    </svg>
+                                                {/if}
+                                            {/key}
+                                        </td>
+                                    </tr>
+                                {/each}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+        </div>
+    {/key}
+</div>
