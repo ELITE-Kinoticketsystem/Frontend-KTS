@@ -10,10 +10,6 @@
 
   let displayedLocations: any[] = JSON.parse(JSON.stringify(allLocations));
 
-  displayedLocations.sort((a: any, b: any) => {
-    return a.Name.localeCompare(b.Name);
-  });
-
   function filterLocations(key: string) {
     if (key === "" || key === undefined) {
       displayedLocations = JSON.parse(JSON.stringify(allLocations));
@@ -31,7 +27,7 @@
 </script>
 
 <head:svelte>
-  <title>Cinemika - Theatresg</title>
+  <title>Cinemika - Theatres</title>
 </head:svelte>
 
 <div class="flex w-screen h-max">
@@ -74,29 +70,40 @@
     <div class="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-1 gap-4 mt-5">
       {#each displayedLocations as location}
         <div
-          class="flex flex-col card bg-tileBlue text-white rounded-lg shadow-lg overflow-hidden"
+          class="flex flex-col card bg-tileBlue text-white rounded-lg shadow-lg overflow-hidden {cinema ===
+          location.Name
+            ? 'border-2 border-buttonBlue'
+            : 'hover:scale-105 duration-300'}"
         >
           <img
             class="h-48 w-full object-cover"
-            src={location.LogoURL}
+            src={location.LogoUrl}
             alt={location.Name}
           />
           <div class="flex flex-col p-6">
             <h2 class="text-lg font-semibold">
               {location.Name}
             </h2>
-            <p class="text-sm">Location WIP</p>
+            <p class="text-sm">
+              {location.Address.Street}, {location.Address.StreetNr}
+            </p>
+            <p class="text-sm">
+              {location.Address.Zipcode}
+              {location.Address.City}
+            </p>
             <button
-              class="mt-4 bg-buttonBlue hover:bg-green-500 duration-300 text-white font-bold py-2 px-4 rounded"
+              class="mt-4 {cinema === location.Name
+                ? 'bg-gray-400 opacity-40 hover:cursor-not-allowed'
+                : 'bg-buttonBlue hover:bg-green-500 duration-300'}  text-white font-bold py-2 px-4 rounded"
               on:click={() => {
-                if (browser) {
+                if (browser && cinema !== location.Name) {
                   localStorage.setItem("cinema", location.Name);
                   localStorage.setItem("cinemaId", location.ID);
                   goto("/");
                 }
               }}
             >
-              Select
+              {cinema === location.Name ? "Selected" : "Select"}
             </button>
           </div>
         </div>
