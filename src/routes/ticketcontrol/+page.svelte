@@ -4,6 +4,8 @@
     import { Html5Qrcode } from "html5-qrcode";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
+    import {goto} from "$app/navigation";
+    import {page} from "$app/stores";
 
     let html5Qrcode: any;
     let orderIdInput = "";
@@ -97,57 +99,55 @@
             updatedTicket++;
         }
     }
+    function redirectToPayment() {
+        goto(`/confirmation/${foundOrder.params.eventId})`);
+    }
     function onScanFailure(error: any) {}
 </script>
 
-<div class="flex flex-row mx-10">
-    <div class=" bg-tileBlue px-5 py-5 rounded-md mx-auto">
+
+
+<div class="flex flex-col sm:flex-row mx-2 sm:mx-10">
+    <div class="bg-tileBlue px-3 py-3 sm:px-5 sm:py-5 rounded-md mx-auto">
         <div id="reader" class="rounded-lg mx-auto"></div>
-        <div class="text-justify mt-5">
-            <div class="text-textWhite text-center text-lg">
+        <div class="text-justify mt-3">
+            <div class="text-textWhite text-center text-base sm:text-lg">
                 Here you can scan a ticket.
             </div>
-            <div class="text-textWhite text-center text-lg">
+            <div class="text-textWhite text-center text-base sm:text-lg">
                 Should the camera not work, you can also type in the order-id
             </div>
-            <div class="flex text-center w-full space-x-5 mt-5">
+            <div class="flex text-center w-full space-x-2 sm:space-x-5 mt-3">
                 <input
                         type="text"
                         name=""
                         bind:value={orderIdInput}
                         on:keydown={(e) => {
-            if (e.key === "Enter") {
-              fetchOrder(orderIdInput);
-            }
-          }}
+                            if (e.key === "Enter") {
+                                fetchOrder(orderIdInput);
+                            }
+                        }}
                         id="orderId"
                         placeholder="Order-ID"
-                        class="text-white bg-headerBlue hover:bg-buttonBlue duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 w-full"
+                        class="text-white bg-headerBlue hover:bg-buttonBlue duration-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base sm:text-sm px-3 py-2 sm:px-5 sm:py-2.5 w-full"
                 />
                 <button
-                        class="bg-buttonBlue px-4 py-2 rounded-md text-textWhite duration-300 {orderIdInput.length ==
-          0
-            ? 'opacity-50 cursor-not-allowed'
-            : ''}"
+                        class="bg-buttonBlue px-3 py-2 sm:px-4 sm:py-2 rounded-md text-textWhite duration-300 {orderIdInput.length == 0 ? 'opacity-50 cursor-not-allowed' : ''}"
                         on:click={() => {
-            fetchOrder(orderIdInput);
-          }}>Check</button
-                >
+                            fetchOrder(orderIdInput);
+                        }}>Check</button>
             </div>
 
-            <div class="text-center mt-5">
+            <div class="text-center mt-3">
                 <button
-                        class="bg-buttonBlue px-4 py-2 rounded-md text-textWhite duration-300 {!isPaused
-            ? 'opacity-50 cursor-not-allowed'
-            : ''}"
-                        on:click={resumeScanning}>Resume</button
-                >
+                        class="bg-buttonBlue px-3 py-2 sm:px-4 sm:py-2 rounded-md text-textWhite duration-300 {!isPaused ? 'opacity-50 cursor-not-allowed' : ''}"
+                        on:click={resumeScanning}>Resume</button>
             </div>
         </div>
     </div>
     {#key ticketWasFound}
         <div
-                class="bg-tileBlue px-5 py-5 rounded-md w-full ml-5 my-auto {ticketWasFound
+                class="bg-tileBlue px-5 py-5 rounded-md w-full ml-0 my-auto {ticketWasFound
         ? 'block'
         : 'hidden'}"
                 transition:fade
@@ -186,6 +186,15 @@
                     </div>
                     <div class="text-textWhite font-semibold text-lg">
                         3D: {foundOrder.Is3d ? "Yes" : "No"}
+                    </div>
+                    <div class="text-textWhite font-semibold text-lg">
+                        IsPaid: <span class="{foundOrder.isPaid ? "text-green-500": "text-red-500"}"> {foundOrder.isPaid ? "Yes": "No"}</span>
+                            <!-- To Paying Button, sichtbar wenn isPaid false ist -->
+                            <button
+                                    class="ml-4 bg-buttonBlue px-4 py-2 rounded-md text-textWhite duration-300"
+                                    on:click={() => {redirectToPayment()}}
+                            >To Paying</button>
+
                     </div>
                     <div class="">
                         <div class="relative overflow-x-auto">
