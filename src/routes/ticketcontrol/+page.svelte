@@ -100,7 +100,7 @@
         }
     }
     function redirectToPayment() {
-        goto(`/confirmation/${foundOrder.params.eventId})`);
+        goto(`/ticketcontrol/buy/${foundOrder.Order.ID})`);
     }
     function onScanFailure(error: any) {}
 </script>
