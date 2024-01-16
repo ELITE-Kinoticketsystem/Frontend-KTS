@@ -4,6 +4,7 @@
   import { page } from "$app/stores";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
+  import Swal from "sweetalert2";
 
   $: username = "";
   $: password = "";
@@ -36,6 +37,17 @@
     const loginRequest = await AuthService.login(username, password);
 
     if (loginRequest.status === 200) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your login was successful!",
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
+      });
       if (browser) {
         loginRequest.json().then((data) => {
           sessionStorage.setItem("user", JSON.stringify(data));
@@ -115,6 +127,7 @@
           >
           <div class="text-sm">
             <a
+              tabindex="-1"
               href="/auth/forgot-password"
               class="font-semibold duration-300 text-buttonBlue hover:text-textWhite"
               >Forgot password?</a

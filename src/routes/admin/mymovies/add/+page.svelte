@@ -4,6 +4,7 @@
   import { Rating } from "flowbite-svelte";
   import { onMount } from "svelte";
   import Swal from "sweetalert2";
+  import MainCard from "../../../../_ui/templates/mainCard.svelte";
 
   let movieTitle = "Not set";
   let description = "Not set";
@@ -15,6 +16,7 @@
   let coverPicURL = "";
   $: genres = [];
   let allGenres: string[] = [];
+  let allActors: any[] = [];
   let actors: any[] = [];
   async function getGenres() {
     const genreResponse = await fetch(apiUrl + "/genres", {
@@ -28,6 +30,18 @@
     }
     genreJson.forEach((genre) => {
       allGenres.push(genre.GenreName);
+    });
+  }
+
+  async function getActors() {
+    const genreResponse = await fetch(apiUrl + "/actors", {
+      mode: "cors",
+      method: "GET",
+      credentials: "include",
+    });
+    const actorJson = await genreResponse.json();
+    actorJson.forEach((actor) => {
+      allActors.push(actor);
     });
   }
 
@@ -177,6 +191,7 @@
   onMount(async () => {
     fireHelp();
     await getGenres();
+    await getActors();
   });
   function change(type: string) {
     if (type.toLowerCase() === "genres") {
@@ -280,6 +295,63 @@
             allGenres.push(...newGenres);
             genres = newGenres;
             genres = genres;
+          }
+        }
+      });
+      return;
+    }
+    if (type.toLowerCase() === "actors") {
+      let actorString: string = actors.join(",");
+      Swal.fire({
+        title: "You are about to change: <br>" + type,
+        input: "text",
+        inputValue: actorString,
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonColor: "#888888",
+        cancelButtonColor: "#cccccc",
+        color: "#FAFAFA",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
+      }).then((answer) => {
+        if (answer.isConfirmed) {
+          let newActors = answer.value.split(",");
+          let missingActors: string[] = [];
+          for (let i = 0; i < newActors.length; i++) {
+            if (!allGenres.includes(newActors[i].trim())) {
+              missingActors.push(newActors[i].trim());
+            }
+          }
+          if (missingActors.length != 0) {
+            Swal.fire({
+              title: "Actors",
+              icon: "info",
+              html: `The following actors need(s) to be created: <br> <br> ${missingActors.join(
+                ","
+              )}`,
+              showConfirmButton: true,
+              showCancelButton: true,
+              confirmButtonColor: "#888888",
+              color: "#FAFAFA",
+              customClass: {
+                input: "rounded-md text-backgroundBlue",
+                title: "text-textWhite bg-backgroundBlue",
+                popup: "bg-backgroundBlue",
+              },
+            }).then((answer1) => {
+              if (!answer1.isConfirmed) {
+                change("Actors");
+              } else {
+                goto("/admin/myactors/add");
+              }
+            });
+          } else {
+            allActors.push(...newActors);
+            actors = newActors;
+            actors = actors;
           }
         }
       });
@@ -648,6 +720,50 @@
         </div>
       </div>
     </div>
+    <section
+      id="actors"
+      class="py-8 antialiased mt-5 rounded-md text-textWhite"
+    >
+      <div class="max-w-2xl">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-lg lg:text-2xl font-bold text-textWhite">
+            Actors ({actors.length})
+            <button
+              on:click={() => {
+                change("Actors");
+              }}
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 my-auto ml-2 text-green-500"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+                />
+              </svg>
+            </button>
+          </h2>
+        </div>
+        <div class="flex mx-auto my-5">
+          <div class="grid grid-cols-4 mx-auto gap-5">
+            {#each actors as actor}
+              {#await fetch(apiUrl + "/actors/" + actor.ID) then response}
+                {#await response.json() then resJson}
+                  <div class="hover:scale-105 duration-300">
+                    <MainCard isActor={true} movie={resJson} />
+                  </div>
+                {/await}
+              {/await}
+            {/each}
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
