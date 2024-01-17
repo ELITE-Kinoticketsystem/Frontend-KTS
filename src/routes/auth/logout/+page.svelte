@@ -3,6 +3,7 @@
   import { goto } from "$app/navigation";
   import { AuthService, apiUrl } from "$lib/_services/authService";
   import { onMount } from "svelte";
+  import Swal from "sweetalert2";
 
   let isUserLoggedIn = false;
 
@@ -15,6 +16,17 @@
           credentials: "include",
         }).then((res) => {
           if (res.status === 200) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Your logout was successful!",
+              showConfirmButton: false,
+              timer: 1500,
+              customClass: {
+                title: "text-textWhite bg-backgroundBlue",
+                popup: "bg-backgroundBlue",
+              },
+            });
             sessionStorage.removeItem("user");
           }
         });
