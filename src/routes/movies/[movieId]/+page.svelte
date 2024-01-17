@@ -316,14 +316,14 @@
       id="actors"
       class="py-8 antialiased mt-5 rounded-md text-textWhite"
     >
-      <div class="max-w-2xl {movie.Actors.length === 0 ? 'hidden' : ''} ">
+      <div class="w-full {movie.Actors.length === 0 ? 'hidden' : ''} ">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-lg lg:text-2xl font-bold text-textWhite">
             Actors ({movie.Actors.length})
           </h2>
         </div>
-        <div class="flex mx-auto my-5">
-          <div class="grid grid-cols-4 mx-auto gap-5">
+        <div class="flex mx-auto my-5 w-full">
+          <div class="grid grid-cols-5 mx-auto gap-5">
             {#each movie.Actors as actor}
               {#await fetch(apiUrl + "/actors/" + actor.ID) then response}
                 {#await response.json() then resJson}
