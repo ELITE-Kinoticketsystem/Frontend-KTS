@@ -1,5 +1,6 @@
 <script>
   import Swal from "sweetalert2";
+  import Podium from "./podium.svelte";
 
   function onClick() {
     Swal.fire({
@@ -19,8 +20,8 @@
   }
 </script>
 
-<div class="flex w-full text-textWhite">
-  <div class="space-x-5 mx-auto text-center mt-10">
+<div class="flex w-full text-textWhite bg-tileBlue mt-5 rounded-md shadow-md">
+  <div class="space-x-5 mx-auto text-center py-10">
     <button
       on:click={onClick}
       class="bg-buttonBlue px-4 py-2 rounded-lg hover:scale-105 duration-300"

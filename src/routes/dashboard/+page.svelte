@@ -167,16 +167,58 @@
     if (nextMovies === undefined || nextMovies.length === 0) return [];
     return nextMovies[0];
   }
+
+  function startNewDashboard() {
+    let ff = document.querySelector("#ff")!;
+    let screen = document.querySelector("#screen")!;
+    ff.classList.remove("hidden");
+    ff.classList.add("flex");
+    screen.classList.add("opacity-40");
+    setTimeout(() => {
+      screen.classList.add("hidden");
+    }, 3250);
+    setTimeout(() => {
+      goto("/newdashboard?migrated=true");
+    }, 3500);
+  }
 </script>
 
 <head:svelte>
   <title>Cinemika - Dashboard</title>
 </head:svelte>
 
-<div class="flex w-screen h-max">
+<div class="relative flex w-screen h-max">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
-  <div class="flex flex-col max-w-full">
-    <div class="text-textWhite my-4 text-xl">{getGreetings()}, {username}</div>
+  <div class="flex flex-col max-w-full" id="screen">
+    <div class="flex justify-between">
+      <div class="text-textWhite my-4 text-xl justify-start">
+        {getGreetings()}, {username}
+      </div>
+      <div class="justify-end">
+        <button
+          class="flex py-2 px-4 duration-300 bg-buttonBlue rounded-md text-textWhite hover:bg-headerBlue"
+          on:click={() => {
+            startNewDashboard();
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 mr-2 animate-pulse"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            />
+          </svg>
+          Migrate to new Dashboard</button
+        >
+      </div>
+    </div>
     <div class="grid grid-cols-3 gap-x-5 gap-y-2 h-48 min-w-min">
       <div class="grid bg-tileBlue rounded-md">
         <div class="flex relative">
@@ -570,4 +612,43 @@
   </div>
 
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  <div
+    class="hidden fastforward absolute left-1/2 -translate-x-1/2 top-1/4"
+    id="ff"
+  >
+    <div class="arrow" style="--i:0"></div>
+    <div class="arrow" style="--i:0"></div>
+    <div class="arrow" style="--i:0"></div>
+  </div>
 </div>
+
+<style>
+  .fastforward .arrow {
+    width: 30px;
+    height: 30px;
+    background: #f0f0f0;
+    margin: 0 2px;
+    clip-path: polygon(0 0, 0% 100%, 100% 50%);
+    opacity: 0;
+    animation: fadeInOut 1.25s ease-in-out infinite;
+  }
+
+  .fastforward .arrow:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .fastforward .arrow:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  @keyframes fadeInOut {
+    0%,
+    40%,
+    100% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 1;
+    }
+  }
+</style>

@@ -1,11 +1,9 @@
 <script lang="ts">
   import { apiUrl } from "$lib/_services/authService";
   import { onMount } from "svelte";
-
-  onMount(async () => {});
+  import Swal from "sweetalert2";
 
   let orders: any[] = [];
-  let copiedOrder: any[] = [];
 
   let currentSite = 0;
   $: currentSite = currentSite;
@@ -25,9 +23,29 @@
   }
   onMount(async () => {
     orders = await getOrders();
-    copiedOrder = JSON.parse(JSON.stringify(orders));
   });
-  let limit = 5;
+
+  function deepCopy(array: any[]) {
+    return [...array];
+  }
+  const limit = 5;
+
+  function showQRCode(order: any) {
+    let title =
+      order.Movies.length > 1 ? order.Event.Title : order.Movies[0].Title;
+    Swal.fire({
+      title: title + " QR-Code",
+      confirmButtonText: "OK",
+      html: `<img src=https://api.qrserver.com/v1/create-qr-code/?data="${order.Order.ID}" alt="QR-Code" class='flex mx-auto' />`,
+      confirmButtonColor: "#888888",
+      color: "#FAFAFA",
+      customClass: {
+        input: "rounded-md bg-backgroundBlue text-textWhite",
+        title: "text-textWhite bg-backgroundBlue",
+        popup: "bg-backgroundBlue",
+      },
+    });
+  }
 </script>
 
 <div class="flex flex-col">
@@ -60,7 +78,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each copiedOrder.splice(limit * currentSite, limit * currentSite + limit) as order}
+        {#each deepCopy(orders).splice(limit * currentSite, limit) as order, i}
           <tr class="bg-buttonBlue border-b text-textWhite">
             <th
               scope="row"
@@ -72,12 +90,12 @@
             </th>
             <td class="px-6 py-4"> {order.Theatre.Name} </td>
             <td class="px-6 py-4">
-              Row: {order.Tickets[0].Seat.VisibleRowNr}; Seat:
+              Row: {order.Tickets[0].Seat.RowNr}; Seat:
               {#each order.Tickets as seats}
-                {#if seats.Seat.VisibleColumnNr === order.Tickets[order.Tickets.length - 1].Seat.VisibleColumnNr}
-                  {seats.Seat.VisibleColumnNr}
+                {#if seats.Seat.ColumnNr === order.Tickets[order.Tickets.length - 1].Seat.ColumnNr}
+                  {seats.Seat.ColumnNr}
                 {:else}
-                  {seats.Seat.VisibleColumnNr},&nbsp;
+                  {seats.Seat.ColumnNr},&nbsp;
                 {/if}
               {/each}
             </td>
@@ -88,8 +106,12 @@
               {new Date(order.Event.Start).toLocaleString()}
             </td>
             <td class="px-6 py-4">
-              <a href="#" class="font-medium text-blue-600 duration-300"
-                >Cancel</a
+              <button
+                class="font-medium text-blue-800 hover:text-textWhite duration-300"
+                on:click={() => showQRCode(order)}
+                >{new Date(order.Event.Start).getTime() > new Date().getTime()
+                  ? "Ticket"
+                  : "Info"}</button
               >
             </td>
           </tr>
@@ -97,14 +119,13 @@
       </tbody>
     </table>
   </div>
-  <div class="mx-auto mt-2">
+  <div class="mx-auto mt-4">
     <nav aria-label="Page navigation example">
       <ul class="inline-flex -space-x-px text-sm">
         <li>
           <button
             on:click={() => {
               if (currentSite > 0) {
-                copiedOrder = JSON.parse(JSON.stringify(orders));
                 currentSite = currentSite - 1;
               }
             }}
@@ -114,14 +135,14 @@
               : 'hover:bg-buttonBlue '}">Prev</button
           >
         </li>
-        {#each { length: orders.length % limit } as _, index}
+        {#each { length: Math.ceil(orders.length / limit) } as _, index}
           <li>
             <button
               on:click={() => {
-                copiedOrder = JSON.parse(JSON.stringify(orders));
                 currentSite = index;
               }}
-              class="flex items-center justify-center px-3 h-8 leading-tight text-textWhite bg-headerBlue border border-buttonBlue hover:bg-buttonBlue duration-300"
+              class="flex items-center justify-center px-3 h-8 leading-tight text-textWhite border border-buttonBlue hover:bg-buttonBlue duration-300
+              {currentSite === index ? 'bg-tileBlue' : 'bg-headerBlue'}"
               >{index + 1}</button
             >
           </li>
@@ -129,13 +150,12 @@
         <li>
           <button
             on:click={() => {
-              if (currentSite < (orders.length % limit) - 1) {
-                copiedOrder = JSON.parse(JSON.stringify(orders));
+              if (currentSite < Math.ceil(orders.length / limit) - 1) {
                 currentSite = currentSite + 1;
               }
             }}
             class="flex items-center justify-center px-3 h-8 leading-tight rounded-r-md text-textWhite bg-headerBlue border border-buttonBlue duration-300 {currentSite >=
-            (orders.length % limit) - 1
+            Math.ceil(orders.length / limit) - 1
               ? 'opacity-50 cursor-not-allowed '
               : 'hover:bg-buttonBlue '}">Next</button
           >
@@ -143,10 +163,4 @@
       </ul>
     </nav>
   </div>
-</div>
-<div class="text-textWhite font-semibold flex flex-row space-x-5">
-  <div class="">
-    {limit * currentSite}
-  </div>
-  <div class="">{limit * currentSite + 5}</div>
 </div>
