@@ -168,15 +168,35 @@
     return nextMovies[0];
   }
 
+  function startAnimation() {
+    const divs = document.querySelectorAll("#bh");
+    // Set the background image dynamically
+    const body = document.body;
+    body.style.background = "black center/cover no-repeat";
+
+    divs.forEach((div, index) => {
+      // Calculate the position relative to the center
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      const rect = div.getBoundingClientRect();
+      const deltaX = centerX - (rect.left + rect.width / 2);
+      const deltaY = centerY - (rect.top + rect.height / 2);
+
+      // Apply transition with delay based on the distance from the center
+      div.style.transition = `transform 4s ${index * 0.4}s ease-out, opacity 4s ${index * 0.4}s ease-out`;
+      div.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.1)`;
+      div.style.opacity = "0";
+    });
+  }
+
   function startNewDashboard() {
     let ff = document.querySelector("#ff")!;
     let screen = document.querySelector("#screen")!;
     ff.classList.remove("hidden");
     ff.classList.add("flex");
     screen.classList.add("opacity-40");
-    setTimeout(() => {
-      screen.classList.add("hidden");
-    }, 3250);
+    startAnimation();
     setTimeout(() => {
       goto("/dashboardv2?migrated=true");
     }, 3500);
@@ -187,7 +207,7 @@
   <title>Cinemika - Dashboard</title>
 </head:svelte>
 
-<div class="relative flex w-screen h-max">
+<div class="relative flex w-screen h-max" id="bh">
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="flex flex-col max-w-full" id="screen">
     <div class="flex justify-between">
