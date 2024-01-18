@@ -6,7 +6,7 @@
 
   let theatres: any;
 
-  const allTimeMultiplier = 2;
+  const allTimeMultiplier = 10;
 
   const filterTypes = [
     "Last 7 days",
@@ -17,9 +17,18 @@
     "All time",
   ];
 
+  const sortRanges = new Map();
+  sortRanges.set("Last 7 days", "DAY");
+  sortRanges.set("Last 30 days", "DAY");
+  sortRanges.set("Next 90 days", "DAY");
+  sortRanges.set("Last year", "MONTH");
+  sortRanges.set("Next year", "MONTH");
+  sortRanges.set("All time", "YEAR");
+
   let chartRange: any[] = [];
 
   let totalVisits: number[] = [];
+  let totalRevenue: number[] = [];
   let charFilterType: any[] = [];
   let apexcharts: any[] = [];
   let showDropdowns: boolean[] = [];
@@ -28,6 +37,7 @@
   $: {
     charFilterType = charFilterType;
     apexcharts = apexcharts;
+    totalRevenue = totalRevenue;
     totalVisits = totalVisits;
     apexcharts = apexcharts.sort((a, b) => {
       let eLA = a.el.id.substring(0, a.el.id.indexOf("-"));
@@ -62,18 +72,18 @@
     }
   }
 
-  async function fetchData(start: Date, end: Date) {
+  async function fetchData(start: Date, end: Date, sortType: string) {
+    let fetchUrl = apiUrl + "/stats/visits/";
+    fetchUrl += sortType;
+    fetchUrl +=
+      "/" +
+      start.toISOString().split("T")[0] +
+      "/" +
+      end.toISOString().split("T")[0];
     return new Promise((resolve) => {
-      fetch(
-        apiUrl +
-          "/stats/visits/DAY/" +
-          start.toISOString().split("T")[0] +
-          "/" +
-          end.toISOString().split("T")[0],
-        {
-          credentials: "include",
-        }
-      ).then((response) => {
+      fetch(fetchUrl, {
+        credentials: "include",
+      }).then((response) => {
         response.json().then((data) => {
           resolve(data);
         });
@@ -89,36 +99,42 @@
   }
 
   function updateChart(index: number) {
-    console.log(index);
-    console.log(apexcharts);
     let localChart = apexcharts[index];
     let start = chartRange[index].start;
     let end = chartRange[index].end;
-    fetchData(start, end).then((data: any) => {
-      for (let i = 0; i < data.Date.length; i++) {
-        data.Date[i] = new Date(data.Date[i]).toLocaleDateString();
-      }
-      let tC = 0;
-      for (let i = 0; i < data.Count.length; i++) {
-        tC += data.Count[i];
-      }
-      totalVisits[index] = tC;
-      localChart.updateOptions({
-        xaxis: {
-          categories: data.Date,
-        },
-        series: [
-          {
-            name: "Visits",
-            data: data.Count,
+    fetchData(start, end, sortRanges.get(charFilterType[index])).then(
+      (data: any) => {
+        for (let i = 0; i < data.Date.length; i++) {
+          data.Date[i] = new Date(data.Date[i]).toLocaleDateString();
+        }
+        let tC = 0;
+        for (let i = 0; i < data.Count.length; i++) {
+          tC += data.Count[i];
+        }
+        let tR = 0;
+        for (let i = 0; i < data.Revenue.length; i++) {
+          tR += data.Revenue[i];
+          data.Revenue[i] = (data.Revenue[i] / 100).toFixed(2);
+        }
+        totalRevenue[index] = tR;
+        totalVisits[index] = tC;
+        localChart.updateOptions({
+          xaxis: {
+            categories: data.Date,
           },
-          {
-            name: "Revenue",
-            data: data.Count,
-          },
-        ],
-      });
-    });
+          series: [
+            {
+              name: "Revenue",
+              data: data.Revenue,
+            },
+            {
+              name: "Visits",
+              data: data.Count,
+            },
+          ],
+        });
+      }
+    );
   }
 
   $: onload = (el: any) => {
@@ -129,24 +145,30 @@
     );
     chartRange = [...chartRange, { start: startDate, end: currentDate }];
 
-    fetchData(startDate, currentDate).then((data: any) => {
-      for (let i = 0; i < data.Date.length; i++) {
-        data.Date[i] = new Date(data.Date[i]).toLocaleDateString();
+    fetchData(startDate, currentDate, sortRanges.get(filterTypes[0])).then(
+      (data: any) => {
+        for (let i = 0; i < data.Date.length; i++) {
+          data.Date[i] = new Date(data.Date[i]).toLocaleDateString();
+        }
+        let tC = 0;
+        for (let i = 0; i < data.Count.length; i++) {
+          tC += data.Count[i];
+        }
+        let tR = 0;
+        for (let i = 0; i < data.Revenue.length; i++) {
+          tR += data.Revenue[i];
+          data.Revenue[i] = (data.Revenue[i] / 100).toFixed(2);
+        }
+
+        totalVisits = [...totalVisits, tC];
+        totalRevenue = [...totalRevenue, tR];
+        var theatreChart = new ApexCharts(el, theatreOptions(data, data.Date));
+        theatreChart.render();
+        apexcharts = [...apexcharts, theatreChart];
+        charFilterType = [...charFilterType, filterTypes[0]];
+        showDropdowns[showDropdowns.length] = false;
       }
-      let tC = 0;
-      for (let i = 0; i < data.Count.length; i++) {
-        tC += data.Count[i];
-      }
-      totalVisits = [...totalVisits, tC];
-      var theatreChart = new ApexCharts(
-        el,
-        theatreOptions(data.Count, data.Date)
-      );
-      theatreChart.render();
-      apexcharts = [...apexcharts, theatreChart];
-      charFilterType = [...charFilterType, filterTypes[0]];
-      showDropdowns[showDropdowns.length] = false;
-    });
+    );
   };
 
   let showTotalDropdown = false;
@@ -160,10 +182,15 @@
 
   let totalChart: any;
   let totalChartVisits: number = 0;
+  let totalChartRevenue: number = 0;
   $: totalChartVisits = totalChartVisits;
   onMount(async () => {
     ApexCharts = (await import("apexcharts")).default;
-    fetchData(totalRange.start, totalRange.end).then((data: any) => {
+    fetchData(
+      totalRange.start,
+      totalRange.end,
+      sortRanges.get(filterTypes[0])
+    ).then((data: any) => {
       for (let i = 0; i < data.Date.length; i++) {
         data.Date[i] = new Date(data.Date[i]).toLocaleDateString();
       }
@@ -171,17 +198,27 @@
       for (let i = 0; i < data.Count.length; i++) {
         tC += data.Count[i];
       }
+      let tR = 0;
+      for (let i = 0; i < data.Revenue.length; i++) {
+        tR += data.Revenue[i];
+        data.Revenue[i] = (data.Revenue[i] / 100).toFixed(2);
+      }
+      totalChartRevenue = tR;
       totalChartVisits = tC;
       totalChart = new ApexCharts(
         document.querySelector("#total-Chart"),
-        theatreOptions(data.Count, data.Date)
+        theatreOptions(data, data.Date)
       );
       totalChart.render();
     });
   });
 
   function updateTotalChart() {
-    fetchData(totalRange.start, totalRange.end).then((data: any) => {
+    fetchData(
+      totalRange.start,
+      totalRange.end,
+      sortRanges.get(totalFilterType)
+    ).then((data: any) => {
       for (let i = 0; i < data.Date.length; i++) {
         data.Date[i] = new Date(data.Date[i]).toLocaleDateString();
       }
@@ -189,6 +226,13 @@
       for (let i = 0; i < data.Count.length; i++) {
         tC += data.Count[i];
       }
+
+      let tR = 0;
+      for (let i = 0; i < data.Revenue.length; i++) {
+        tR += data.Revenue[i];
+        data.Revenue[i] = (data.Revenue[i] / 100).toFixed(2);
+      }
+      totalChartRevenue = tR;
       totalChartVisits = tC;
       totalChart.updateOptions({
         xaxis: {
@@ -196,11 +240,11 @@
         },
         series: [
           {
-            name: "Visits",
-            data: data.Count,
+            name: "Revenue",
+            data: data.Revenue,
           },
           {
-            name: "Revenue",
+            name: "Visits",
             data: data.Count,
           },
         ],
@@ -240,7 +284,7 @@
                   Revenue
                 </h5>
                 <p class="text-darkTextWhite text-2xl leading-none font-bold">
-                  5.40€
+                  {(totalChartRevenue / 100).toFixed(2)}€
                 </p>
               </div>
             </div>
@@ -306,7 +350,12 @@
                           );
                           let endDate = new Date(
                             currentDate.getTime() -
-                              -allTimeMultiplier * 356 * 24 * 60 * 60 * 1000
+                              (-allTimeMultiplier / 2) *
+                                356 *
+                                24 *
+                                60 *
+                                60 *
+                                1000
                           );
                           totalRange.start = startDate;
                           totalRange.end = endDate;
@@ -394,7 +443,7 @@
                     Revenue
                   </h5>
                   <p class="text-darkTextWhite text-2xl leading-none font-bold">
-                    5.40€
+                    {(totalRevenue[index] / 100).toFixed(2)}€
                   </p>
                 </div>
               </div>
@@ -464,7 +513,12 @@
                             );
                             let endDate = new Date(
                               currentDate.getTime() -
-                                -allTimeMultiplier * 356 * 24 * 60 * 60 * 1000
+                                (-allTimeMultiplier / 2) *
+                                  356 *
+                                  24 *
+                                  60 *
+                                  60 *
+                                  1000
                             );
                             chartRange[index].start = startDate;
                             chartRange[index].end = endDate;
