@@ -178,7 +178,7 @@
       screen.classList.add("hidden");
     }, 3250);
     setTimeout(() => {
-      goto("/newdashboard?migrated=true");
+      goto("/dashboardv2?migrated=true");
     }, 3500);
   }
 </script>
