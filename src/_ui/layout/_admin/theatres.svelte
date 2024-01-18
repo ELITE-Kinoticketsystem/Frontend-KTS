@@ -12,7 +12,7 @@
     "Last 7 days",
     "Last 30 days",
     "Last year",
-    "Next 90 days",
+    "Next 30 days",
     "Next year",
     "All time",
   ];
@@ -20,7 +20,7 @@
   const sortRanges = new Map();
   sortRanges.set("Last 7 days", "DAY");
   sortRanges.set("Last 30 days", "DAY");
-  sortRanges.set("Next 90 days", "DAY");
+  sortRanges.set("Next 30 days", "DAY");
   sortRanges.set("Last year", "MONTH");
   sortRanges.set("Next year", "MONTH");
   sortRanges.set("All time", "YEAR");
@@ -61,8 +61,8 @@
         return 30;
       case "Last year":
         return 365;
-      case "Next 90 days":
-        return -90;
+      case "Next 30 days":
+        return -30;
       case "Next year":
         return -365;
       case "All time":
