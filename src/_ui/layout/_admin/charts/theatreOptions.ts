@@ -35,14 +35,14 @@ export function theatreOptions(data: any, categories: any){
         },
         series: [
           {
-            name: "Visits",
-            data: data,
-            color: "#1A56DB",
+            name: "Revenue",
+            data: data.Revenue,
+            color: "#7E3AF2",
           },
           {
-            name: "Revenue",
-            data: data,
-            color: "#7E3AF2",
+            name: "Visits",
+            data: data.Count,
+            color: "#1A56DB",
           },
         ],
         legend: {
