@@ -7,7 +7,7 @@
   import { apiUrl } from "$lib/_services/authService";
 
   let seatCategories = ["regular", "loge", "vip"];
-  let seatTypes = ["regular", "double", "eraser"];
+  let seatTypes = ["regular", "double", "disabled"];
   let clearAllSeatsSignal = 0;
   let theatres: string[] = [];
 
@@ -40,9 +40,16 @@
   $: hallWidth = hallWidth;
   $: hallHeight = hallHeight;
 
-  $: console.log(seats);
-
   function postHall(theatre: any) {
+    let seatsForMessage: any[] = [];
+
+    seats.forEach((seatrow) =>{
+      seatrow.forEach((seat: any)=>{
+        if(seat.Type === "double" || seat.Type === "empty"){
+          seatsForMessage.push(seat);
+        }
+      });
+    });
     fetch(`${apiUrl}/cinema-halls`, {
       method: "POST",
       mode: "cors",
@@ -50,7 +57,9 @@
       body: JSON.stringify({
         theatreID: theatre.ID,
         hallName,
-        seats,
+        seats: seatsForMessage,
+        hallHeight,
+        hallWidth,
       }),
     }).then((response) => {
       fire(
@@ -141,7 +150,11 @@
       }
       let enteredHallName = answer.value;
       // allow only reasonable(see Regex) hallnames
-      if (!new RegExp("^[a-zA-Z]{1,24}(?:-?[a-zA-Z])*(?:\s?\d{0,3})?$").test(enteredHallName)) {
+      if (
+        !new RegExp("^[a-zA-Z]{1,24}(?:-?[a-zA-Z])*(?:s?d{0,3})?$").test(
+          enteredHallName
+        )
+      ) {
         fire(
           `${
             enteredHallName === "" ? "''" : `'${enteredHallName}'`
@@ -175,33 +188,31 @@
   }
 </script>
 
-<div
-  class="grid grid-rows-3 grid-cols-2 gap-y-24 sm:gap-y-0 sm:grid-rows-1 sm:grid-cols-10 gap-x-5 w-[85%] h-[64vh] sm:h-[80vh] sm:mt sm:mb-24"
->
-  <div class="flex flex-col justify-between col-span-3">
+<div class="flex flex-row w-[93%] h-[66vh] sm:h-[80vh] mx-auto sm:mb-24">
+  <div class="flex flex-col justify-between w-[22%]">
     <div class="">
       <p class="text-center text-textWhite font-bold sm:text-5xl">
         Hall Creator
       </p>
     </div>
     <div
-      class="bg-backgroundBlue ring-1 ring-white rounded-lg my-4 py-2 w-[60%] mx-auto"
+      class="bg-backgroundBlue ring-1 ring-white rounded-lg my-4 py-2 w-[70%] mx-auto"
     >
       <p class="text-center text-textWhite font-semibold sm:text-xl px-2">
         Width: {hallWidth} Length: {hallHeight}
       </p>
     </div>
 
-    <div class="w-[60%] mx-auto mb-4">
+    <div class="w-[70%] mx-auto mb-3">
       <TypeSelector
         title={"Seat Type"}
         items={seatTypes}
         on:itemSelected={(e) => {
-          seatTypeToPlace = e.detail === "eraser" ? "empty" : e.detail;
+          seatTypeToPlace = e.detail;
         }}
       />
     </div>
-    <div class="w-[60%] mx-auto mb-4 ring-1 ring-white rounded-lg">
+    <div class="w-[70%] mx-auto mb-3 ring-1 ring-white rounded-lg">
       <TypeSelector
         title={"Seat Category"}
         items={seatCategories}
@@ -212,9 +223,9 @@
     </div>
 
     <div
-      class="bg-backgroundBlue ring-1 ring-white rounded-lg w-[60%] flex flex-col mx-auto"
+      class="bg-backgroundBlue ring-1 ring-white rounded-lg w-[70%] flex flex-col mx-auto"
     >
-      <div class="flex flex-row my-5 w-full place-content-evenly">
+      <div class="flex flex-row my-4 w-full place-content-evenly">
         <button
           on:click={createHall}
           class="rounded-md bg-tileBlue ring-1 ring-white text-textWhite py-1 px-4 hover:bg-blue-500 duration-300"
@@ -248,18 +259,23 @@
     </div>
   </div>
 
-  <div class="col-span-2 row-span-2 sm:row-span-1 sm:col-span-7 sm:mt-20">
-    <HallCreator
-      bind:seats
-      bind:seatTypeToPlace
-      bind:curSeatCategory
-      bind:clearAllSeatsSignal
-      on:xDimChanged={(e) => {
-        hallWidth = e.detail;
-      }}
-      on:yDimChanged={(e) => {
-        hallHeight = e.detail;
-      }}
-    />
+  <div class="w-[72%] flex flex-col items-center justify-between mx-auto">
+    <svg class="w-full h-[8%] p-4 rounded-lg">
+      <rect width="100%" height="100%" rx="10" x="0" y="0" fill="#ffffff" />
+    </svg>
+    <div class="w-[83%] h-[82%] p-[3%]">
+      <HallCreator
+        bind:seats
+        bind:seatTypeToPlace
+        bind:curSeatCategory
+        bind:clearAllSeatsSignal
+        on:xDimChanged={(e) => {
+          hallWidth = e.detail;
+        }}
+        on:yDimChanged={(e) => {
+          hallHeight = e.detail;
+        }}
+      />
+    </div>
   </div>
 </div>

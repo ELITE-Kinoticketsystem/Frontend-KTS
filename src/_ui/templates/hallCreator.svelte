@@ -110,6 +110,19 @@
         eraseSeatAt(seats.at(y).at(x).Type, x, y);
         break;
       case "regular":
+        {
+          let previousType = seats.at(y).at(x).Type;
+          if (previousType === "double") {
+            seats.at(y).at(x + 1).Type = "empty";
+          }
+          if (previousType === "emptyDouble") {
+            seats.at(y).at(x - 1).Type = "empty";
+          }
+          seats.at(y).at(x).Type = "regular";
+          seats.at(y).at(x).Category = curSeatCategory;
+        }
+        break;
+      case "disabled":
         let previousType = seats.at(y).at(x).Type;
         if (previousType === "double") {
           seats.at(y).at(x + 1).Type = "empty";
@@ -117,19 +130,16 @@
         if (previousType === "emptyDouble") {
           seats.at(y).at(x - 1).Type = "empty";
         }
-        seats.at(y).at(x).Type = "regular";
+        seats.at(y).at(x).Type = "disabled";
         seats.at(y).at(x).Category = curSeatCategory;
         break;
       case "double":
-        if (x + 1 === hallWidth) {
-          fireDoubleSeatHasNoSpace();
-          break;
-        }
         let rightNeighbourType = seats.at(y).at(x + 1).Type;
-        if (rightNeighbourType === "regular") {
+        if (x + 1 === hallWidth || rightNeighbourType === "regular") {
           fireDoubleSeatHasNoSpace();
           break;
         }
+
         if (rightNeighbourType === "double") {
           if (seats.at(y).at(x - 1).Type === "empty" && x - 1 >= 0) {
             seats.at(y).at(x - 1).Type = "double";
@@ -281,7 +291,7 @@
   let sizesForPlusButton = "h-5 w-5 sm:h-8 sm:w-8 xl:h-10 xl:w-10";
 </script>
 
-<div class="relative w-full h-full mx-32">
+<div class="relative w-full h-full">
   <button
     on:mouseleave={() => {
       mouseDown = false;
@@ -291,21 +301,24 @@
   >
     {#each seats as seatrow, y}
       {#each seatrow as seat, x}
-        {#if seat.Type === "regular" || seat.Type === "double"}
+        {#if !seat.Type.startsWith("empty")}
           <button
+            on:contextmenu|preventDefault={() => {
+              eraseSeatAt(seat.Type, x, y);
+            }}
             on:dblclick={() => {
               eraseSeatAt(seat.Type, x, y);
             }}
             on:mousedown={() => {
               mouseDown = true;
-              seatWasClicked(x, y);
             }}
             on:mouseup={() => {
               mouseDown = false;
             }}
-            on:mouseenter={() => {
+            on:mouseenter={(e) => {
               if (!mouseDown) return;
-              seatWasClicked(x, y);
+              if (e.buttons === 1) seatWasClicked(x, y);
+              if (e.buttons === 2) eraseSeatAt(seat.Type, x, y);
             }}
             class="{seat.Type === 'double'
               ? 'col-span-2'
@@ -318,16 +331,17 @@
           </button>
         {:else if seat.Type === "empty"}
           <button
-            on:mousedown={() => {
+            on:contextmenu|preventDefault|stopPropagation={() => {}}
+            on:mousedown={(e) => {
+              if (e.button === 0) seatWasClicked(x, y);
               mouseDown = true;
-              seatWasClicked(x, y);
             }}
             on:mouseup={() => {
               mouseDown = false;
             }}
-            on:mouseenter={() => {
+            on:mouseenter={(e) => {
               if (!mouseDown) return;
-              seatWasClicked(x, y);
+              if (e.buttons === 1) seatWasClicked(x, y);
             }}
             class="ring-1 ring-inset ring-white hover:bg-blue-400 w-full h-full"
           >
@@ -346,7 +360,7 @@
     {/each}
 
     <div
-      class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[120%] flex flex-col items-center justify-between h-[25%]"
+      class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-[120%] flex flex-col items-center justify-between h-[30%] w-[15%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
         <button
@@ -355,7 +369,7 @@
           }}><PlusButton /></button
         >
       </div>
-      <div class="w-14">
+      <div class="w-[50%]">
         <SizeInput
           placeholder={"X:"}
           bind:updateSize={hallWidth}
@@ -374,7 +388,7 @@
     </div>
 
     <div
-      class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-[120%] flex flex-col items-center justify-between h-[25%]"
+      class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-[120%] flex flex-col items-center justify-between h-[30%] w-[15%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
         <button
@@ -383,7 +397,7 @@
           }}><PlusButton /></button
         >
       </div>
-      <div class="w-14">
+      <div class="w-[50%]">
         <SizeInput
           placeholder={"X:"}
           bind:updateSize={hallWidth}
@@ -402,7 +416,7 @@
     </div>
 
     <div
-      class="absolute -bottom-8 left-1/2 flex flex-row justify-between translate-y-[70%] -translate-x-1/2 w-[18%]"
+      class="absolute -bottom-8 left-1/2 flex flex-row justify-between translate-y-[70%] -translate-x-1/2 w-[22%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
         <button
@@ -411,7 +425,7 @@
           }}><MinusButton /></button
         >
       </div>
-      <div class="w-14">
+      <div class="w-[35%]">
         <SizeInput
           placeholder={"Y:"}
           bind:updateSize={hallHeight}
@@ -429,7 +443,7 @@
       </div>
     </div>
     <div
-      class="absolute -top-8 -translate-y-[70%] left-1/2 -translate-x-1/2 flex flex-row justify-between w-[18%]"
+      class="absolute -top-8 -translate-y-[70%] left-1/2 -translate-x-1/2 flex flex-row justify-between w-[22%]"
     >
       <div class="hover:bg-blue-400 hover:rounded-full {sizesForPlusButton}">
         <button
@@ -438,7 +452,7 @@
           }}><MinusButton /></button
         >
       </div>
-      <div class="w-14">
+      <div class="w-[35%]">
         <SizeInput
           placeholder={"Y:"}
           bind:updateSize={hallHeight}

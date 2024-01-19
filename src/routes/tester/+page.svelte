@@ -2,23 +2,17 @@
   import { fire } from "$lib/swalTemplate";
 </script>
 
-<div
-  class="flex flex-row items-center w-[80%] p-5 mx-auto bg-backgroundBlue ring-1 ring-white rounded-lg"
->
-  <button
-    class="w-[10%] h-[60vh] mx-auto text-textWhite ring-1 ring-white rounded-md"
-    on:click={() => {
-      fire("This is the fire message");
-    }}
-  >
-    Fire
-  </button>
-  <button
-    class="w-[10%] h-[60vh] mx-auto text-textWhite ring-1 ring-white rounded-md"
-    on:click={() => {
-      fire("This is the fire message", 2500);
-    }}
-  >
-    Fire with timer
-  </button>
+<div class="grid grid-rows-10 grid-cols-10 ring-2 w-[50%] mx-auto">
+  <div class="w-10 h-10 row-start-1 col-start-1 ring-1">
+    1234
+  </div>
+  <div class="w-10 h-10 row-start-4 col-start-4 ring-1">
+    5678
+  </div>
+  <div class="w-10 h-10 row-start-3 col-start-8 ring-1">
+    0987
+  </div>
+  <div class="w-10 h-10 row-start-3 col-start-9 ring-1">
+    0987
+  </div>
 </div>
