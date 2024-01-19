@@ -16,8 +16,10 @@
         movies.Description.substring(0, maxLength) +
         "<span class='text-buttonBlue hover:text-darkTextWhite duration-300'> [Read more]</span>";
     }
-    if (movies.Genres == null) {
-      movies.Genres = ["Unknown"];
+    if (movies.Genres === null) {
+      movies.Genres = [
+        { GenreName: "Please contact your daniel.hajnal@sap.com" },
+      ];
     }
   });
 
