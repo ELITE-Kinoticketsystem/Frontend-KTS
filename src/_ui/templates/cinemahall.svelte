@@ -19,16 +19,8 @@
   export let seatColors: any;
   export let clearSeats: number = 0;
   export let selectedSeats: any[] = []; //used as an ordered list
-
-  let seatsLength = 0;
-  let seatRowLength = 0;
-
-  $: console.log(selectedSeats);
-  $: console.log(seats);
-  $: {
-    seatsLength = seats.length;
-    seatRowLength = seats.length > 0 ? seats.at(0).length : 0;
-  }
+  export let hallHeight = 10;
+  export let hallWidth = 10;
 
   $: if (clearSeats === 1) {
     fetch(`${apiUrl}/events/${eventId}/seats/unblock-all`, {
@@ -47,17 +39,6 @@
       });
 
     clearSeats = 0;
-  }
-
-  function getSeatToUnblock(seat: any) {
-    if (
-      seat.ColumnNr <
-      selectedSeats.at(Math.floor(selectedSeats.length / 2)).ColumnNr
-    ) {
-      return selectedSeats.at(0);
-    } else {
-      return selectedSeats.at(selectedSeats.length - 1);
-    }
   }
 
   function unblockSeat(seat: any) {
@@ -88,7 +69,6 @@
   }
 
   function blockSeat(seat: any) {
-    console.log("I want to block: " + JSON.stringify(seat));
     let thereWasAConflict = false;
     fetch(
       `${apiUrl}/events/${eventId}/seats/${
@@ -125,54 +105,21 @@
       });
   }
 
-  function isNeighborSeat(seat: any) {
-    console.log(seat);
-    console.log(selectedSeats);
-    console.log(seats);
-    let x = seat.ColumnNr;
-    let y = seat.RowNr;
-    //all selected seats share y coordinate
-    if (selectedSeats.at(0).RowNr != seat.RowNr) {
-      return false;
-    }
-    let leftOffset = 1;
-    let rightOffset = 1;
-    //go to the left until you encounter a nonempty seat
-    while (x - leftOffset >= 0) {
-      if (
-        seats.at(y).at(x - leftOffset).Type === "empty" ||
-        seats.at(y).at(x - leftOffset).Type === "emptyDouble"
-      ) {
-        ++leftOffset;
-        continue;
-      }
-      break;
-    }
-    if (
-      selectedSeats.at(selectedSeats.length - 1).ColumnNr ===
-      x - leftOffset
-    ) {
-      return true;
-    }
-    //go to the right until you encounter a nonempty seat
-    while (x + rightOffset < seats.at(0).length) {
-      if (
-        seats.at(y).at(x + rightOffset).Type === "empty" ||
-        seats.at(y).at(x + rightOffset).Type === "emptyDouble"
-      ) {
-        ++rightOffset;
-        continue;
-      }
-      break;
-    }
-    if (x + rightOffset === selectedSeats.at(0).ColumnNr) {
-      return true;
-    }
-    return false;
+  function isNeighbor(seat: any) {
+    let seatIndex = seats.findIndex(seat);
+    let leftIsNeighbor =
+      seatIndex !== 0 &&
+      !seats.at(seatIndex - 1).Available &&
+      !seats.at(seatIndex - 1).BlockedByOther;
+    let rightIsNeighbour =
+      seatIndex !== seats.length - 1 &&
+      !seats.at(seatIndex + 1).Available &&
+      !seats.at(seatIndex + 1).BlockedByOther;
+
+    return leftIsNeighbor || rightIsNeighbour;
   }
 
   function seatWasSelected(seat: any) {
-    console.log("HERESETS" + JSON.stringify(seat));
     if (seat.BlockedByOther) {
       fire("This seat is already booked!\nPlease select another seat!", 3000);
       return;
@@ -185,11 +132,11 @@
     }
     //case: already selected seat was clicked
     if (!seat.Available) {
-      unblockSeat(getSeatToUnblock(seat));
+      unblockSeat(seat);
       return;
     }
     //case: not-selected seat was clicked
-    if (!isNeighborSeat(seat)) {
+    if (!isNeighbor(seat)) {
       fire("Please select seats next to each other!", 3000);
       return;
     }
@@ -223,42 +170,32 @@
   }
 </script>
 
-<div
-  class="grid grid-cols-1 grid-rows-6 gap-y-1 sm:gap-y-12 h-full justify-between"
->
-  <svg class="row-span-1 w-full pt-4 px-2 bg-tileBlue rounded-lg">
-    <rect width="100%" height="20%" rx="10" x="0" y="0" fill="#ffffff" />
-  </svg>
-
+<div class="h-full ring-2 flex flex-col justify-between">
+  <div class="w-full h-[4%] pt-4 px-2 bg-white rounded-lg"></div>
   <div
-    class="row-span-5 w-full p-3 rounded-md bg-tileBlue grid"
-    style="grid-template-columns: repeat({seatRowLength}, minmax(0, 1fr)); grid-template-rows: repeat({seatsLength}, minmax(0, 1fr));"
+    style="grid-template-columns: repeat({hallWidth}, minmax(0, 1fr)); grid-template-rows: repeat({hallHeight}, minmax(0, 1fr));"
+    class="h-[90%] grid p-3 rounded-md bg-tileBlue"
   >
-    {#each seats as seatrow}
-      {#each seatrow as seat}
-        {#if seat.Type === "regular" || seat.Type === "double"}
-          <button
-            disabled={seat.BlockedByOther}
-            class="disabled:cursor-not-allowed col-start- w-full h-full ring-white {seat.Type ===
-            'double'
-              ? 'col-span-2'
-              : ''} "
-            on:click={() => {
-              seatWasSelected(seat);
-            }}
-          >
-            {#key selectedSeats}
-              <DrawSeat
-                Type={seat.Type}
-                color={getColorKey(seat)}
-                BlockedByOther={seat.BlockedByOther}
-              />
-            {/key}
-          </button>
-        {:else if seat.Type === "empty"}
-          <div class="w-full h-full"></div>
-        {/if}
-      {/each}
+    {#each seats as seat}
+      <button
+        style={`grid-column-start: ${seat.ColumnNr}; grid-row-start: ${seat.RowNr};`}
+        disabled={seat.BlockedByOther}
+        class="h-full disabled:cursor-not-allowed {seat.Type === 'double'
+          ? 'col-span-2'
+          : ''}
+          "
+        on:click={() => {
+          seatWasSelected(seat);
+        }}
+      >
+        {#key selectedSeats}
+          <DrawSeat
+            Type={seat.Type}
+            color={getColorKey(seat)}
+            BlockedByOther={seat.BlockedByOther}
+          />
+        {/key}
+      </button>
     {/each}
   </div>
 </div>
