@@ -50,6 +50,7 @@
 		"chart.js": "^4.4.1",
 		"flowbite-datepicker": "^1.2.6",
 		"jspdf": "^2.5.1",
+		"pwa-asset-generator": "^6.3.1",
 		"svelte-chartjs": "^3.1.2",
 		"svelte-lazy-image": "^0.5.1",
 		"sweetalert2": "^11.10.2",
