@@ -43,9 +43,9 @@
   function postHall(theatre: any) {
     let seatsForMessage: any[] = [];
 
-    seats.forEach((seatrow) =>{
-      seatrow.forEach((seat: any)=>{
-        if(!seat.Type.startsWith("empty")){
+    seats.forEach((seatrow) => {
+      seatrow.forEach((seat: any) => {
+        if (!seat.Type.startsWith("empty")) {
           seatsForMessage.push(seat);
         }
       });
@@ -58,8 +58,8 @@
         theatreID: theatre.ID,
         hallName,
         seats: seatsForMessage,
-        hallHeight,
-        hallWidth,
+        height: hallHeight,
+        width: hallWidth,
       }),
     }).then((response) => {
       fire(
@@ -98,15 +98,15 @@
     for (let y = 0; y < hallHeight; ++y) {
       for (let x = 0; x < hallWidth - 1; ++x) {
         // check y coordinates
-        if (seats.at(y).at(x).RowNr !== y) {
+        if (seats.at(y).at(x).Y !== y) {
           return 2;
         }
         // check x coordinates
-        if (seats.at(y).at(x).ColumnNr !== x) {
+        if (seats.at(y).at(x).X !== x) {
           return 3;
         }
         // because loop does not cover last element check last x-coordinate as well
-        if (seats.at(y).at(x + 1).ColumnNr !== x + 1) {
+        if (seats.at(y).at(x + 1).X !== x + 1) {
           return 4;
         }
         // after double there always has to be an emptyDouble (left,right)

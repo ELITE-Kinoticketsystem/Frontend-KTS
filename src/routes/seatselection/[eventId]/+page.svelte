@@ -19,41 +19,6 @@
   let disabled: boolean = true;
   let clearSeats = 0;
 
-  let example = [
-    {
-      ID: "",
-      RowNr: 0,
-      ColumnNr: 0,
-      Type: "regular",
-      Category: "regular",
-      BlockedByOther: false,
-    },
-    {
-      ID: "",
-      RowNr: 5,
-      ColumnNr: 5,
-      Type: "disabled",
-      Category: "regular",
-      BlockedByOther: false,
-    },
-    {
-      ID: "",
-      RowNr: 2,
-      ColumnNr: 4,
-      Type: "regular",
-      Category: "regular",
-      BlockedByOther: false,
-    },
-    {
-      ID: "",
-      RowNr: 6,
-      ColumnNr: 7,
-      Type: "double",
-      Category: "regular",
-      BlockedByOther: false,
-    },
-  ];
-
   $: {
     seats = seats;
     clearSeats = clearSeats;
@@ -61,6 +26,7 @@
     aspectRatio = aspectRatio;
     blockedUntil = blockedUntil;
   }
+  
   const seatColors = {
     regular: "#86BBD8",
     vip: "#7b2cbf",
@@ -88,7 +54,6 @@
       })
       .then((seatData) => {
         seats = seatData.seat_rows;
-        seats = example;
         selectedSeats =
           seatData.currentUserSeats === null ? [] : seatData.currentUserSeats;
         blockedUntil =
