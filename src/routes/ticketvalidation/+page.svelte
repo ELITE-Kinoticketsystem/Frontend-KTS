@@ -40,16 +40,15 @@
     isPaused = false;
     html5Qrcode.resume();
   }
+
   async function fetchOrder(orderId: any) {
     let ok = false;
-    console.log(orderId);
     const orderResponse = await fetch(apiUrl + "/orders/" + orderId, {
       method: "GET",
       credentials: "include",
       mode: "cors",
     });
     const order = await orderResponse.json();
-    console.log(order);
     if (!orderResponse.ok) {
       foundOrder = null;
     } else {
