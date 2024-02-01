@@ -90,4 +90,4 @@ export class AuthService {
     });
   }
 }
-export const apiUrl = "https://cinemika.germanywestcentral.cloudapp.azure.com:8080/";
+export const apiUrl = "https://cinemika.germanywestcentral.cloudapp.azure.com:8080";
