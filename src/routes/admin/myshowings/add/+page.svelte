@@ -44,6 +44,8 @@
 
     if (selectedMovies.length === 1) {
       eventName = selectedMovies.at(0).Title;
+      Description = selectedMovies.at(0).Description;
+      pictureUrl = selectedMovies.at(0).CoverPicURL;
     }
 
     nrOfShowings = 0;

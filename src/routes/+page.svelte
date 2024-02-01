@@ -13,6 +13,8 @@
   let moviesToDisplay = data.first;
   let items: any[] = [];
 
+  let specialMovies = data.specialEvents;
+
   let isUserLoggedIn = false;
   onMount(async () => {
     invalidateAll();
@@ -56,7 +58,7 @@
           <div class="flex mx-8 min-h-fit h-[21vh] sm:h-[33vh] lg:mx-16">
             <SpecialEventTile
               {isUserLoggedIn}
-              specialMovies={moviesToDisplay}
+              {specialMovies}
               textData={{
                 refs: ["/specialevents", "/specialevents"],
                 txt: ["Events in your favorite cinemas", "Events near you"],

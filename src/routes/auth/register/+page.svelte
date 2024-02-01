@@ -57,6 +57,18 @@
     );
 
     if (registerRequest.ok) {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your registration was successful!",
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: {
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
+      });
+
       if (browser) {
         registerRequest.json().then((data) => {
           sessionStorage.setItem("user", JSON.stringify(data));

@@ -11,12 +11,48 @@
   import { goto } from "$app/navigation";
 
   let seats: any[] = [];
-
+  let hallWidth = 0;
+  let hallHeight = 0;
   let selectedSeats: any[] = [];
   let timerSignal = 0;
   let blockedUntil = 0;
   let disabled: boolean = true;
   let clearSeats = 0;
+
+  let example = [
+    {
+      ID: "",
+      RowNr: 0,
+      ColumnNr: 0,
+      Type: "regular",
+      Category: "regular",
+      BlockedByOther: false,
+    },
+    {
+      ID: "",
+      RowNr: 5,
+      ColumnNr: 5,
+      Type: "disabled",
+      Category: "regular",
+      BlockedByOther: false,
+    },
+    {
+      ID: "",
+      RowNr: 2,
+      ColumnNr: 4,
+      Type: "regular",
+      Category: "regular",
+      BlockedByOther: false,
+    },
+    {
+      ID: "",
+      RowNr: 6,
+      ColumnNr: 7,
+      Type: "double",
+      Category: "regular",
+      BlockedByOther: false,
+    },
+  ];
 
   $: {
     seats = seats;
@@ -52,6 +88,7 @@
       })
       .then((seatData) => {
         seats = seatData.seat_rows;
+        seats = example;
         selectedSeats =
           seatData.currentUserSeats === null ? [] : seatData.currentUserSeats;
         blockedUntil =
@@ -63,9 +100,14 @@
           seatData.currentUserSeats.length == 0
             ? 0
             : 1;
+        hallHeight = seatData.hallHeight;
+        hallWidth = seatData.hallWidth;
         aspectRatio = `aspect-ratio: ${
           seats.length > 0 ? seats.at(0).length : 0
         }/${seats.length};`;
+        hallHeight = 10;
+        hallWidth = 10;
+        console.log("REMOVE EXAMPLE SEATS AND FIXED HALL DIMENSIONS!!!!!");
       });
     selectedSeats = selectedSeats;
     seats = seats;
@@ -84,13 +126,15 @@
 </script>
 
 <div
-  class="flex sm:flex-row flex-col gap-y-5 sm:gap-y-0 items-center w-[80%] mx-auto mt-4"
+  class="flex flex-col sm:flex-row gap-y-5 sm:gap-y-0 items-center w-[80%] mx-auto mt-4"
 >
   <div
-    class=" max-w-full sm:max-h-[80vh] sm:max-w-[60%] mx-auto"
-    style={aspectRatio}
+    style={`aspect-ratio: ${hallWidth} / ${hallHeight};`}
+    class="max-w-full sm:max-h-[80vh] ring-4 sm:max-w-[60%] mx-auto"
   >
     <Cinemahall
+      bind:hallHeight
+      bind:hallWidth
       bind:clearSeats
       bind:seats
       bind:blockedUntil

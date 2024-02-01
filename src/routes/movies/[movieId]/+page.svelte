@@ -8,6 +8,11 @@
   import Cinemas from "../../../_ui/layout/_movies/cinemas.svelte";
   import { onMount } from "svelte";
   import { invalidateAll } from "$app/navigation";
+  import MainCard from "../../../_ui/templates/mainCard.svelte";
+
+  export let data;
+
+  let movie: any = data.movie;
 
   let isUserLoggedIn = false;
   let userID = "";
@@ -20,14 +25,10 @@
       userID = JSON.parse(sessionStorage.getItem("user")!).ID;
     });
   });
-  export let data;
-
-  let movie: any = data.movie;
-  console.log(movie);
 
   let reviewAmount = 0;
   if (movie.Reviews != undefined) reviewAmount = movie.Reviews.length;
-
+  if (movie.Actors === null || movie.Actors === undefined) movie.Actors = [];
   let reviews = data.movie.Reviews || [];
   $: reviews = reviews;
 
@@ -311,6 +312,31 @@
         </div>
       </div>
     </div>
+    <section
+      id="actors"
+      class="py-8 antialiased mt-5 rounded-md text-textWhite"
+    >
+      <div class="w-full {movie.Actors.length === 0 ? 'hidden' : ''} ">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-lg lg:text-2xl font-bold text-textWhite">
+            Actors ({movie.Actors.length})
+          </h2>
+        </div>
+        <div class="flex mx-auto my-5 w-full">
+          <div class="grid grid-cols-5 mx-auto gap-5">
+            {#each movie.Actors as actor}
+              {#await fetch(apiUrl + "/actors/" + actor.ID) then response}
+                {#await response.json() then resJson}
+                  <div class="hover:scale-105 duration-300">
+                    <MainCard isActor={true} movie={resJson} />
+                  </div>
+                {/await}
+              {/await}
+            {/each}
+          </div>
+        </div>
+      </div>
+    </section>
     <section id="cinemas" class="py-8 antialiased mt-2">
       {#key cinema}
         <div

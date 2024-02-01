@@ -17,33 +17,12 @@
   import { fire } from "$lib/swalTemplate";
 
   export let data: PageData;
-  const revenueData: any = data.revenueData;
+
+  $: revenueData = data.revenueData;
 
   let theatres: any[] = [];
 
-  let location = "All";
-  let locations = [
-    "All",
-    "Berlin",
-    "Munich",
-    "Hamburg",
-    "Cologne",
-    "Frankfurt",
-    "Stuttgart",
-    "Düsseldorf",
-    "Dortmund",
-    "Essen",
-    "Leipzig",
-    "Bremen",
-    "Dresden",
-    "Hanover",
-    "Nuremberg",
-    "Duisburg",
-    "Bochum",
-    "Wuppertal",
-    "Bielefeld",
-    "Bonn",
-  ];
+  let currentTheatre = "All";
 
   function rerunLoadFunction() {
     invalidate("app:newLocation");
@@ -75,11 +54,12 @@
       })
       .then((fetchedTheatres) => {
         theatres = fetchedTheatres;
+        theatres.push({ Name: "All" });
       });
   }
 
   onMount(() => {
-    localStorage.getItem("cinema") || "All";
+    currentTheatre = localStorage.getItem("admin-view") || "All";
     username = "John Doe";
     // "<span class='font-semibold text-red-600'>Admin</span> " +
     // JSON.parse(sessionStorage.getItem("user")!).Username;
@@ -162,7 +142,7 @@
           type="button"
           on:click={() => (showDropdown = !showDropdown)}
         >
-          {location}
+          {currentTheatre}
           <svg
             id="arrowRegion"
             class="w-2.5 h-2.5 ms-3 duration-300"
@@ -186,22 +166,24 @@
           class:hidden={!showDropdown}
           class=" z-40 bg-buttonBlue rounded-lg shadow mt-1 p-3 flex flex-col text-sm text-textWhite max-h-[15vh] w-full overflow-y-auto"
         >
-          {#each locations as l}
-            <button
-              class="w-full"
-              on:click={() => {
-                showDropdown = false;
-                location = l;
-                localStorage.setItem("cinema", l);
-                rerunLoadFunction();
-              }}
-            >
-              <div
-                class="flex items-center p-2 rounded hover:bg-headerBlue duration-300 text-left"
+          {#each theatres as theatre}
+            {#if theatre.Name !== currentTheatre}
+              <button
+                class="w-full"
+                on:click={() => {
+                  showDropdown = false;
+                  currentTheatre = theatre.Name;
+                  localStorage.setItem("admin-view", theatre.Name);
+                  rerunLoadFunction();
+                }}
               >
-                {l}
-              </div>
-            </button>
+                <div
+                  class="flex items-center p-2 rounded hover:bg-headerBlue duration-300 text-left"
+                >
+                  {theatre.Name}
+                </div>
+              </button>
+            {/if}
           {/each}
         </div>
       </div>

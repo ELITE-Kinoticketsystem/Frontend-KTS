@@ -5,12 +5,14 @@
   import { browser } from "$app/environment";
   import { createEventDispatcher, onMount } from "svelte";
   import { apiUrl } from "$lib/_services/authService";
+  import { goto } from "$app/navigation";
 
   let theatres: any[] = [];
   let displayedTheatres: any[] = [];
 
   const maxNrOfTheatresToDisplay = 12;
 
+  let cinema = "All";
   async function getAllTheatres(): Promise<any[]> {
     return new Promise(async (resolve, reject) => {
       await fetch(apiUrl + "/theatres").then((res) => {
@@ -24,6 +26,7 @@
   }
 
   onMount(async () => {
+    if (browser) cinema = localStorage.getItem("cinema") || "All";
     theatres = await getAllTheatres();
     displayedTheatres = JSON.parse(JSON.stringify(theatres));
   });
@@ -69,19 +72,41 @@
       class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10"
     >
       {#each displayedTheatres.slice(0, maxNrOfTheatresToDisplay) as theatre}
-        <button
-          on:click={() => {
-            if (browser) {
-              dispatch("dataLoaded", {
-                cinema: theatre.Name,
-              });
-              window.localStorage.setItem("cinema", theatre.Name);
-              window.localStorage.setItem("cinemaId", theatre.ID);
-            }
-          }}
+        <div
+          class="flex flex-col card bg-tileBlue text-white rounded-lg shadow-lg overflow-hidden hover:scale-105 duration-300"
         >
-          <TheatreCard {theatre} />
-        </button>
+          <img
+            class="h-48 w-full object-cover"
+            src={theatre.LogoUrl}
+            alt={theatre.Name}
+          />
+          <div class="flex flex-col p-6">
+            <h2 class="text-lg font-semibold">
+              {theatre.Name}
+            </h2>
+            <p class="text-sm">
+              {theatre.Address.Street}, {theatre.Address.StreetNr}
+            </p>
+            <p class="text-sm">
+              {theatre.Address.Zipcode}
+              {theatre.Address.City}
+            </p>
+            <button
+              class="mt-4 bg-buttonBlue hover:bg-green-500 duration-300 text-white font-bold py-2 px-4 rounded"
+              on:click={() => {
+                if (browser) {
+                  dispatch("dataLoaded", {
+                    cinema: theatre.Name,
+                  });
+                  localStorage.setItem("cinema", theatre.Name);
+                  localStorage.setItem("cinemaId", theatre.ID);
+                }
+              }}
+            >
+              Select
+            </button>
+          </div>
+        </div>
       {/each}
       {#if displayedTheatres.length === 0}
         <p class="text-textWhite text-center text-md font-bold">

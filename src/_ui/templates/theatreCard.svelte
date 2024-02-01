@@ -9,7 +9,7 @@
 >
   <div class="mx-10">
     <img
-      src={theatre.Logo}
+      src={theatre.LogoURL}
       alt={theatre.Name}
       class="group-hover:scale-110 duration-300"
       use:lazyImage

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { page } from "$app/stores";
   import { onMount } from "svelte";
   export let data;
 
@@ -16,7 +17,9 @@
   let qrCode = "";
 
   onMount(() => {
-    qrCode = "https://api.qrserver.com/v1/create-qr-code/?data=" + qrCodeString;
+    qrCode =
+      "https://api.qrserver.com/v1/create-qr-code/?data=" +
+      $page.params.eventId;
   });
 </script>
 

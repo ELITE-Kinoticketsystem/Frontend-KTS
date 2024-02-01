@@ -12,6 +12,7 @@
         class="min-w-full min-h-full object-cover aspect-auto rounded-md"
         src={isActor ? movie.Pictures[0].PicURL : movie.CoverPicURL}
         alt={isActor ? movie.Name : movie.Title}
+        loading="lazy"
         use:lazyImage
       />
     </div>

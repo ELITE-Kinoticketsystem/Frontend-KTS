@@ -45,6 +45,7 @@
     }
     filterGenres = allMovies.filter((movie: any) => {
       for (let i = 0; i < movie.Genres.length; i++) {
+        console.log(movie.Genres.at(i).GenreName);
         if (
           movie.Genres.at(i)
             .GenreName.toLowerCase()
