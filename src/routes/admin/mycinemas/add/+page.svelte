@@ -45,7 +45,7 @@
 
     seats.forEach((seatrow) =>{
       seatrow.forEach((seat: any)=>{
-        if(seat.Type === "double" || seat.Type === "empty"){
+        if(!seat.Type.startsWith("empty")){
           seatsForMessage.push(seat);
         }
       });
