@@ -11,6 +11,13 @@ export const load = async ({ fetch, params }) => {
     }
 
 
-    return { first: await fetchFirst()
-     };
+    async function fetchSpecialEvents(){
+        const specialEventsData = await fetch(apiUrl+"/events/special", {
+            mode: "cors"
+        });
+        return specialEventsData.json();
+    }
+
+
+    return { first: await fetchFirst(), specialEvents: await fetchSpecialEvents()};
 }

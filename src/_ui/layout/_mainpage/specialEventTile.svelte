@@ -5,9 +5,11 @@
   export let isUserLoggedIn: boolean;
   export let specialMovies: any;
   export let textData: any;
-  let randomEvents = Math.floor(Math.random() * specialMovies.length) + 1;
-  if (randomEvents + 2 > specialMovies.length) {
-    randomEvents = specialMovies.length - 2;
+  if (specialMovies.length > 1) {
+    let randomEvents = Math.floor(Math.random() * specialMovies.length) + 1;
+    if (randomEvents + 2 > specialMovies.length) {
+      randomEvents = specialMovies.length - 2;
+    }
   }
 </script>
 
@@ -20,11 +22,10 @@
   </div>
 
   <div class="w-full h-full flex flex-row gap-x-3">
-    <div class="flex w-full hover:scale-105 duration-300">
-      <SpecialCard movie={specialMovies[0]} />
-    </div>
-    <div class="hidden sm:flex w-full hover:scale-105 duration-300">
-      <SpecialCard movie={specialMovies[1]} />
-    </div>
+    {#each specialMovies as specialEvent}
+      <div class="flex w-full hover:scale-105 duration-300">
+        <SpecialCard movie={specialEvent} />
+      </div>
+    {/each}
   </div>
 </div>
