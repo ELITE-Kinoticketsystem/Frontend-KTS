@@ -7,6 +7,7 @@
     import {goto} from "$app/navigation";
     import InstallationPrompt from './InstallationPrompt.svelte'
     import {page} from "$app/stores";
+    import { dev } from '$app/environment';
 
 
 
@@ -28,13 +29,15 @@
 
     function registerServerWorker() {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.ts', { scope: '/ticketcontrol/' })
-                .then(function(registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch(function(error) {
-                    console.log('Service Worker registration failed:', error);
-                });
+            addEventListener('load', function () {
+                navigator.serviceWorker.register('src/service-worker.ts', { scope: '/ticketcontrol/', type: dev ? 'module' : 'classic' })
+                    .then(function(registration) {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    })
+            });
         }
     }
 
