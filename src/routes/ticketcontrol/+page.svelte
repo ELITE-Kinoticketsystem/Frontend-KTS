@@ -7,6 +7,9 @@
     import {goto} from "$app/navigation";
     import InstallationPrompt from './InstallationPrompt.svelte'
     import {page} from "$app/stores";
+    import { dev } from '$app/environment';
+
+
 
     let html5Qrcode: any;
     let orderIdInput = "";
@@ -26,13 +29,15 @@
 
     function registerServerWorker() {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js', { scope: '/ticketcontrol/' })
-                .then(function(registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch(function(error) {
-                    console.log('Service Worker registration failed:', error);
-                });
+            addEventListener('load', function () {
+                navigator.serviceWorker.register('src/service-worker.ts', { scope: '/ticketcontrol/', type: dev ? 'module' : 'classic' })
+                    .then(function(registration) {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker registration failed:', error);
+                    })
+            });
         }
     }
 
@@ -114,10 +119,11 @@
         }
     }
     function redirectToPayment() {
-        goto(`/ticketcontrol/buy/${foundOrder.Order.ID})`);
+        goto(`/ticketcontrol/buy/:` + orderIdInput);
     }
     function onScanFailure(error: any) {}
 </script>
+
 
 <svelte:head>
     <link rel="manifest" href="/manifest.json">
@@ -272,7 +278,7 @@
         </div>
     {/key}
 </div>
-
 <footer>
     <InstallationPrompt />
+    <!-- Other footer content... -->
 </footer>
