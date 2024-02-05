@@ -5,6 +5,7 @@
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import {goto} from "$app/navigation";
+    import InstallationPrompt from './InstallationPrompt.svelte'
     import {page} from "$app/stores";
 
     let html5Qrcode: any;
@@ -17,10 +18,23 @@
     let foundOrder = null;
 
     onMount(() => {
+        registerServerWorker();
         html5Qrcode = new Html5Qrcode("reader");
         startScanning();
         document.getElementById("orderId")!.focus();
     });
+
+    function registerServerWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js', { scope: '/ticketcontrol/' })
+                .then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(function(error) {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    }
 
     function startScanning() {
         html5Qrcode.start(
@@ -105,7 +119,9 @@
     function onScanFailure(error: any) {}
 </script>
 
-
+<svelte:head>
+    <link rel="manifest" href="/manifest.json">
+</svelte:head>
 
 <div class="flex flex-col sm:flex-row mx-2 sm:mx-10">
     <div class="bg-tileBlue px-3 py-3 sm:px-5 sm:py-5 rounded-md mx-auto">
@@ -256,3 +272,7 @@
         </div>
     {/key}
 </div>
+
+<footer>
+    <InstallationPrompt />
+</footer>
