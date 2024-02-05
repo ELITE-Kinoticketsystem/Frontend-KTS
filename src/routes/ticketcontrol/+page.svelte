@@ -28,7 +28,7 @@
 
     function registerServerWorker() {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js', { scope: '/ticketcontrol/' })
+            navigator.serviceWorker.register('service-worker.ts', { scope: '/ticketcontrol/' })
                 .then(function(registration) {
                     console.log('Service Worker registered with scope:', registration.scope);
                 })
