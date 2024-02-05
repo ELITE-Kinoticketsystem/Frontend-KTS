@@ -3,6 +3,7 @@
   import { sayGreetingInRandomLanguage } from "$lib/randomL";
   import Logout from "../../_ui/layout/_dashboard/logout.svelte";
   import Theatres from "../../_ui/layout/_admin/theatres.svelte";
+  import Halls from "../../_ui/layout/_admin/halls.svelte";
   let pages = [
     "profile",
     "theatres",
@@ -53,10 +54,12 @@
         in:fly={{ x: 100 * direction, duration: 400, delay: 401 }}
         out:fly={{ x: -100 * direction, duration: 400 }}
       >
-        <div class="">
+        <div class="w-full">
           {#if activePage === "theatres"}
             <Theatres />
-          {:else if activePage === "halls"}{:else if activePage === "logout"}
+          {:else if activePage === "halls"}
+            <Halls />
+          {:else if activePage === "logout"}
             <Logout />
           {/if}
         </div>
