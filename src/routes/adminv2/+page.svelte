@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { fly } from "svelte/transition";
   import { sayGreetingInRandomLanguage } from "$lib/randomL";
   import Logout from "../../_ui/layout/_dashboard/logout.svelte";
@@ -7,8 +7,10 @@
   import Movies from "../../_ui/layout/_admin/movies.svelte";
   import Genres from "../../_ui/layout/_admin/genres.svelte";
   import { onMount } from "svelte";
-  import { apiUrl } from "$lib/_services/authService";
+  import { AuthService } from "$lib/_services/authService";
+
   import Actors from "../../_ui/layout/_admin/actors.svelte";
+  import { goto } from "$app/navigation";
 
   let pages = [
     "profile",
@@ -26,11 +28,13 @@
   $: userName = userName;
 
   onMount(async () => {
-    await fetch(apiUrl + "/auth/logged-in", {
-      method: "GET",
-      credentials: "include",
-    }).then((res) => {
-      res.json().then((data) => {});
+    await AuthService.isAdmin().then((res: Boolean) => {
+      if (!res as boolean) {
+        goto("/dashboardv2");
+      }
+    });
+    await AuthService.getUserData().then((res) => {
+      userName = res.Username;
     });
   });
 </script>
@@ -41,7 +45,8 @@
     <div class="text-textWhite font-semibold mb-4">
       <div class="text-2xl">
         {sayGreetingInRandomLanguage()},
-        <span class="text-red-500 font-semibold">Admin</span> Dániel
+        <span class="text-red-500 font-semibold">Admin</span>
+        {userName}
       </div>
     </div>
     <div class="">

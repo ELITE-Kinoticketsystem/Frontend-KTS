@@ -13,6 +13,15 @@
     createName = "";
   });
   const handleSubmit = async () => {
+    if (!createName) {
+      Swal.fire({
+        title: "Error",
+        text: "All fields are required",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+      return;
+    }
     const res = await fetch(`${apiUrl}/genres/${createName}`, {
       method: "POST",
       credentials: "include",
@@ -38,41 +47,39 @@
   };
 </script>
 
-<div class="">
-  <Button on:click={() => (defaultModal = true)}>Create Genre</Button>
-</div>
-<Modal title="Add Genre" bind:open={defaultModal} autoclose class="min-w-full">
-  <form on:submit={handleSubmit}>
-    <div class="mb-4">
-      <Label for="name" class="mb-2">Name</Label>
-      <Input
-        type="text"
-        id="name"
-        placeholder="Type new genrename"
-        bind:value={createName}
-        required
-      />
-    </div>
-    <Button
-      type="button"
-      class="w-52"
-      color="dark"
-      on:click={() => {
-        handleSubmit();
-      }}
-    >
-      <svg
-        class="mr-1 -ml-1 w-6 h-6"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-        ><path
-          fill-rule="evenodd"
-          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-          clip-rule="evenodd"
-        /></svg
+<Button
+  on:click={() => (defaultModal = true)}
+  class="bg-buttonBlue text-textWhite duration-300 hover:bg-headerBlue hover:text-textWhite"
+>
+  Create Genres
+</Button>
+<Modal
+  title="Genre creation"
+  bind:open={defaultModal}
+  autoclose
+  class="min-w-full"
+>
+  <h2 class="mb-4 text-xl font-bold text-gray-900">Add a new genre</h2>
+  <form>
+    <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 mx-auto w-full">
+      <div class="sm:col-span-2">
+        <Label for="name" class="mb-2">Actor name</Label>
+        <Input
+          type="text"
+          id="name"
+          placeholder="Genre name"
+          bind:value={createName}
+          required
+        />
+      </div>
+      <Button
+        type="button"
+        color="dark"
+        class="mx-auto w-full duration-300"
+        on:click={handleSubmit}
       >
-      Add new genre
-    </Button>
+        Add {createName === "" ? "genre" : createName}</Button
+      >
+    </div>
   </form>
 </Modal>

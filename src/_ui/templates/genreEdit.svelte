@@ -97,7 +97,7 @@
       id="drawer-label"
       class="inline-flex items-center mb-4 text-base font-semibold text-gray-500"
     >
-      Change or Delete Genre
+      Change or delete genre
     </h5>
     <CloseButton
       on:click={() => (hidden5 = true)}

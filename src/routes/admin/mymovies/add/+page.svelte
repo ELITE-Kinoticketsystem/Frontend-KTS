@@ -18,6 +18,22 @@
   let allGenres: string[] = [];
   let allActors: any[] = [];
   let actors: any[] = [];
+
+  async function getActorId() {
+    let actorId: string = "";
+    await fetch(apiUrl + "/actors").then(async (response) => {
+      const json = await response.json();
+      actors.forEach((actor) => {
+        json.forEach((actorJson) => {
+          if (actorJson.Name === actor) {
+            actorId = actorJson.ID;
+          }
+        });
+      });
+    });
+    return actorId;
+  }
+
   async function getGenres() {
     const genreResponse = await fetch(apiUrl + "/genres", {
       mode: "cors",
@@ -41,7 +57,7 @@
     });
     const actorJson = await genreResponse.json();
     actorJson.forEach((actor) => {
-      allActors.push(actor);
+      allActors.push(actor.Name);
     });
   }
 
@@ -321,7 +337,7 @@
           let newActors = answer.value.split(",");
           let missingActors: string[] = [];
           for (let i = 0; i < newActors.length; i++) {
-            if (!allGenres.includes(newActors[i].trim())) {
+            if (!allActors.includes(newActors[i].trim())) {
               missingActors.push(newActors[i].trim());
             }
           }
@@ -345,7 +361,7 @@
               if (!answer1.isConfirmed) {
                 change("Actors");
               } else {
-                goto("/admin/myactors/add");
+                goto("/adminv2?actor=" + missingActors.join(","));
               }
             });
           } else {
@@ -751,15 +767,19 @@
         </div>
         <div class="flex mx-auto my-5">
           <div class="grid grid-cols-4 mx-auto gap-5">
-            {#each actors as actor}
-              {#await fetch(apiUrl + "/actors/" + actor.ID) then response}
-                {#await response.json() then resJson}
-                  <div class="hover:scale-105 duration-300">
-                    <MainCard isActor={true} movie={resJson} />
-                  </div>
+            {#key actors}
+              {#each actors as actor}
+                {#await getActorId(actor) then id}
+                  {#await fetch(apiUrl + "/actors/" + id) then response}
+                    {#await response.json() then resJson}
+                      <div class="hover:scale-105 duration-300">
+                        <MainCard isActor={true} movie={resJson} />
+                      </div>
+                    {/await}
+                  {/await}
                 {/await}
-              {/await}
-            {/each}
+              {/each}
+            {/key}
           </div>
         </div>
       </div>

@@ -9,10 +9,14 @@
 
   let url: string;
 
+  let isAdmin = false;
   let isUserLoggedIn = false;
   onMount(async () => {
     await AuthService.isUserLoggedIn().then((res) => {
       isUserLoggedIn = res;
+    });
+    await AuthService.isAdmin().then((res: Boolean) => {
+      isAdmin = res as boolean;
     });
     url = $page.url.pathname;
 
@@ -157,11 +161,21 @@
                   </a>
                 </li>
                 <li>
-                  <a href={isUserLoggedIn ? "/dashboard" : "/auth/register"}>
+                  <a
+                    href={isUserLoggedIn
+                      ? isAdmin
+                        ? "/adminv2"
+                        : "/dashboard"
+                      : "/auth/register"}
+                  >
                     <div
                       class="flex items-center p-2 rounded hover:bg-buttonBlue duration-300"
                     >
-                      {isUserLoggedIn ? "Your dashboard" : "Register"}
+                      {isUserLoggedIn
+                        ? isAdmin
+                          ? "Admin dashboard"
+                          : "Your dashboard"
+                        : "Register"}
                     </div>
                   </a>
                 </li>

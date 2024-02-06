@@ -1,5 +1,10 @@
 <script lang="ts">
+  import { apiUrl } from "$lib/_services/authService";
   import { Modal, Button, Label, Input, Textarea } from "flowbite-svelte";
+  import { createEventDispatcher } from "svelte";
+  import Swal from "sweetalert2";
+
+  const dispatch = createEventDispatcher();
 
   let actorName = "";
   let birthdate = "";
@@ -7,8 +12,49 @@
 
   let hidden = false;
 
-  const handleSubmit = () => {
-    alert("Form submited.");
+  let pictures: any[] = [];
+
+  const handleSubmit = async () => {
+    if (!actorName || !birthdate || !description || pictures.length === 0) {
+      Swal.fire({
+        title: "Error",
+        text: "All fields are required",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+      return;
+    }
+    const res = await fetch(apiUrl + "/actors", {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify({
+        Name: actorName,
+        Birthdate: new Date(birthdate).toISOString(),
+        Description: description,
+        PicturesUrls: pictures,
+      }),
+    });
+    if (res.ok) {
+      Swal.fire({
+        title: "Actor created",
+        text: "Actor has been created successfully",
+        icon: "success",
+        confirmButtonText: "Ok",
+      });
+      dispatch("actorCreated");
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while creating the actor",
+        icon: "error",
+        confirmButtonText: "Ok",
+      });
+    }
+    hidden = false;
+    actorName = "";
+    birthdate = "";
+    description = "";
+    pictures = [];
   };
 </script>
 
@@ -19,9 +65,9 @@
   Create Actors
 </Button>
 
-<Modal title="Add actor" bind:open={hidden} autoclose class="min-w-full">
+<Modal title="Actor creation" bind:open={hidden} autoclose class="min-w-full">
   <h2 class="mb-4 text-xl font-bold text-gray-900">Add a new actor</h2>
-  <form on:submit={handleSubmit}>
+  <form>
     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 mx-auto w-full">
       <div class="sm:col-span-2">
         <Label for="name" class="mb-2">Actor name</Label>
@@ -34,14 +80,47 @@
         />
       </div>
       <div class="sm:col-span-2">
-        <Label for="brand" class="mb-2">Birthdate</Label>
+        <Label for="date" class="mb-2">Birthdate</Label>
         <Input
           type="date"
-          id="brand"
+          id="date"
           placeholder="Birthdate"
           required
           bind:value={birthdate}
         />
+      </div>
+      <div class="sm:col-span-2">
+        <Label for="pictures" class="mb-2">Pictures</Label>
+        <Input
+          type="url"
+          id="pictures"
+          placeholder="Press enter to save"
+          on:keydown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              pictures = [...pictures, e.target.value];
+              e.target.value = "";
+            }
+          }}
+          required
+        />
+      </div>
+      <div class="sm:col-span-2 ml-1">
+        <p>
+          {#each pictures as picture, i}
+            {#if i !== pictures.length - 1}
+              {#if picture.length > 10}
+                {picture.substring(0, 10)}...
+              {:else}
+                {picture}
+              {/if},&nbsp;
+            {:else if picture.length > 10}
+              {picture.substring(0, 10)}...
+            {:else}
+              {picture}
+            {/if}
+          {/each}
+        </p>
       </div>
       <div class="sm:col-span-2">
         <Label for="description" class="mb-2">Description</Label>
@@ -54,7 +133,11 @@
           required
         />
       </div>
-      <Button type="submit" color="dark" class="mx-auto w-full duration-300"
+      <Button
+        type="button"
+        color="dark"
+        class="mx-auto w-full duration-300"
+        on:click={handleSubmit}
         >Add {actorName === "" ? "actor" : actorName}</Button
       >
     </div>

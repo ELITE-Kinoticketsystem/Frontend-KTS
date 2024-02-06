@@ -16,33 +16,6 @@ export class AuthService {
     });
   }
 
-  public changePassword(oldPassword: string, newPassword: string): boolean {
-    // Perform change password logic here
-    return true; //Todo return if change password was successful
-  }
-
-  public resetPassword(email: string): boolean {
-    // Perform reset password logic here
-    return true; //Todo return if reset password was successful
-  }
-
-  public addAddress(address: string): boolean {
-    // Perform add address logic here
-    return true; //Todo return if add address insert was successful
-  }
-
-  public changeAddress(newAddress: string, password?: string): boolean {
-    // Perform change address logic here
-    return true; //Todo return if change address was successful
-  }
-
-  public logout(): void {
-    // Perform logout logic here
-    // ...
-    // Set isLoggedIn to false if logout is successful
-    //localStorage.removeItem('token');
-  }
-
   public static async isUserLoggedIn(): Promise<boolean> {
     return new Promise(async (resolve) => {
       await fetch(apiUrl + "/auth/logged-in", {
@@ -59,9 +32,9 @@ export class AuthService {
     });
   });
   }
-  public static async isLoggedInWithId(): Promise<boolean> {
+  public static async getUserData(): Promise<any> {
     return new Promise(async (resolve) => {
-      await fetch(apiUrl + "/auth/logged-in", {
+      await fetch(apiUrl + "/users/get-me", {
       method : "GET",
       mode: "cors",
       credentials: "include",
@@ -76,16 +49,23 @@ export class AuthService {
   });
   }
 
-  public getUser(): string {
-    // get UserData from backend
-    return "user";
+  public static async isAdmin(): Promise<Boolean> {
+    return new Promise(async (resolve) => {
+      await fetch(apiUrl + "/auth/is-admin", {
+      method : "GET",
+      credentials: "include",
+      }).then(async response => {
+        if(response.status !== 200) {
+          resolve(false);
+          return false;
+        }
+        await response.json().then(data => {
+          resolve(data);
+        });
+      });
+    });
   }
 
-  // Change to movie struct, json maybe?
-  public async getForYouMovies() {
-    // get movies from backend
-    return ["movie1", "movie2", "movie3"];
-  }
 
   public static async register(firstname: string, lastname: string, username: string, email: string, password: string)  {
     const body = JSON.stringify({
