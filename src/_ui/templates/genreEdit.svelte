@@ -22,7 +22,7 @@
       method: "PUT",
       credentials: "include",
       body: JSON.stringify({
-        GenreName: genre.GenreName,
+        GenreName: newName,
         ID: genre.ID,
       }),
     });
