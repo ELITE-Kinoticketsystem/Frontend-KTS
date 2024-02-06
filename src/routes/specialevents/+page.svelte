@@ -7,7 +7,6 @@
   export let data;
 
   let specialEvents = data.specialEvents;
-  console.log(specialEvents);
 
   $: displayedSpecialEvents = JSON.parse(JSON.stringify(specialEvents));
 

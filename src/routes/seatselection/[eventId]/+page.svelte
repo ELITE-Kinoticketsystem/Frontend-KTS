@@ -52,7 +52,6 @@
         return response.json();
       })
       .then((seatData) => {
-        console.log(seatData);
         seats = seatData.seats;
         selectedSeats =
           seatData.currentUserSeats === null ? [] : seatData.currentUserSeats;
