@@ -59,6 +59,22 @@ export class AuthService {
     });
   });
   }
+  public static async isLoggedInWithId(): Promise<boolean> {
+    return new Promise(async (resolve) => {
+      await fetch(apiUrl + "/auth/logged-in", {
+      method : "GET",
+      mode: "cors",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+    }).then(response => {
+      response.json().then(data => {
+        resolve(data);
+      });
+    });
+  });
+  }
 
   public getUser(): string {
     // get UserData from backend
