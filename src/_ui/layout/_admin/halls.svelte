@@ -3,12 +3,10 @@
   import { onMount } from "svelte";
   import Hall from "../../templates/hall.svelte";
   import { goto } from "$app/navigation";
-  import LinkPreview from "../LinkPreview.svelte";
 
   onMount(async () => {
     const res = await fetch(`${apiUrl}/theatres`);
     const data = await res.json();
-    console.log(data);
   });
 
   async function loadTheatres() {
@@ -119,4 +117,3 @@
   {/each}
 {/await}
 
-<LinkPreview url={"https://www.google.com/maps"} />

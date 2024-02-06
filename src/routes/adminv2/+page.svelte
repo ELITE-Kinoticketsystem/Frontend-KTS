@@ -4,28 +4,43 @@
   import Logout from "../../_ui/layout/_dashboard/logout.svelte";
   import Theatres from "../../_ui/layout/_admin/theatres.svelte";
   import Halls from "../../_ui/layout/_admin/halls.svelte";
+  import Movies from "../../_ui/layout/_admin/movies.svelte";
+  import { onMount } from "svelte";
+  import { apiUrl } from "$lib/_services/authService";
+
   let pages = [
     "profile",
     "theatres",
     "halls",
-    "events",
-    "movies",
+    "movies/events",
     "genres",
     "actors",
     "logout",
   ];
   $: activePage = "profile";
   let direction = 1;
+
+  let userName = "Daniel";
+  $: userName = userName;
+
+  onMount(async () => {
+    await fetch(apiUrl + "/auth/logged-in", {
+      method: "GET",
+      credentials: "include",
+    }).then((res) => {
+      res.json().then((data) => {});
+    });
+  });
 </script>
 
 <div class="flex w-screen h-max">
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="flex flex-col w-full h-full flex-grow mx-auto">
     <div class="text-textWhite font-semibold mb-4">
-      <h1 class="text-2xl">
+      <div class="text-2xl">
         {sayGreetingInRandomLanguage()},
         <span class="text-red-500 font-semibold">Admin</span> Dániel
-      </h1>
+      </div>
     </div>
     <div class="">
       <ul
@@ -61,6 +76,8 @@
             <Halls />
           {:else if activePage === "logout"}
             <Logout />
+          {:else if activePage === "movies/events"}
+            <Movies />
           {/if}
         </div>
       </div>
