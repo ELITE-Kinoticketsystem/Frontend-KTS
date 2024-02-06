@@ -20,9 +20,10 @@
   $: forNow = 0;
   forNow = forNow;
   onMount(async () => {
-    await AuthService.isUserLoggedIn().then((res) => {
-      isUserLoggedIn = res;
-      userID = JSON.parse(sessionStorage.getItem("user")!).ID;
+    await AuthService.isLoggedInWithId().then((res: any) => {
+      console.log(res);
+      isUserLoggedIn = res.loggedIn;
+      userID = res.id;
     });
   });
 

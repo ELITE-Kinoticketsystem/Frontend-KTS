@@ -5,8 +5,10 @@
   import Theatres from "../../_ui/layout/_admin/theatres.svelte";
   import Halls from "../../_ui/layout/_admin/halls.svelte";
   import Movies from "../../_ui/layout/_admin/movies.svelte";
+  import Genres from "../../_ui/layout/_admin/genres.svelte";
   import { onMount } from "svelte";
   import { apiUrl } from "$lib/_services/authService";
+  import Actors from "../../_ui/layout/_admin/actors.svelte";
 
   let pages = [
     "profile",
@@ -78,6 +80,10 @@
             <Logout />
           {:else if activePage === "movies/events"}
             <Movies />
+          {:else if activePage === "genres"}
+            <Genres />
+          {:else if activePage === "actors"}
+            <Actors />
           {/if}
         </div>
       </div>
