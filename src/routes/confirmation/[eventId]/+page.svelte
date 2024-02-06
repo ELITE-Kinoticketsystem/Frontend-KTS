@@ -29,8 +29,9 @@
     if (!isUserLoggedIn) {
       goto("/auth/login?redirect=/confirmation/" + $page.params.eventId);
     }
-    await getEventTickets().then((data) => {
+    getEventTickets().then((data) => {
       seats = data.selectedSeats;
+      console.log(seats);
       for (let i = 0; i < seats.length; i++) {
         if (
           sessionStorage.getItem("selectedSeats-" + seats[i].EventSeat.ID) !==
@@ -132,7 +133,7 @@
                 class="bg-headerBlue border-b text-textWhite hover:bg-inputBlue duration-300"
               >
                 <td class="px-6 py-2">
-                  Row {seat.Seat.VisibleRowNr}, Seat {seat.Seat.VisibleColumnNr}
+                  Row {seat.Seat.RowNr}, Seat {seat.Seat.ColumnNr}
                 </td>
                 <td class="p-2">
                   <div class="flex">

@@ -42,16 +42,11 @@
   }
 
   function unblockSeat(seat: any) {
-    fetch(
-      `${apiUrl}/events/${eventId}/seats/${
-        seats.at(seat.RowNr).at(seat.ColumnNr).ID
-      }/unblock`,
-      {
-        method: "PATCH",
-        mode: "cors",
-        credentials: "include",
-      }
-    )
+    fetch(`${apiUrl}/events/${eventId}/seats/${seat.ID}/unblock`, {
+      method: "PATCH",
+      mode: "cors",
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) {
           fire("A database error occured!");
@@ -70,16 +65,11 @@
 
   function blockSeat(seat: any) {
     let thereWasAConflict = false;
-    fetch(
-      `${apiUrl}/events/${eventId}/seats/${
-        seats.at(seat.RowNr).at(seat.ColumnNr).ID
-      }/block`,
-      {
-        method: "PATCH",
-        mode: "cors",
-        credentials: "include",
-      }
-    )
+    fetch(`${apiUrl}/events/${eventId}/seats/${seat.ID}/block`, {
+      method: "PATCH",
+      mode: "cors",
+      credentials: "include",
+    })
       .then((response) => {
         if (!response.ok) {
           if (response.status === 409) {
@@ -106,7 +96,10 @@
   }
 
   function isNeighbor(seat: any) {
-    let seatIndex = seats.findIndex(seat);
+    let seatIndex = seats.findIndex((s) => {
+      return s.ID === seat.ID;
+    });
+
     let leftIsNeighbor =
       seatIndex !== 0 &&
       !seats.at(seatIndex - 1).Available &&
@@ -170,7 +163,7 @@
   }
 </script>
 
-<div class="h-full ring-2 flex flex-col justify-between">
+<div class="h-full flex flex-col justify-between">
   <div class="w-full h-[4%] pt-4 px-2 bg-white rounded-lg"></div>
   <div
     style="grid-template-columns: repeat({hallWidth}, minmax(0, 1fr)); grid-template-rows: repeat({hallHeight}, minmax(0, 1fr));"
@@ -178,7 +171,7 @@
   >
     {#each seats as seat}
       <button
-        style={`grid-column-start: ${seat.ColumnNr}; grid-row-start: ${seat.RowNr};`}
+        style={`grid-column-start: ${seat.ColumnNr + 1}; grid-row-start: ${seat.RowNr + 1};`}
         disabled={seat.BlockedByOther}
         class="h-full disabled:cursor-not-allowed {seat.Type === 'double'
           ? 'col-span-2'

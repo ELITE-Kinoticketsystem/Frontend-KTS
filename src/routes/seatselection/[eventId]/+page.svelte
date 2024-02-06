@@ -18,6 +18,7 @@
   let blockedUntil = 0;
   let disabled: boolean = true;
   let clearSeats = 0;
+  let aspectRatio = "";
 
   $: {
     seats = seats;
@@ -26,7 +27,7 @@
     aspectRatio = aspectRatio;
     blockedUntil = blockedUntil;
   }
-  
+
   const seatColors = {
     regular: "#86BBD8",
     vip: "#7b2cbf",
@@ -34,8 +35,6 @@
     selected: "#00cc00",
     blocked: "#777777",
   };
-
-  let aspectRatio = "";
 
   async function getDBSeats() {
     fetch(`${apiUrl}/events/${$page.params.eventId}/seats`, {
@@ -53,7 +52,8 @@
         return response.json();
       })
       .then((seatData) => {
-        seats = seatData.seat_rows;
+        console.log(seatData);
+        seats = seatData.seats;
         selectedSeats =
           seatData.currentUserSeats === null ? [] : seatData.currentUserSeats;
         blockedUntil =
@@ -65,14 +65,9 @@
           seatData.currentUserSeats.length == 0
             ? 0
             : 1;
-        hallHeight = seatData.hallHeight;
-        hallWidth = seatData.hallWidth;
-        aspectRatio = `aspect-ratio: ${
-          seats.length > 0 ? seats.at(0).length : 0
-        }/${seats.length};`;
-        hallHeight = 10;
-        hallWidth = 10;
-        console.log("REMOVE EXAMPLE SEATS AND FIXED HALL DIMENSIONS!!!!!");
+        hallHeight = seatData.height;
+        hallWidth = seatData.width;
+        aspectRatio = `aspect-ratio: ${hallWidth} / ${hallHeight};`;
       });
     selectedSeats = selectedSeats;
     seats = seats;
@@ -94,8 +89,8 @@
   class="flex flex-col sm:flex-row gap-y-5 sm:gap-y-0 items-center w-[80%] mx-auto mt-4"
 >
   <div
-    style={`aspect-ratio: ${hallWidth} / ${hallHeight};`}
-    class="max-w-full sm:max-h-[80vh] ring-4 sm:max-w-[60%] mx-auto"
+    style={aspectRatio}
+    class="max-w-full sm:max-h-[80vh] sm:max-w-[60%] mx-auto"
   >
     <Cinemahall
       bind:hallHeight

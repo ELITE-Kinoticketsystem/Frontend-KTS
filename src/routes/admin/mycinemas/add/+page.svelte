@@ -40,6 +40,7 @@
   $: hallWidth = hallWidth;
   $: hallHeight = hallHeight;
 
+
   function postHall(theatre: any) {
     let seatsForMessage: any[] = [];
 
@@ -50,6 +51,7 @@
         }
       });
     });
+    console.log(seatsForMessage);
     fetch(`${apiUrl}/cinema-halls`, {
       method: "POST",
       mode: "cors",
