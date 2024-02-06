@@ -46,10 +46,10 @@
   function getSeat(
     Category: string,
     Type: string,
-    ColumnNr: number,
-    RowNr: number
+    X: number,
+    Y: number
   ) {
-    return { Category, Type, ColumnNr, RowNr };
+    return { Category, Type, X, Y };
   }
   //initial setup
   for (let y = 0; y < yStartDim; ++y) {
@@ -282,8 +282,8 @@
   function correctCoordinates() {
     for (let y = 0; y < hallHeight; ++y) {
       for (let x = 0; x < hallWidth; ++x) {
-        seats.at(y).at(x).RowNr = y;
-        seats.at(y).at(x).ColumnNr = x;
+        seats.at(y).at(x).Y = y;
+        seats.at(y).at(x).X = x;
       }
     }
   }

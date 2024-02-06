@@ -22,7 +22,6 @@
           fire("A database error occured", 3000);
           return;
         }
-
         return response.json();
       })
       .then((fetchedHalls) => {

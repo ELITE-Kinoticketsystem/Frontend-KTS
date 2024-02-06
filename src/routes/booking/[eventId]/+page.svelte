@@ -36,7 +36,10 @@
     }).then(async (res) => {
       const json = await res.json();
       if (res.ok) {
-        fire("Successfuly booked. You will be redirected to your tickets.");
+        fire(
+          "Successfuly booked. You will be redirected to your tickets.",
+          3000
+        );
         goto("/tickets/" + json.id);
       } else {
         Swal.fire({

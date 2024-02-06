@@ -23,16 +23,16 @@
   $: LogoUrl = LogoUrl;
 
   function showWhichInputsAreValid() {
-    if (!RegExp("[a-z]{2,20}").test(Name)) {
+    if (!RegExp("[a-zA-Z]{2,20}").test(Name)) {
       nameIsValid = false;
     }
-    if (!RegExp("[a-z]{2,20}").test(Street)) {
+    if (!RegExp("[a-zA-Z]{2,20}").test(Street)) {
       streetIsValid = false;
     }
     if (!RegExp("[0-9]{1,4}").test(StreetNr)) {
       streetNrIsValid = false;
     }
-    if (!RegExp("[a-z]{2,20}").test(City)) {
+    if (!RegExp("[a-zA-Z]{2,20}").test(City)) {
       cityIsValid = false;
     }
     if (!RegExp("^[0-9]{3,6}$").test(Zipcode)) {
@@ -215,7 +215,7 @@
         nameIsValid = true;
       }}
       on:blur={() => {
-        if (!RegExp("[a-z]{2,20}").test(Name)) {
+        if (!RegExp("[a-zA-Z]{2,20}").test(Name)) {
           nameIsValid = false;
         }
       }}
@@ -235,7 +235,7 @@
           streetIsValid = true;
         }}
         on:blur={() => {
-          if (!RegExp("[a-z]{2,20}").test(Street)) {
+          if (!RegExp("[a-zA-Z]{2,20}").test(Street)) {
             streetIsValid = false;
           }
         }}
@@ -275,7 +275,7 @@
         cityIsValid = true;
       }}
       on:blur={() => {
-        if (!RegExp("[a-z]{2,20}").test(City)) {
+        if (!RegExp("[a-zA-Z]{2,20}").test(City)) {
           cityIsValid = false;
         }
       }}
