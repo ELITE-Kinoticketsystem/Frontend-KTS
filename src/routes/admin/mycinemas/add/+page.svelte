@@ -51,7 +51,6 @@
         }
       });
     });
-    console.log(seatsForMessage);
     fetch(`${apiUrl}/cinema-halls`, {
       method: "POST",
       mode: "cors",
