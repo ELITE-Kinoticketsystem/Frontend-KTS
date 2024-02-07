@@ -55,7 +55,7 @@
   }}
   class="relative w-full h-full p-1 bg-buttonBlue ring-slate-500 ring-1 rounded-md hover:bg-blue-300"
 >
-  <p class="text-center text-textWhite text-[100%] font-semibold">
+  <p class="text-center text-textWhite text-[100%] font-semibold line-clamp-1">
     {selectedTheatre !== null && selectedTheatre.ID != ""
       ? selectedTheatre.Name.length > maxNrOfChar
         ? selectedTheatre.Name.substr(0, maxNrOfChar - 2) + ".."
@@ -70,16 +70,18 @@
     >
       {#each theatres as curTheatre}
         <button
-          class="h-full w-full text-textWhite text-[100%] p-1 bg-buttonBlue ring-1 ring-slate-500 hover:bg-blue-300"
+          class="h-full w-full p-1 bg-buttonBlue ring-1 ring-slate-500 hover:bg-blue-300"
           on:click|stopPropagation={() => {
             selectedTheatre = curTheatre;
             ++eligibleTheatresAreVisible;
             dispatch("theatreWasSelected");
           }}
         >
-          {curTheatre.Name.length > maxNrOfChar
-            ? curTheatre.Name.substr(0, maxNrOfChar - 2) + ".."
-            : curTheatre.Name}
+          <p class="text-textWhite text-[100%] line-clamp-1">
+            {curTheatre.Name.length > maxNrOfChar
+              ? curTheatre.Name.substr(0, maxNrOfChar - 2) + ".."
+              : curTheatre.Name}
+          </p>
         </button>
       {/each}
     </div>
