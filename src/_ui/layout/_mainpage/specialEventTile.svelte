@@ -2,30 +2,38 @@
   import SpecialCard from "../../templates/specialCard.svelte";
   import TextMainSite from "../../templates/textMainSite.svelte";
 
-  export let isUserLoggedIn: boolean;
-  export let specialMovies: any;
-  export let textData: any;
-  if (specialMovies.length > 1) {
-    let randomEvents = Math.floor(Math.random() * specialMovies.length) + 1;
-    if (randomEvents + 2 > specialMovies.length) {
-      randomEvents = specialMovies.length - 2;
+  export let events: any[];
+  let eventsToDisplay: any[] = [];
+
+  if (events !== null && events.length > 0) {
+    let length = 0;
+    if (events.length == 2) {
+      length = 2;
     }
+    if (events.length > 2) {
+      length = 3;
+    }
+    for (let i = 0; i < length; ++i) eventsToDisplay.push(events.at(i));
   }
 </script>
 
-<div class="flex flex-col w-full h-full">
-  <div class="flex">
-    <TextMainSite
-      href={isUserLoggedIn ? textData.refs[0] : textData.refs[1]}
-      text={isUserLoggedIn ? textData.txt[0] : textData.txt[1]}
-    />
+{#if events !== null && eventsToDisplay.length > 0}
+  <div class="flex flex-col h-full w-full">
+    <div class="flex">
+      <TextMainSite href="/specialevents" text="Events near you" />
+    </div>
+    <div class="flex flex-row justify-between h-full w-full">
+      {#each eventsToDisplay as event}
+        <a
+          href="specialevents/{event.ID}"
+          class="h-full flex hover:scale-105 duration-300 {event.Movies.length >
+          2
+            ? 'w-[45%]'
+            : 'w-[30%]'}"
+        >
+          <SpecialCard {event} />
+        </a>
+      {/each}
+    </div>
   </div>
-
-  <div class="w-full h-full flex flex-row gap-x-3">
-    {#each specialMovies as specialEvent}
-      <div class="flex w-full hover:scale-105 duration-300">
-        <SpecialCard movie={specialEvent} />
-      </div>
-    {/each}
-  </div>
-</div>
+{/if}

@@ -10,10 +10,10 @@
 
   export let data;
 
-  let moviesToDisplay = data.first;
+  let moviesToDisplay = data.movies;
   let items: any[] = [];
 
-  let specialMovies = data.specialEvents;
+  let specialEvents = data.specialEvents;
 
   let isUserLoggedIn = false;
   onMount(async () => {
@@ -51,24 +51,21 @@
       {/if}
     </div>
   </IntersectionObserver>
-  <IntersectionObserver element={items[1]} let:intersecting>
-    <div bind:this={items[1]}>
-      {#if intersecting}
-        <div transition:fade={{ delay: 200 }}>
-          <div class="flex mx-8 min-h-fit h-[21vh] sm:h-[33vh] lg:mx-16">
-            <SpecialEventTile
-              {isUserLoggedIn}
-              {specialMovies}
-              textData={{
-                refs: ["/specialevents", "/specialevents"],
-                txt: ["Events in your favorite cinemas", "Events near you"],
-              }}
-            />
+  {#if specialEvents !== null && specialEvents.length > 0}
+    <IntersectionObserver element={items[1]} let:intersecting>
+      <div bind:this={items[1]}>
+        {#if intersecting}
+          <div transition:fade={{ delay: 200 }}>
+            <div class="flex mx-8 h-[42vh] lg:mx-16 mb-4">
+              <SpecialEventTile
+                events={specialEvents}
+              />
+            </div>
           </div>
-        </div>
-      {/if}
-    </div>
-  </IntersectionObserver>
+        {/if}
+      </div>
+    </IntersectionObserver>
+  {/if}
   <IntersectionObserver element={items[2]} let:intersecting>
     <div bind:this={items[2]}>
       {#if intersecting}
