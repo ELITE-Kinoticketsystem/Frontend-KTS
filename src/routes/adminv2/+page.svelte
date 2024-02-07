@@ -6,6 +6,7 @@
   import Halls from "../../_ui/layout/_admin/halls.svelte";
   import Movies from "../../_ui/layout/_admin/movies.svelte";
   import Genres from "../../_ui/layout/_admin/genres.svelte";
+  import ProfileAdmin from "../../_ui/layout/_admin/profileAdmin.svelte";
   import { onMount } from "svelte";
   import { AuthService } from "$lib/_services/authService";
 
@@ -82,13 +83,15 @@
           {:else if activePage === "halls"}
             <Halls />
           {:else if activePage === "logout"}
-            <Logout />
+            <Logout isAdmin={true} />
           {:else if activePage === "movies/events"}
             <Movies />
           {:else if activePage === "genres"}
             <Genres />
           {:else if activePage === "actors"}
             <Actors />
+          {:else if activePage === "profile"}
+            <ProfileAdmin {userName} />
           {/if}
         </div>
       </div>

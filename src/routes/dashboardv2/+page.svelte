@@ -17,7 +17,7 @@
 
   let direction = 1;
 
-  let username = "Dániel";
+  let userName = "Dániel";
 
   let isUserLoggedIn = false;
   onMount(async () => {
@@ -29,7 +29,7 @@
       }
     });
     await AuthService.getUserData().then((res) => {
-      username = res.Username;
+      userName = res.Username;
     });
   });
   if ($page.url.searchParams.has("migrated")) {
@@ -54,7 +54,7 @@
   <div class="sm:w-0 md:w-0 lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
   <div class="flex flex-col w-full h-full flex-grow mx-auto">
     <div class="text-textWhite font-semibold mb-4">
-      <h1 class="text-2xl">{sayGreetingInRandomLanguage()}, {username}</h1>
+      <h1 class="text-2xl">{sayGreetingInRandomLanguage()}, {userName}</h1>
     </div>
     <div class="">
       <ul
@@ -84,13 +84,13 @@
       >
         <div class="">
           {#if activePage === "profile"}
-            <Profile />
+            <Profile {userName} />
           {:else if activePage === "tickets"}
             <Ticket />
           {:else if activePage === "statistics"}
             <Stats />
           {:else if activePage === "logout"}
-            <Logout />
+            <Logout isAdmin={false} />
           {/if}
         </div>
       </div>
