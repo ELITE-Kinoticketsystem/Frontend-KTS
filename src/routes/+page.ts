@@ -3,7 +3,7 @@ import { apiUrl } from '$lib/_services/authService.js';
 export const load = async ({ fetch, params }) => {
 
 
-    async function fetchFirst(){
+    async function fetchMoviesOfGenre(){
         const movieData = await fetch(apiUrl+"/movies/genres", {
             mode: "cors"
         })
@@ -19,5 +19,5 @@ export const load = async ({ fetch, params }) => {
     }
 
 
-    return { first: await fetchFirst(), specialEvents: await fetchSpecialEvents()};
+    return { movies: await fetchMoviesOfGenre(), specialEvents: await fetchSpecialEvents()};
 }
