@@ -41,12 +41,23 @@
     clearSeats = 0;
   }
 
+  function getRightSeatToUnblock(seat: any): any {
+    if (selectedSeats.at(selectedSeats.length / 2).ColumnNr > seat.ColumnNr) {
+      return selectedSeats.at(0);
+    } else {
+      return selectedSeats.at(selectedSeats.length - 1);
+    }
+  }
+
   function unblockSeat(seat: any) {
-    fetch(`${apiUrl}/events/${eventId}/seats/${seat.ID}/unblock`, {
-      method: "PATCH",
-      mode: "cors",
-      credentials: "include",
-    })
+    fetch(
+      `${apiUrl}/events/${eventId}/seats/${getRightSeatToUnblock(seat).ID}/unblock`,
+      {
+        method: "PATCH",
+        mode: "cors",
+        credentials: "include",
+      }
+    )
       .then((response) => {
         if (!response.ok) {
           fire("A database error occured!");

@@ -64,7 +64,7 @@
   </p>
   {#key eligibleTheatresAreVisible}
     <div
-      class="absolute flex flex-col bottom-0 translate-y-[100.7%] z-10 left-0 w-[100%] min-h-[100%] max-h-[420%]
+      class="absolute flex flex-col bottom-0 translate-y-[103%] z-10 left-0 w-[100%] min-h-[100%] max-h-[420%]
       overflow-y-hidden hover:overflow-y-auto ring-1 ring-slate-500 rounded-md
       {eligibleTheatresAreVisible % 2 === 0 ? 'flex' : 'hidden'}"
     >
