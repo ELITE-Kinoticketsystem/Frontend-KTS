@@ -20,7 +20,7 @@
 {#if events !== null && eventsToDisplay.length > 0}
   <div class="flex flex-col h-full w-full">
     <div class="flex">
-      <TextMainSite href="/specialevents" text="Events near you" />
+      <TextMainSite href="/specialevents" text="See other special events" />
     </div>
     <div class="flex flex-row justify-between h-full w-full">
       {#each eventsToDisplay as event}

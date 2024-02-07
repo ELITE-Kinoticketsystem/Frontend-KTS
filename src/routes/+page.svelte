@@ -39,12 +39,7 @@
         <div transition:fade={{ delay: 200 }}>
           <div class="flex mx-8 lg:mx-16">
             <MainPageMovieRow
-              {isUserLoggedIn}
               {moviesToDisplay}
-              textData={{
-                refs: ["/yourwatchlist", "/likedbyother"],
-                txt: ["Your Watchlist", "Liked by others"],
-              }}
             />
           </div>
         </div>
