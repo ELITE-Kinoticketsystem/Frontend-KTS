@@ -73,7 +73,7 @@
       });
       cinemaHallName = seats[0].CinemaHall.Name;
       theatreName = seats[0].Theatre.Name;
-      rowNr = seats[0].Seat.VisibleRowNr;
+      rowNr = seats[0].Seat.RowNr;
     });
   });
 
@@ -151,9 +151,9 @@
           Row {rowNr}: Seat
           {#each seats as seat, index}
             {#if index === seats.length - 1}
-              {seat.Seat.VisibleColumnNr}
+              {seat.Seat.ColumnNr}
             {:else}
-              {seat.Seat.VisibleColumnNr},&nbsp;
+              {seat.Seat.ColumnNr},&nbsp;
             {/if}
           {/each}
         </p>

@@ -33,10 +33,6 @@
       </p>
       <img src={qrCode} alt="" class="w-auto h-auto mt-10" />
     </div>
-    <div class="flex space-x-5 mx-auto my-5">
-      <button class="bg-buttonBlue">Add to apple wallet</button>
-      <button class="bg-buttonBlue">Add to google wallet</button>
-    </div>
   </div>
   <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
 </div>
