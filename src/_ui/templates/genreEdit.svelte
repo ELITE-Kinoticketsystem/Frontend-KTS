@@ -32,6 +32,11 @@
         text: "Genre updated successfully",
         icon: "success",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       dispatcher("update");
     } else {
@@ -40,6 +45,11 @@
         text: "Genre could not be updated",
         icon: "error",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
     }
     hidden5 = true;
@@ -56,6 +66,11 @@
         text: "Genre deleted successfully",
         icon: "success",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       dispatcher("update");
     } else {
@@ -64,6 +79,11 @@
         text: "Genre could not be deleted",
         icon: "error",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
     }
   }

@@ -19,6 +19,11 @@
         text: "All fields are required",
         icon: "error",
         confirmButtonText: "Ok",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       return;
     }
@@ -32,6 +37,11 @@
         text: "Genre created successfully",
         icon: "success",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       dispatcher("create");
     } else {
@@ -40,6 +50,11 @@
         text: "Genre could not be created",
         icon: "error",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
     }
     defaultModal = false;

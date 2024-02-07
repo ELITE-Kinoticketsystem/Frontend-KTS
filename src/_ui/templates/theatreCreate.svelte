@@ -32,6 +32,11 @@
         text: "All fields are required",
         icon: "error",
         confirmButtonText: "Ok",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       return;
     }
@@ -56,6 +61,11 @@
         text: "Theatre created successfully",
         icon: "success",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       dispatch("create");
     } else {
@@ -64,6 +74,11 @@
         text: "Theatre could not be created",
         icon: "error",
         confirmButtonText: "OK",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
     }
   };

@@ -21,6 +21,11 @@
         text: "All fields are required",
         icon: "error",
         confirmButtonText: "Ok",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       return;
     }
@@ -40,6 +45,11 @@
         text: "Actor has been created successfully",
         icon: "success",
         confirmButtonText: "Ok",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
       dispatch("actorCreated");
     } else {
@@ -48,6 +58,11 @@
         text: "An error occurred while creating the actor",
         icon: "error",
         confirmButtonText: "Ok",
+        customClass: {
+          input: "rounded-md bg-backgroundBlue text-textWhite",
+          title: "text-textWhite bg-backgroundBlue",
+          popup: "bg-backgroundBlue",
+        },
       });
     }
     hidden = false;
