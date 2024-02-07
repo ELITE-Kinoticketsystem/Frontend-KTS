@@ -68,8 +68,7 @@
   <title>Cinemika - Search</title>
 </svelte:head>
 
-<div class="flex w-screen h-full">
-  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+<div class="flex h-full w-[72%] mx-auto">
   <div class="flex flex-col flex-grow w-full h-max pb-5">
     <p class="text-textWhite font-semibold mb-3">
       Here you can search for actor(s), movie(s) or genre(s)
@@ -100,7 +99,7 @@
           </p>
           <hr class="h-px bg-textWhite border-0 w-full" />
           <div class="flex mx-auto my-5">
-            <div class="grid grid-cols-5 mx-auto gap-5">
+            <div class="grid grid-cols-5 mx-auto gap-5 gap-x-6">
               {#each filteredMovies.splice(0, 5) as movie}
                 <div class="hover:scale-105 duration-300">
                   <MainCard {movie} />
@@ -152,5 +151,5 @@
       {/if}
     {/key}
   </div>
-  <div class="sm:w-0 md:w-[5%] lg:w-1/6 xl:1/4 2xl:1/3 flex-shrink-0" />
+  
 </div>

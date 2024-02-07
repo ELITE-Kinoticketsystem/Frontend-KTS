@@ -75,6 +75,27 @@
     return true;
   }
 
+  function allDatesAreValid() {
+    let foundSmthgInvalid = false;
+    allShowings.forEach((showing: any) => {
+      let ms: any[] = [];
+      showing.times.forEach((time: any) => {
+        ms.push(new Date(`${showing.date}T${time}`).getTime());
+      });
+
+      foundSmthgInvalid =
+        foundSmthgInvalid ||
+        ms.find((millis: any) => {
+          if (millis <= Date.now()) {
+            return true;
+          }
+          return false;
+        });
+    });
+
+    return !foundSmthgInvalid;
+  }
+
   function createEvent() {
     if (eventName === "") {
       fire("You can not create an event without a name");
@@ -89,9 +110,14 @@
       return;
     }
     if (movieNames.length === 0) {
-      fire("You can not create an event with no movies");
+      fire("You can not create an event with no movies!", 3000);
       return false;
     }
+    if (!allDatesAreValid()) {
+      fire("Not all dates are in the future!", 3000);
+      return false;
+    }
+
     if (pictureUrl === "") {
       Swal.fire({
         title:

@@ -133,12 +133,11 @@
         <Searchbar
           longSearchBarSize="w-full"
           shortSearchBarSize="w-48"
-          shortSearchBarText="Search for a movie ..."
+          shortSearchBarText="Search for a movie..."
           longSearchBarText="Search for a movie or the name of a special event"
           input={key}
           on:inputChange={(event) => {
             key = event.detail;
-
             filter();
           }}
         />
@@ -250,7 +249,7 @@
         </div>
       </div>
     </div>
-    <hr class="h-px bg-textWhite border-0 w-full mt-2" />
+    <hr class="h-px bg-textWhite border-0 w-full mt-2 mb-4" />
     {#each displayedSpecialEvents as specialEvent}
       <p class="mt-3 mb-2 leading-none text-textWhite text-2xl font-semibold">
         {new Date(specialEvent.Start).toLocaleDateString()} - {specialEvent.Title}
