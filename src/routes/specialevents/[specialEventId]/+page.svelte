@@ -6,7 +6,7 @@
   const specialEvent = data.specialEvent;
   function getHighestFsk() {
     let highestFsk = 0;
-    specialEvent.Movies.forEach((movie) => {
+    specialEvent.Movies.forEach((movie: any) => {
       if (movie.Fsk > highestFsk) {
         highestFsk = movie.Fsk;
       }
@@ -15,7 +15,7 @@
   }
   function getTotalTimeInMin() {
     let totalTime = 0;
-    specialEvent.Movies.forEach((movie) => {
+    specialEvent.Movies.forEach((movie: any) => {
       totalTime += movie.TimeInMin;
     });
     return totalTime;

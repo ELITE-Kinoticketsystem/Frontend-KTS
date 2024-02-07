@@ -25,10 +25,6 @@
   let toDate: any = "";
   let key = "";
 
-  $: minValueFromDate =
-    toDate == "" ? new Date().toISOString().split("T")[0] : toDate;
-  $: minValueToDate =
-    fromDate == "" ? new Date().toISOString().split("T")[0] : fromDate;
   function getTotalTime(specialEvent: any): number {
     let movies = specialEvent.Movies;
     let totalTime = 0;
@@ -325,10 +321,10 @@
           </p>
           <ol class="items-center sm:flex px-5 mt-10">
             {#each specialEvent.Movies as movie}
-              <li class="relative mb-0">
+              <li class="relative mb-0 w-full">
                 <div class="flex items-center">
                   <div
-                    class="z-10 flex items-center justify-center w-6 h-6 bg-tileBlue rounded-full ring-0 sm:ring-8 ring-buttonBlue absolute left-1/2 -translate-x-1/2"
+                    class="z-10 flex items-center justify-center w-6 h-6 bg-tileBlue rounded-full sm:ring-8 ring-buttonBlue absolute left-1/2 -translate-x-1/2"
                   >
                     <svg
                       class="w-2.5 h-2.5 text-textWhite"
@@ -345,11 +341,11 @@
                   <div class="hidden sm:flex w-full bg-buttonBlue h-0.5"></div>
                 </div>
                 <div class="mt-6">
-                  <h3 class="text-lg font-bold text-textWhite text-center">
+                  <h3 class="text-lg font-bold text-textWhite text-center mx-1">
                     {movie.Title}
                   </h3>
                   <time
-                    class="block mt-2 text-sm font-normal leading-none text-darkTextWhite"
+                    class="block mt-2 text-sm mx-1 font-normal leading-none text-darkTextWhite"
                     >Released on {new Date(
                       movie.ReleaseDate
                     ).toLocaleDateString()}</time
@@ -368,11 +364,11 @@
     {/each}
     <p
       id="nospecialEvents"
-      class="text-textWhite text-xl font-semibold mx-auto mt-1"
+      class="text-textWhite text-xl font-semibold mx-auto mt-3"
       hidden
     >
       No special events were found! <button
-        class="bg-buttonBlue hover:bg-green-600 duration-300 rounded-md px-2 py-1"
+        class="bg-buttonBlue text-md hover:bg-green-600 duration-300 rounded-md px-2 py-1 ml-2"
         on:click={resetFilters}>Reset filters</button
       >
     </p>
