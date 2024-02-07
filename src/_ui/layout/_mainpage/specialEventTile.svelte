@@ -7,11 +7,11 @@
 
   if (events !== null && events.length > 0) {
     let length = 0;
-    if (events.length == 2) {
-      length = 2;
+    if (events.length == 1) {
+      length = 1;
     }
-    if (events.length > 2) {
-      length = 3;
+    if (events.length > 1) {
+      length = 2;
     }
     for (let i = 0; i < length; ++i) eventsToDisplay.push(events.at(i));
   }

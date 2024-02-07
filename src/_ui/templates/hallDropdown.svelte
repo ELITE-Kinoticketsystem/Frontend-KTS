@@ -37,7 +37,7 @@
   }}
   class="disabled:bg-slate-500 disabled:opacity-60 disabled:cursor-not-allowed relative w-full h-full p-1 bg-buttonBlue ring-slate-500 ring-1 rounded-md hover:bg-blue-300"
 >
-  <p class="text-center text-textWhite text-[100%] font-semibold">
+  <p class="text-center text-textWhite text-[100%] font-semibold line-clamp-1">
     {selectedHall !== null && selectedHall.ID != ""
       ? selectedHall.Name.length > maxNrOfChar
         ? selectedHall.Name.substr(0, maxNrOfChar - 2) + ".."
@@ -51,15 +51,17 @@
   >
     {#each halls as curHall}
       <button
-        class="h-full w-full text-textWhite text-[100%] p-1 bg-buttonBlue ring-1 ring-slate-500 hover:bg-blue-300"
+        class="h-full w-full p-1 bg-buttonBlue ring-1 ring-slate-500 hover:bg-blue-300"
         on:mousedown={() => {
           selectedHall = curHall;
           ++eligibleHallsAreVisible;
         }}
       >
-        {curHall.Name.length > maxNrOfChar
-          ? curHall.Name.substr(0, maxNrOfChar - 2) + ".."
-          : curHall.Name}
+        <p class="text-textWhite text-[100%] line-clamp-1">
+          {curHall.Name.length > maxNrOfChar
+            ? curHall.Name.substr(0, maxNrOfChar - 2) + ".."
+            : curHall.Name}
+        </p>
       </button>
     {/each}
   </div>
